@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"backend/pkg/controller"
+	"backend/pkg/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -21,9 +22,11 @@ func init() {
 	//ユーザ関連
 
 	//作品関連
-	//work := Server.Group("/work"){
-	////	work.POST("",controller.)
-	//}
+	work := Server.Group("/work")
+	{
+		work.POST("", middleware.Authenticate(controller.CreateWork()))
+		work.GET("/:id", middleware.Authenticate(controller.ReadWork()))
+	}
 
 	//グループ関連
 
