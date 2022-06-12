@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS `funcy`.`works` (
     `id` VARCHAR(64) NOT NULL COMMENT 'ID',
     `work_id` VARCHAR(64) NOT NULL COMMENT '作品ID',
     `title` VARCHAR(64) NOT NULL COMMENT 'タイトル',
+    `description` VARCHAR(512) NOT NULL COMMENT '作品概要',
     `url` VARCHAR(128) NOT NULL COMMENT '成果物',
     `security` int NOT NULL COMMENT '公開設定',
     PRIMARY KEY (`work_id`)
@@ -33,14 +34,16 @@ CREATE TABLE IF NOT EXISTS `funcy`.`works` (
 
 CREATE TABLE IF NOT EXISTS `funcy`.`work_images` (
     `id` VARCHAR(64) NOT NULL COMMENT '作品ID',
-    `image` VARCHAR(128) NOT NULL COMMENT '画像URL',
-    PRIMARY KEY (`id`)
+    `image_id` VARCHAR(64) NOT NULL COMMENT '画像ID',
+    `image_url` VARCHAR(128) NOT NULL COMMENT '画像URL',
+    PRIMARY KEY (`image_id`)
     );
 
 CREATE TABLE IF NOT EXISTS `funcy`.`work_tags` (
     `id` VARCHAR(64) NOT NULL COMMENT '作品ID',
+    `tag_id` VARCHAR(64) NOT NULL COMMENT 'タグID',
     `tag` VARCHAR(128) NOT NULL COMMENT 'タグ',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`tag_id`)
     );
 
 CREATE TABLE IF NOT EXISTS `funcy`.`tags` (
@@ -50,6 +53,17 @@ CREATE TABLE IF NOT EXISTS `funcy`.`tags` (
     PRIMARY KEY (`id`)
     );
 
+-- user
+INSERT INTO `users` VALUES ("1","山本",".com","yamamoto","yuhei","yamamoto@fun.ac.jp","pass","修士1年","情報アーキテクチャ領域","Token1");
+INSERT INTO `users` VALUES ("2","まっすー",".com","まっすー","だよ","増田@fun.ac.jp","pass","修士1年","情報アーキテクチャ領域","Token2");
 
-INSERT INTO `users` VALUES ("1","山本",".com","yamamoto","yuhei","yamamoto@fun.ac.jp","pass","修士1年","情報アーキテクチャ領域","Token");
-
+-- work
+INSERT INTO `works` VALUES ("1","1","初めての投稿だよ💓","もうやめましょうよ！！！","https/asg",1);
+-- work images
+INSERT INTO `work_images` VALUES ("1","1","https/1");
+INSERT INTO `work_images` VALUES ("1","2","https/2");
+INSERT INTO `work_images` VALUES ("1","3","https/3");
+-- work tags
+INSERT INTO `work_tags` VALUES ("1","1","android");
+INSERT INTO `work_tags` VALUES ("1","2","go");
+INSERT INTO `work_tags` VALUES ("1","3","天下統一");

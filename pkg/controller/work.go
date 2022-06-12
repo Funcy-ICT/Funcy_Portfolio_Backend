@@ -48,3 +48,34 @@ func CreateWork() gin.HandlerFunc {
 		c.JSON(http.StatusOK, view.ReturnCreateWork(cwr))
 	}
 }
+
+func ReadWork() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		workID := c.Param("id")
+		log.Println(workID)
+		if workID == "" {
+			log.Println("[ERROR] workID is empty")
+			view.ReturnErrorResponse(
+				c,
+				http.StatusInternalServerError,
+				"InternalServerError",
+				"workID is empty",
+			)
+			return
+		}
+		client := dao.MakeReadWorkClient()
+		workInfo, err := client.Request(workID)
+		if err != nil {
+			log.Println(err)
+			view.ReturnErrorResponse(
+				c,
+				http.StatusInternalServerError,
+				"Internal Server Error",
+				err.Error(),
+			)
+			return
+		}
+
+		c.JSON(http.StatusOK, workInfo)
+	}
+}

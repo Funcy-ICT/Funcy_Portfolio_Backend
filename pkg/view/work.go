@@ -19,3 +19,23 @@ type CreateWorkResponse struct {
 func ReturnCreateWork(work dto.CreateWorkRequest) CreateWorkResponse {
 	return CreateWorkResponse{Title: work.Title, Description: work.Description, Images: work.Images, URL: work.URL, Tags: work.Tags, Group: work.Group, Security: work.Security}
 }
+
+type ReadWorkResponse struct {
+	Title       string  `json:"title"`
+	Description string  `json:"description"`
+	Images      []Image `json:"images"`
+	URL         string  `json:"URL"`
+	Tags        []Tag   `json:"tags"`
+	Security    int     `json:"security"`
+}
+
+type Tag struct {
+	Tag string `json:"tag"`
+}
+type Image struct {
+	Image string `json:"image"`
+}
+
+//func ReturnReadWork(work dto.ReadWork) ReadWorkResponse {
+//	return ReadWorkResponse{Title: work.Title, Description: work.Description, Images: work.Images, URL: work.URL, Tags: work.Tags, Security: work.Security}
+//}

@@ -44,8 +44,6 @@ func Authenticate(ginNextMethod gin.HandlerFunc) gin.HandlerFunc {
 			log.Println(err)
 		}
 
-		log.Println(userID)
-
 		// ユーザIDをContextへ保存して以降の処理に利用する
 		c.Set("userID", userID)
 		ginNextMethod(c)
