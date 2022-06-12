@@ -24,26 +24,32 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 CREATE TABLE IF NOT EXISTS `funcy`.`works` (
     `id` VARCHAR(64) NOT NULL COMMENT 'ID',
+    `work_id` VARCHAR(64) NOT NULL COMMENT '作品ID',
     `title` VARCHAR(64) NOT NULL COMMENT 'タイトル',
-    `image` VARCHAR(128) NOT NULL COMMENT '画像URL',
-    `URL` VARCHAR(128) NOT NULL COMMENT '成果物',
+    `url` VARCHAR(128) NOT NULL COMMENT '成果物',
     `security` int NOT NULL COMMENT '公開設定',
+    PRIMARY KEY (`work_id`)
+    );
+
+CREATE TABLE IF NOT EXISTS `funcy`.`work_images` (
+    `id` VARCHAR(64) NOT NULL COMMENT '作品ID',
+    `image` VARCHAR(128) NOT NULL COMMENT '画像URL',
+    PRIMARY KEY (`id`)
+    );
+
+CREATE TABLE IF NOT EXISTS `funcy`.`work_tags` (
+    `id` VARCHAR(64) NOT NULL COMMENT '作品ID',
+    `tag` VARCHAR(128) NOT NULL COMMENT 'タグ',
     PRIMARY KEY (`id`)
     );
 
 CREATE TABLE IF NOT EXISTS `funcy`.`tags` (
-    `id` VARCHAR(64) NOT NULL COMMENT 'ID',
+    `id` VARCHAR(64) NOT NULL COMMENT 'タグID',
     `name` VARCHAR(64) NOT NULL COMMENT 'タグ名',
     `is_skill` tinyint(1) DEFAULT NULL COMMENT 'スキルタグ判定',
     PRIMARY KEY (`id`)
     );
 
--- CREATE TABLE IF NOT EXISTS `works_tags` (
---     `id` VARCHAR(64) NOT NULL COMMENT 'グループusersID',
---     `work_id` VARCHAR(64) NOT NULL COMMENT '作品ID',
---     `tag_id` VARCHAR(64) NOT NULL COMMENT 'タグID',
---     PRIMARY KEY (`id`),
---     );
 
 INSERT INTO `users` VALUES ("1","山本",".com","yamamoto","yuhei","yamamoto@fun.ac.jp","pass","修士1年","情報アーキテクチャ領域","Token");
 
