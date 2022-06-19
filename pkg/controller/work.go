@@ -32,6 +32,7 @@ func CreateWork() gin.HandlerFunc {
 			)
 			return
 		}
+
 		client := dao.MakeCreateWorkClient()
 		_, err := client.Request(userID, cwr)
 		if err != nil {
@@ -52,7 +53,6 @@ func CreateWork() gin.HandlerFunc {
 func ReadWork() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		workID := c.Param("id")
-		log.Println(workID)
 		if workID == "" {
 			log.Println("[ERROR] workID is empty")
 			view.ReturnErrorResponse(

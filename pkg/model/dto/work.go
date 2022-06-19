@@ -13,8 +13,9 @@ type CreateWorkRequest struct {
 	Images      []struct {
 		Image string `json:"image"`
 	} `json:"images"`
-	URL  string `json:"URL"`
-	Tags []struct {
+	Work_URL  string `json:"work_url"`
+	Movie_url string `json:"movie_url"`
+	Tags      []struct {
 		Tag string `json:"tag"`
 	} `json:"tags"`
 	Group    string `json:"group"`
@@ -26,6 +27,7 @@ type WorkTable struct {
 	Description string
 	Image       string
 	URL         string
+	Movie_url   string
 	Tag         string
 	Security    int
 }
@@ -35,6 +37,7 @@ type ReadWork struct {
 	Description string  `json:"description"`
 	Images      []Image `json:"images"`
 	URL         string  `json:"URL"`
+	Movie_url   string  `json:"movie_url"`
 	Tags        []Tag   `json:"tags"`
 	Security    int     `json:"security"`
 }
