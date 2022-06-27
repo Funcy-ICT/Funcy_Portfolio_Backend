@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `funcy`.`works` (
     `url` VARCHAR(128) NOT NULL COMMENT '成果物url(github)',
     `movie_url` VARCHAR(128) NOT NULL COMMENT '成果物url(youtube)',
     `security` int NOT NULL COMMENT '公開設定',
+    `created_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     PRIMARY KEY (`work_id`)
     );
 
