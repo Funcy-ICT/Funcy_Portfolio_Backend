@@ -79,3 +79,34 @@ func ReadWork() gin.HandlerFunc {
 		c.JSON(http.StatusOK, workInfo)
 	}
 }
+
+func ReadWorksList() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		number := c.Param("number")
+
+		if number == "" {
+			log.Println("[ERROR] number is empty")
+			view.ReturnErrorResponse(
+				c,
+				http.StatusInternalServerError,
+				"InternalServerError",
+				"number is empty",
+			)
+			return
+		}
+		client := dao.MakeReadWorksListClient()
+		workInfo, err := client.Request(number)
+		if err != nil {
+			log.Println(err)
+			view.ReturnErrorResponse(
+				c,
+				http.StatusInternalServerError,
+				"Internal Server Error",
+				err.Error(),
+			)
+			return
+		}
+
+		c.JSON(http.StatusOK, workInfo)
+	}
+}

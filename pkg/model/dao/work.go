@@ -20,6 +20,7 @@ const (
 	//select work
 	SelectWork = "SELECT works.title, works.description, works.url, works.security,works.movie_url, work_images.image_url, work_tags.tag from works inner join work_images on works.work_id = work_images.id inner join work_tags on works.work_id = work_tags.id where work_id = ?"
 	//select works list
+	SelectWorksList = "select works.work_id, works.title,image.image_url, users.icon from works inner join users on works.id = users.id inner join (SELECT image_url,id FROM work_images GROUP BY image_url,id)as image on works.work_id = image.id ORDER BY works.created_at DESC limit ?"
 )
 
 ///post work
@@ -97,13 +98,12 @@ func (info *readWork) Request(workID string) (dto.ReadWork, error) {
 	var works []dto.WorkTable
 
 	rows, err := Conn.Query(SelectWork, workID)
-	if err != sql.ErrNoRows {
+	if err == sql.ErrNoRows {
 		return rw, errors.New("not exist work data")
 	}
 
 	for rows.Next() {
 		work := &dto.WorkTable{}
-		log.Println("scanでパニック")
 		if err := rows.Scan(&work.Title, &work.Description, &work.URL, &work.Security, &work.Movie_url, &work.Image, &work.Tag); err != nil {
 			return rw, errors.New("err")
 		}
@@ -163,4 +163,39 @@ func (info *readWork) Request(workID string) (dto.ReadWork, error) {
 		Security:    works[0].Security,
 	}
 	return w, err
+}
+
+///get works list
+type readWorksList struct {
+}
+
+func MakeReadWorksListClient() readWorksList {
+	return readWorksList{}
+}
+
+var (
+	rwl []dto.ReadWorksList
+)
+
+func (info *readWorksList) Request(number string) ([]dto.ReadWorksList, error) {
+
+	var worksList []dto.ReadWorksList
+
+	n := dto.S2i(number)
+
+	rows, err := Conn.Query(SelectWorksList, n)
+	if err == sql.ErrNoRows {
+		return rwl, errors.New("not exist work data")
+	}
+
+	for rows.Next() {
+		work := &dto.ReadWorksList{}
+		if err := rows.Scan(&work.WorkID, &work.Title, &work.Images, &work.Icon); err != nil {
+			log.Println(err)
+			return rwl, errors.New("err")
+		}
+		worksList = append(worksList, *work)
+	}
+
+	return worksList, err
 }

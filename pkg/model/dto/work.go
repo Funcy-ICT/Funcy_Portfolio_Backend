@@ -3,6 +3,7 @@ package dto
 import (
 	"database/sql"
 	"log"
+	"strconv"
 )
 
 //作品投稿リクエスト
@@ -42,6 +43,14 @@ type ReadWork struct {
 	Security    int     `json:"security"`
 }
 
+//作品一覧用
+type ReadWorksList struct {
+	WorkID string `json:"work_id"`
+	Title  string `json:"title"`
+	Images string `json:"images"`
+	Icon   string `json:"icon"`
+}
+
 type Tag struct {
 	Tag string
 }
@@ -59,4 +68,13 @@ func ConvertToWork(row *sql.Rows) (*WorkTable, error) {
 		return nil, err
 	}
 	return &work, nil
+}
+
+func S2i(s string) int {
+	v, err := strconv.Atoi(s)
+	if err != nil {
+		log.Println(err)
+	}
+
+	return v
 }
