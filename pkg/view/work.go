@@ -8,8 +8,9 @@ type CreateWorkResponse struct {
 	Images      []struct {
 		Image string `json:"image"`
 	} `json:"images"`
-	URL  string `json:"URL"`
-	Tags []struct {
+	URL       string `json:"URL"`
+	Movie_url string `json:"movie_url"`
+	Tags      []struct {
 		Tag string `json:"tag"`
 	} `json:"tags"`
 	Group    string `json:"group"`
@@ -17,7 +18,7 @@ type CreateWorkResponse struct {
 }
 
 func ReturnCreateWork(work dto.CreateWorkRequest) CreateWorkResponse {
-	return CreateWorkResponse{Title: work.Title, Description: work.Description, Images: work.Images, URL: work.URL, Tags: work.Tags, Group: work.Group, Security: work.Security}
+	return CreateWorkResponse{Title: work.Title, Description: work.Description, Images: work.Images, URL: work.Work_URL, Movie_url: work.Movie_url, Tags: work.Tags, Group: work.Group, Security: work.Security}
 }
 
 type ReadWorkResponse struct {

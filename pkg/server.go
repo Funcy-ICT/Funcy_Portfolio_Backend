@@ -27,6 +27,10 @@ func init() {
 		work.POST("", middleware.Authenticate(controller.CreateWork()))
 		work.GET("/:id", middleware.Authenticate(controller.ReadWork()))
 	}
+	works := Server.Group("/works")
+	{
+		works.GET("/:number", middleware.Authenticate(controller.ReadWorksList()))
+	}
 
 	//グループ関連
 
