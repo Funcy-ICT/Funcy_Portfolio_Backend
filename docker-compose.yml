@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  go:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    tty: true
+    stdin_open: true
+    volumes:
+      - .:/go/src/app
+    ports:
+      - 8080:8080
+    environment:
+        DB_USER: 'funcy'
+        DB_PASS: 'funcy_pass'
+        DB_IP: 'mysql'
+        DB_PORT: '3306'
+        DB_NAME: 'funcy'
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 'admin'
+      MYSQL_DATABASE: 'funcy'
+      MYSQL_USER: 'funcy'
+      MYSQL_PASSWORD: 'funcy_pass'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./db/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./db/mysql/init:/docker-entrypoint-initdb.d

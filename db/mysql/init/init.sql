@@ -18,9 +18,12 @@ CREATE TABLE IF NOT EXISTS `users` (
     `grade` VARCHAR(32) NOT NULL COMMENT '学年',
     `course` VARCHAR(32) NOT NULL COMMENT 'コース名',
     `token` VARCHAR(128) NOT NULL COMMENT '認証用Token',
+    `created_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) COMMENT '作成時',
+    `updated_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新時',
     PRIMARY KEY (`id`),
     INDEX `idx_auth_token` (`id` ASC)
     );
+
 
 CREATE TABLE IF NOT EXISTS `funcy`.`works` (
     `id` VARCHAR(64) NOT NULL COMMENT 'ユーザID',
@@ -31,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `funcy`.`works` (
     `movie_url` VARCHAR(128) NOT NULL COMMENT '成果物url(youtube)',
     `security` int NOT NULL COMMENT '公開設定',
     `created_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    `updated_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新時',
     PRIMARY KEY (`work_id`)
     );
 
@@ -55,9 +59,10 @@ CREATE TABLE IF NOT EXISTS `funcy`.`tags` (
     PRIMARY KEY (`id`)
     );
 
+
 -- user
-INSERT INTO `users` VALUES ("1","山本",".com","yamamoto","yuhei","yamamoto@fun.ac.jp","pass","修士1年","情報アーキテクチャ領域","Token1");
-INSERT INTO `users` VALUES ("2","まっすー",".com","まっすー","だよ","増田@fun.ac.jp","pass","修士1年","情報アーキテクチャ領域","Token2");
+INSERT INTO users (id,display_name,icon,family_name,first_name,mail,password,grade,course,token) VALUES ("1","山本","https://avatars.githubusercontent.com/u/40165303?v=4","yamamoto","yuhei","yamamoto@fun.ac.jp","pass","修士1年","情報アーキテクチャ領域","Token1");
+INSERT INTO users (id,display_name,icon,family_name,first_name,mail,password,grade,course,token) VALUES ("2","まっすー","https://avatars.githubusercontent.com/u/40165303?v=4","まっすー","だよ","増田@fun.ac.jp","pass","修士1年","情報アーキテクチャ領域","Token2");
 
 -- work
 -- INSERT INTO `works` VALUES ("1","w1","初めての投稿だよ💓","もうやめましょうよ！！！","https://github.com/Funcy-ICT/Funcy_Portfolio_Android","https://www.youtube.com/watch?v=ViOzYSYWCMM&list=RDViOzYSYWCMM&start_radio=1",1);

@@ -98,12 +98,18 @@ func (info *readWork) Request(workID string) (dto.ReadWork, error) {
 	var works []dto.WorkTable
 
 	rows, err := Conn.Query(SelectWork, workID)
-	if err == sql.ErrNoRows {
-		return rw, errors.New("not exist work data")
+	if err != nil {
+		log.Println(err)
+		log.Println("nanndew")
+		if err == sql.ErrNoRows {
+			return rw, errors.New("not exist work data")
+		}
 	}
+	log.Println(rows)
 
 	for rows.Next() {
 		work := &dto.WorkTable{}
+		log.Println(rows)
 		if err := rows.Scan(&work.Title, &work.Description, &work.URL, &work.Security, &work.Movie_url, &work.Image, &work.Tag); err != nil {
 			return rw, errors.New("err")
 		}
