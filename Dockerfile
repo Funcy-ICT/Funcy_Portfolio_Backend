@@ -15,5 +15,4 @@ ENV DB_PORT 3306
 ENV DB_NAME funcy
 
 EXPOSE 8080
-EXPOSE 3306
 CMD ["go", "run", "main.go"]

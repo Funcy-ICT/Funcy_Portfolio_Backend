@@ -100,22 +100,27 @@ func (info *readWork) Request(workID string) (dto.ReadWork, error) {
 	rows, err := Conn.Query(SelectWork, workID)
 	if err != nil {
 		log.Println(err)
-		log.Println("nanndew")
 		if err == sql.ErrNoRows {
 			return rw, errors.New("not exist work data")
 		}
 	}
-	log.Println(rows)
-
+	defer rows.Close()
 	for rows.Next() {
 		work := &dto.WorkTable{}
-		log.Println(rows)
 		if err := rows.Scan(&work.Title, &work.Description, &work.URL, &work.Security, &work.Movie_url, &work.Image, &work.Tag); err != nil {
-			return rw, errors.New("err")
+			return rw, errors.New("exist nil work data")
 		}
 		works = append(works, *work)
 	}
+	if len(works) == 0 {
+		return rw, errors.New("work id is wrong")
+	}
 
+	err = rows.Err()
+	if err != nil {
+		log.Println(err)
+		return rw, errors.New("err")
+	}
 	//response用に取得してきたデータを整形
 	//image
 	var sortImages []dto.Image
@@ -139,6 +144,10 @@ func (info *readWork) Request(workID string) (dto.ReadWork, error) {
 		}
 	}
 
+	sort.Slice(tags, func(i, j int) bool {
+		return tags[i].Tag < tags[j].Tag
+	})
+
 	sort.Slice(sortImages, func(i, j int) bool {
 		return sortImages[i].Image < sortImages[j].Image
 	})
@@ -159,13 +168,28 @@ func (info *readWork) Request(workID string) (dto.ReadWork, error) {
 		}
 	}
 
+	checkTags2 := tags[0]
+	tags2 := tags[0]
+	var sortTags []dto.Tag
+	sortTags = append(sortTags, checkTags2)
+	for _, i := range tags {
+		log.Println(i)
+		if i != checkTags2 {
+			tags2 = i
+			sortTags = append(sortTags, tags2)
+			checkTags2 = i
+		} else {
+			continue
+		}
+	}
+
 	w := dto.ReadWork{
 		Title:       works[0].Title,
 		Description: works[0].Description,
 		URL:         works[0].URL,
 		Images:      images,
 		Movie_url:   works[0].Movie_url,
-		Tags:        tags,
+		Tags:        sortTags,
 		Security:    works[0].Security,
 	}
 	return w, err
