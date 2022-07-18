@@ -5,3 +5,4 @@ run:
 	$(DOCKER) up --build
 down:
 	$(DOCKER) down
+	rm nohup.out
