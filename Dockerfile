@@ -1,19 +1,28 @@
-FROM golang:1.18.3-alpine as dev
+FROM golang:1.18-alpine as dev
+RUN apk update && \
+    apk upgrade && \
+    apk add bash git && \
+    rm -rf /var/cache/apk/*
 
-ENV ROOT=/go/src/app
-ENV CGO_ENABLED 0
-WORKDIR ${ROOT}
+RUN go install github.com/cespare/reflex@latest
 
-RUN apk update && apk add git
-COPY go.mod go.sum ./
+FROM golang:1.18-alpine
+COPY --from=dev /go/bin/reflex /go/bin/reflex
+
+RUN apk update && \
+    apk upgrade && \
+    rm -rf /var/cache/apk/*
+
+ENV GOOS=linux \
+    GOARCH=amd64 \
+    CGO_ENABLED=0
+
+WORKDIR /app
+
+COPY go.mod .
+COPY go.sum .
 RUN go mod download
 
-ENV DB_USER funcy
-ENV DB_PASSWORD funcy_pass
-ENV DB_IP mysql
-ENV DB_PORT 3306
-ENV DB_NAME funcy
+COPY . .
 
-EXPOSE 8080
-EXPOSE 9000
-CMD ["go", "run", "main.go"]
+RUN go build -o /backend-api cmd/main.go

@@ -5,6 +5,7 @@ import (
 	"backend/pkg/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 var (
@@ -16,6 +17,12 @@ func init() {
 	Server = gin.Default()
 	Server.Use(cors.Default())
 	//認証関連
+	Server.GET("helth", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "server ok",
+		})
+	})
+
 	Server.POST("/sign/up", controller.SignUp())
 	Server.POST("/sign/in", controller.SignIn())
 
