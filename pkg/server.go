@@ -23,6 +23,8 @@ func init() {
 		})
 	})
 
+	Server.POST("/jwt", controller.Jwt())
+
 	Server.POST("/sign/up", controller.SignUp())
 	Server.POST("/sign/in", controller.SignIn())
 
