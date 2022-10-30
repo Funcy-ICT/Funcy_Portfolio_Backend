@@ -1,20 +1,20 @@
 package main
 
 import (
-	"backend/configs"
-	"backend/pkg"
-	"backend/pkg/model/dao"
+	"backend/app/configs"
+	"backend/app/interfaces"
 	"log"
+	"net/http"
 )
 
 func main() {
-	//DBのコネクションを確率
-	err := dao.Init()
+
+	r := interfaces.NewServer()
+	err := r.Init()
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	//サーバを起動
 	addr := configs.GetServerPort()
-	pkg.Server.Run(addr)
+	log.Println("port", addr, "Starting app")
+	http.ListenAndServe(addr, r.Router)
 }

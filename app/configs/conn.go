@@ -1,9 +1,8 @@
-package dao
+package configs
 
 import (
-	"backend/configs"
-	"database/sql"
 	"fmt"
+	"github.com/jmoiron/sqlx"
 	"log"
 
 	"github.com/cenkalti/backoff"
@@ -16,31 +15,31 @@ import (
 const DriverName = "mysql"
 
 // Conn 各repositoryで利用するDB接続(Connection)情報
-var Conn *sql.DB
+var Conn *sqlx.DB
 var DBConnectionInfo string
 
-func Init() error {
-	var err error
-	DBConnectionInfo = configs.GetDBConnectionInfo()
-	if err = createDBConnection(); err != nil {
+func Init() (*sqlx.DB, error) {
+	DBConnectionInfo = GetDBConnectionInfo()
+	conn, err := createDBConnection()
+	if err != nil {
 		if err = dbConnectionBackoff(); err != nil {
-			return err
+			return nil, err
 		}
 	}
 	log.Println("Successfull DB Connection")
-	return err
+	return conn, err
 }
 
-func createDBConnection() error {
+func createDBConnection() (*sqlx.DB, error) {
 	var err error
-	Conn, err = sql.Open(DriverName, DBConnectionInfo)
+	Conn, err = sqlx.Open(DriverName, DBConnectionInfo)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if err = Conn.Ping(); err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return Conn, nil
 }
 
 func dbConnectionBackoff() error {
