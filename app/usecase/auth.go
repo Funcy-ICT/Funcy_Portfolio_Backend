@@ -6,7 +6,9 @@ import (
 	"backend/app/interfaces/request"
 	"backend/app/packages/utils"
 	"backend/app/packages/utils/auth"
+
 	"errors"
+
 	"github.com/google/uuid"
 	"github.com/mileusna/useragent"
 )
