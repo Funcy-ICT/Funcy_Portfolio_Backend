@@ -2,11 +2,10 @@ package configs
 
 import (
 	"fmt"
-	"github.com/jmoiron/sqlx"
 	"log"
 
 	"github.com/cenkalti/backoff"
-
+	"github.com/jmoiron/sqlx"
 	// blank import for MySQL driver
 	_ "github.com/go-sql-driver/mysql"
 )

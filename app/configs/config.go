@@ -3,9 +3,10 @@ package configs
 import (
 	"flag"
 	"fmt"
-	"github.com/kelseyhightower/envconfig"
 	"log"
 	"os"
+
+	"github.com/kelseyhightower/envconfig"
 )
 
 const accessTokenTemplate = "%s:%s@tcp(%s)/%s"
