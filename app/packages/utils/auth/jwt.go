@@ -46,7 +46,7 @@ func (t *hs256jwtMobile) issueMobileToken(claims jwt.Claims) (string, error) {
 }
 
 func (t *hs256jwtMobile) verifyMobileToken(tokenStr string) (jwt.Claims, error) {
-	token, err := hs256jwtParser.ParseWithClaims(tokenStr, t.createClaims(), jwt.Keyfunc(func(token *jwt.Token) (interface{}, error) {
+	token, err := hs256jwtParserMobile.ParseWithClaims(tokenStr, t.createClaims(), jwt.Keyfunc(func(token *jwt.Token) (interface{}, error) {
 		return t.sigKey, nil
 	}))
 	if err != nil {

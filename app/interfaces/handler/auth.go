@@ -50,7 +50,6 @@ func (h *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
 	w.WriteHeader(http.StatusOK)
 	w.Write(resBody)
-	return
 }
 
 func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
@@ -85,5 +84,4 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
 	w.WriteHeader(http.StatusOK)
 	w.Write(resBody)
-	return
 }
