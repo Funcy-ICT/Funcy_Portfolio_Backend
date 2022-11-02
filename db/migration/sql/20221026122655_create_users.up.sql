@@ -12,5 +12,6 @@ CREATE TABLE IF NOT EXISTS `users` (
     `created_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) COMMENT '作成時',
     `updated_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新時',
     PRIMARY KEY (`id`),
+    UNIQUE (`mail`),
     INDEX `idx_auth_token` (`id` ASC)
     );

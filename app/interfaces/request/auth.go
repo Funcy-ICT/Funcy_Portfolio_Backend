@@ -1,6 +1,6 @@
 package request
 
-//アカウント作成リクエスト
+// アカウント作成リクエスト
 type SignUpRequest struct {
 	Icon        string `json:"icon" validate:"required"`
 	FamilyName  string `json:"familyName" validate:"required"`
@@ -12,8 +12,8 @@ type SignUpRequest struct {
 	DisplayName string `json:"displayName" validate:"required"`
 }
 
-//アカウント認証リクエスト
+// アカウント認証リクエスト
 type SignInRequest struct {
-	Mail     string `json:"mail"`
-	Password string `json:"password"`
+	Mail     string `json:"mail" validate:"required"`
+	Password string `json:"password" validate:"required"`
 }

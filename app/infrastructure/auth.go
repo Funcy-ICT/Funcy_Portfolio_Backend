@@ -25,6 +25,26 @@ func (ur *userRepositoryImpl) InsertAccount(user *entity.User) error {
 		log.Println(err)
 		return errors.Wrap(err, "failed to insert")
 	}
-
 	return nil
+}
+
+//func (ur *userRepositoryImpl) CheckMailAddr(mail string) error {
+//	var user entity.User
+//	err := ur.db.Get(&user, `SELECT mail FROM users WHERE mail=?`, mail)
+//	if err != nil {
+//		return err
+//	}
+//	if user.Mail == "" {
+//		return nil
+//	}
+//	return errors.New("exist mail address")
+//}
+
+func (ur *userRepositoryImpl) GetPassword(mail string) (entity.User, error) {
+	var user entity.User
+	err := ur.db.Get(&user, `SELECT id,password,token FROM users WHERE mail=?`, mail)
+	if err != nil {
+		return user, errors.Wrap(err, "failed to find mail")
+	}
+	return user, nil
 }

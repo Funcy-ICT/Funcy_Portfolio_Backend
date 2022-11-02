@@ -1,7 +1,7 @@
 package response
 
 import (
-	"backend/pkg"
+	"backend/app/packages/utils"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -11,10 +11,11 @@ type Error struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 }
+
 type ValidateError struct {
-	Code            int               `json:"code"`
-	Message         string            `json:"message"`
-	ValidationError []pkg.ValidateErr `json:"validationError"`
+	Code            int                 `json:"code"`
+	Message         string              `json:"message"`
+	ValidationError []utils.ValidateErr `json:"validationError"`
 }
 
 func ReturnErrorResponse(w http.ResponseWriter, code int, msg string) error {
@@ -33,7 +34,7 @@ func ReturnErrorResponse(w http.ResponseWriter, code int, msg string) error {
 	return nil
 }
 
-func ReturnValidationErrorResponse(w http.ResponseWriter, code int, msg string, validations []pkg.ValidateErr) error {
+func ReturnValidationErrorResponse(w http.ResponseWriter, code int, msg string, validations []utils.ValidateErr) error {
 	body := &ValidateError{
 		Code:            code,
 		Message:         msg,

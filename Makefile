@@ -22,5 +22,5 @@ migrate:  ## migrate up
 	migrate -path db/migration/sql -database "mysql://root:admin@tcp(127.0.0.1:3306)/funcy?multiStatements=true" up
 
 .PHONY: migrate-down
-migrate-down:  ## migrate up
+migrate-down:  ## migrate down
 	migrate -path db/migration/sql -database "mysql://root:admin@tcp(127.0.0.1:3306)/funcy?multiStatements=true" down

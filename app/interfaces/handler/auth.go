@@ -2,7 +2,7 @@ package handler
 
 import (
 	"backend/app/interfaces/response"
-	"backend/pkg"
+	"backend/app/packages/utils"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -28,24 +28,21 @@ func (h *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
 		return
 	}
-	me, _ := pkg.Validate(req)
+	me, _ := utils.Validate(req)
 	if me != nil {
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
 		return
 	}
-	//} else if err != nil {
-	//	_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
-	//}
 
 	err = h.authUseCase.CreateAccount(req)
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	resBody, err := json.Marshal(req)
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -57,28 +54,28 @@ func (h *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
-	var req request.SignUpRequest
+	var req request.SignInRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
 		return
 	}
-	me, _ := pkg.Validate(req)
+	me, _ := utils.Validate(req)
 	if me != nil {
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
 		return
 	}
-	//} else if err != nil {
-	//	_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
-	//}
 
-	err = h.authUseCase.CreateAccount(req)
+	token, err := h.authUseCase.Login(req, r.UserAgent())
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	resBody, err := json.Marshal(req)
+	res := response.Token{
+		Token: token,
+	}
+	resBody, err := json.Marshal(res)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return

@@ -4,14 +4,14 @@ import (
 	"backend/app/configs"
 	"backend/app/infrastructure"
 	"backend/app/interfaces/handler"
+	middleware2 "backend/app/interfaces/middleware"
 	"backend/app/usecase"
 	"fmt"
-	"github.com/jmoiron/sqlx"
-	"net/http"
-
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
+	"github.com/jmoiron/sqlx"
+	"net/http"
 )
 
 type Server struct {
@@ -43,22 +43,33 @@ func (s *Server) Route() {
 		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 	}).Handler)
 
-	//TODO　いずれちゃんとしたものに置き換えます
-	s.Router.Use(middleware.Logger)
-	//接続確認
-	s.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("ok"))
-	})
-
 	//DI
 	authRepository := infrastructure.NewUserRepository(s.db)
 	authUseCase := usecase.NewAuthUseCase(authRepository)
 	authHandler := handler.NewAuthHandler(authUseCase)
 
-	//認証
+	s.Router.Use(middleware.Logger)
+	//接続確認
+	s.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("ok"))
+	})
 	s.Router.Post("/sign/up", authHandler.SignUp)
 	s.Router.Post("/login", authHandler.SignIn)
 
+	s.Router.Group(func(mux chi.Router) {
+		mux.Use(middleware2.Authentication)
+		mux.Get("/health/jwt", func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("ok"))
+		})
+	})
+	//
+	//s.Router.Group(func(r chi.Router) {
+	//
+	//	//接続確認
+	//	s.Router.Get("/health", func(w http.ResponseWriter, r *http.Request) {
+	//		w.Write([]byte("ok"))
+	//	})
+	//})
 	//Server.POST("/sign/up", handler.SignUp())
 	//Server.POST("/sign/in", handler.SignIn())
 	//

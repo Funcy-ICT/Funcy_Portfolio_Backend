@@ -32,28 +32,11 @@ https://golang.org/doc/effective_go.html
 ## レビュー体制
 未定
 
-## 実行するために
-### データベースの接続情報を設定する
-環境変数にデータベースの接続情報を設定します。
-ターミナルのセッション毎に設定したり、.bash_profileで設定を行います。
-
-- Macの場合
-```cassandraql
-$ export PORT=8080 
-    MYSQL_USER=root
-    MYSQL_PASSWORD=admin 
-    MYSQL_HOST=127.0.0.1 
-    MYSQL_PORT=3306 
-    MYSQL_DATABASE=funcy
+## 実行
 ```
-- Windowsの場合
-```cassandraql
-$ SET PORT=8080
-$ SET MYSQL_USER=root
-$ SET MYSQL_PASSWORD=admin
-$ SET MYSQL_HOST=192.168.99.100
-$ SET MYSQL_PORT=3306
-$ SET MYSQL_DATABASE=funcy
+make run
 ```
->docker-compose up -d   
-go run  main.go
+### マイグレーション
+```
+make migrate
+```
