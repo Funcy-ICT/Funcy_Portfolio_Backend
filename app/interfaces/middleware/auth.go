@@ -3,8 +3,10 @@ package middleware
 import (
 	"backend/app/interfaces/response"
 	"backend/app/packages/utils/auth"
-	"context"
+
 	"github.com/mileusna/useragent"
+
+	"context"
 	"net/http"
 	"strings"
 )
