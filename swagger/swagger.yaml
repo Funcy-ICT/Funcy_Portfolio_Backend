@@ -1,0 +1,704 @@
+openapi: 3.0.2
+info:
+  title: Funcy API
+  description: <b>FUNcyのAPI仕様</b>
+  version: 1.0.0
+servers:
+  - url: http://localhost:9000/
+tags:
+  - name: auth
+    description: 認証API
+  - name: user
+    description: ユーザー関連API
+  - name: work
+    description: 作品関連API
+  - name: group
+    description: グループ関連API
+  - name: search
+    description: 検索関連API
+paths:
+  /sign/up:
+    post:
+      tags:
+        - auth
+      summary: ユーザアカウント情報作成API
+      description: ユーザが未来大の学生か確認してアカウントを作成する
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /login:
+    post:
+      tags:
+        - auth
+      summary: ログイン認証API
+      description: |-
+        ユーザの認証をします。
+        ユーザのログイン情報をリクエストで受け取り、サーバ内確認します。
+        照合後にjwtを発行
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignInResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /userinfo/{userID}:
+    get:
+      tags:
+        - user
+      summary: マイページ取得
+      description: マイページ閲覧用のAPI
+      security:
+        - Bearer: []
+      parameters:
+        - $ref: '#/components/parameters/userID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyPageResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - user
+      summary: マイページ更新
+      description: マイページを更新する
+      security:
+        - Bearer: []
+      parameters:
+        - $ref: '#/components/parameters/userID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyPageResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /userinfo/{userID}/guest:
+    get:
+      tags:
+        - user
+      summary: ゲスト用のマイページ取得
+      description: ゲスト用のマイページ閲覧API
+      parameters:
+        - $ref: '#/components/parameters/userID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyPageResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /work:
+    post:
+      tags:
+        - work
+      summary: 作品投稿API
+      security:
+        - Bearer: []
+      description: 作品を投稿します
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateArticleRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateArticleResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /work/{workID}:
+    get:
+      tags:
+        - work
+      summary: 作品情報取得API
+      description: 作品の詳細情報を取得します
+      parameters:
+        - $ref: '#/components/parameters/workID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadArticleResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - work
+      summary: 作品情報更新API
+      security:
+        - Bearer: []
+      description: 作品情報を更新します
+      parameters:
+        - $ref: '#/components/parameters/workID'
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateArticleRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateArticleResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - work
+      summary: 作品情報削除API
+      security:
+        - Bearer: []
+      description: 作品情報を削除します
+      parameters:
+        - $ref: '#/components/parameters/workID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateArticleResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /works/{number}:
+    get:
+      tags:
+        - work
+      summary: 作品一覧取得API
+      description: 最新の作品一覧を取得します
+      parameters:
+        - $ref: '#/components/parameters/number'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadArticlesResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /works/{tag}:
+    get:
+      tags:
+        - work
+      summary: タグに基づく作品一覧取得API
+      description: タグに一致する作品一覧を取得します
+      parameters:
+        - $ref: '#/components/parameters/tag'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadArticlesByTagResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /search/{word}:
+    get:
+      tags:
+        - search
+      summary: ワードに基づくタグ，ユーザー，グループ検索API
+      description: URIのパスパラメーターに記述されたワードをもとにタグ，ユーザー，グループの検索を行います
+      parameters:
+        - name: "word"
+          in: "path"
+          description: "検索したいワード"
+          required: true
+          schema:
+            type: string
+        - name: "scope"
+          in: query
+          description: "タグ，ユーザー，グループ単体で検索したい場合に指定する"
+          required: false
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchTagUserAndGrousByWordResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /:
+    get:
+      tags:
+        - test
+      summary: 接続確認
+      description: health
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ''
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    SignUpRequest:
+      type: object
+      properties:
+        icon:
+          type: string
+        familyName:
+          type: string
+          description: 性名
+        firstName:
+          type: string
+          description: 名前
+        mail:
+          type: string
+          description: メールアドレス
+        password:
+          type: string
+          description: パスワード
+        grade:
+          type: string
+          description: 学年
+        course:
+          type: string
+          description: 所属コース
+        displayName:
+          type: string
+          description: 表示名
+      required:
+        - userID
+        - password
+    SignInRequest:
+      type: object
+      properties:
+        mail:
+          type: string
+          description: メールアドレス
+        password:
+          type: string
+          description: パスワード
+      required:
+        - mail
+        - password
+    SignInResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: jwt
+        icon:
+          type: string
+        FamilyName:
+          type: string
+          description: 性名
+        firstName:
+          type: string
+          description: 名前
+        grade:
+          type: string
+          description: 学年
+        course:
+          type: string
+          description: 所属コース
+        displayName:
+          type: string
+          description: 表示名
+      required:
+        - token
+    MyPageResponse:
+      type: object
+      properties:
+        icon:
+          type: string
+          description: アイコン画像
+        hedder:
+          type: string
+          description: ヘッダー画像
+        user_description:
+          type: string
+          description: ユーザのプロフィール文
+        sns:
+          type: array
+          items:
+            type: string
+          description: メールアドレス
+        group:
+          type: array
+          items:
+            type: string
+            description: 参加グループ
+        skills:
+          type: array
+          items:
+            type: string
+            description: ユーザのスキル
+        displayName:
+          type: string
+          description: 表示名
+        articles:
+          type: array
+          items:
+            $ref: '#/components/schemas/simpleArticleInformation'
+      required:
+        - userID
+        - password
+    CreateArticleRequest:
+      $ref: '#/components/schemas/work'
+    CreateArticleResponse:
+      properties:
+        articleID:
+          type: string
+          description: 作品ID
+    ReadArticleResponse:
+      $ref: '#/components/schemas/work'
+    UpdateArticleRequest:
+      $ref: '#/components/schemas/work'
+    ReadArticlesResponse:
+      properties:
+        articles:
+          type: array
+          items:
+            $ref: '#/components/schemas/simpleArticleInformation'
+    ReadArticlesByTagResponse:
+      properties:
+        articles:
+          type: array
+          items:
+            $ref: '#/components/schemas/simpleArticleInformation'
+    SearchTagUserAndGrousByWordResponse:
+      properties:
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              tagID:
+                type: string
+                description: タグのID
+                example: gfaho4hodaf
+              tagName:
+                type: string
+                description: タグの名前
+                example: RESt
+        users:
+          type: array
+          items:
+            type: object
+            properties:
+              tagID:
+                type: string
+                description: ユーザーのID
+                example: gfaho4hodaf
+              userName:
+                type: string
+                description: ユーザーの名前
+                example: 大崎敬太
+        groups:
+          type: array
+          items:
+            type: object
+            properties:
+              tagID:
+                type: string
+                description: グループのID
+                example: gfaho4hodaf
+              groupName:
+                type: string
+                description: グループの名前
+                example: FinTech
+    work:
+      type: object
+      properties:
+        title:
+          type: string
+          description: タイトル
+          example: 【実録】FUNcyの闇
+        description:
+          type: string
+          description: 説明文
+          example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              image:
+                type: string
+                description: 画像
+                example: ijaigjjasopdfjgoiwergio
+        URL:
+          type: string
+          description: 作品のURL
+          example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              tag:
+                type: string
+                description: タグ
+                example: ほげ
+        group:
+          type: string
+          description: どのグループに投稿するか
+          example: FUNcy
+        security:
+          type: integer
+          description: 公開設定（0:非公開，1:公開，2:下書き保存）
+          example: 1
+    simpleArticleInformation:
+      type: object
+      properties:
+        articleID:
+          type: string
+          description: 作品ID
+          example: nb7890rwfbnvskd
+        title:
+          type: string
+          description: タイトル
+          example: hoge
+        image:
+          type: object
+          description: 画像
+          example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+        description:
+          type: string
+          description: 説明文
+          example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+        icon:
+          type: object
+          description: 画像
+          example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: ステータスコード
+        message:
+          type: string
+          description: エラーメッセージ
+        discription:
+          type: string
+          description: エラー詳細メッセージ
+      required:
+        - code
+        - message
+        - discription
+  parameters:
+    userID:
+      name: userID
+      in: path
+      required: true
+      description: userID
+      schema:
+        type: string
+    pass:
+      name: pass
+      in: path
+      required: true
+      description: pass
+      schema:
+        type: string
+    cardID:
+      name: cardID
+      in: path
+      required: true
+      description: cardID
+      schema:
+        type: string
+    workID:
+      name: workID
+      in: path
+      description: 作品ID
+      required: true
+      schema:
+        type: string
+    number:
+      name: number
+      in: path
+      required: true
+      schema:
+        type: integer
+    tag:
+      name: tag
+      in: path
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      description: Credentials or access token for API

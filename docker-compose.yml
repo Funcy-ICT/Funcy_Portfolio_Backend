@@ -11,26 +11,35 @@ services:
       - ./:/app
     working_dir: /app
     ports:
-      - 8080:8080
-    environment:
-        DB_USER: 'funcy'
-        DB_PASS: 'funcy_pass'
-        DB_IP: 'mysql'
-        DB_PORT: '3306'
-        DB_NAME: 'funcy'
+      - 9000:9000
     depends_on:
       - mysql
   mysql:
+#    platform: linux/x86_64 # M1 macの場合必要
     image: mysql:5.7
-    restart: always
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 'admin'
       MYSQL_DATABASE: 'funcy'
       MYSQL_USER: 'funcy'
-      MYSQL_PASSWORD: 'funcy_pass'
+      MYSQL_PASSWORD: 'userpass'
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
       - ./db/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
-      - ./db/mysql/init:/docker-entrypoint-initdb.d
+      - db-data:/var/lib/mysql
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger-ui
+    depends_on:
+      - api
+    environment:
+      - SWAGGER_URL=./swagger.yaml
+      - SWAGGER_JSON=/swagger/swagger.yaml
+    ports:
+      - 8002:8080
+    volumes:
+      - ./swagger/:/swagger
+volumes:
+  db-data:
+    driver: local
