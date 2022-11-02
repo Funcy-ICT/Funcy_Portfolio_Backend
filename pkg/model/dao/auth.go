@@ -95,8 +95,6 @@ func (info *signIn) Request(userInfo dto.SignInRequest) (string, error) {
 		return "", errors.New("not match password")
 	}
 
-	log.Println("success！！！")
-
 	token := uuid.NewString()
 	if err != nil {
 		log.Println("tokenID is refresh")

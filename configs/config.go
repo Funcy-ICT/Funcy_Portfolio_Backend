@@ -13,7 +13,7 @@ const accessTokenTemplate = "%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&
 type databaseConfig struct {
 	User string `envconfig:"DB_USER" default:"funcy"`
 	Pass string `envconfig:"DB_PASSWORD" default:"funcy_pass"`
-	IP   string `envconfig:"DB_IP" default:"localhost"`
+	IP   string `envconfig:"DB_IP" default:"mysql"`
 	Port string `envconfig:"DB_PORT" default:"3306"`
 	Name string `envconfig:"DB_NAME" default:"funcy"`
 }

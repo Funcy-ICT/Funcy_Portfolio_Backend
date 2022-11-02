@@ -5,10 +5,12 @@ go 1.17
 require (
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/gin-contrib/cors v1.3.1
+	github.com/gin-gonic/contrib v0.0.0-20201101042839-6a891bf89f19
 	github.com/gin-gonic/gin v1.7.7
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.3.0
 	github.com/kelseyhightower/envconfig v1.4.0
+	github.com/oklog/ulid v1.3.1
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 )
 
