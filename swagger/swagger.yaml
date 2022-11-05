@@ -454,24 +454,7 @@ components:
       properties:
         token:
           type: string
-          description: jwt
-        icon:
-          type: string
-        FamilyName:
-          type: string
-          description: 性名
-        firstName:
-          type: string
-          description: 名前
-        grade:
-          type: string
-          description: 学年
-        course:
-          type: string
-          description: 所属コース
-        displayName:
-          type: string
-          description: 表示名
+          description: jwts
       required:
         - token
     MyPageResponse:

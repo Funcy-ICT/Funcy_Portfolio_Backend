@@ -23,3 +23,7 @@ migrate:  ## migrate up
 .PHONY: migrate-down
 migrate-down:  ## migrate down
 	migrate -path db/migration/sql -database "mysql://root:admin@tcp(127.0.0.1:3306)/funcy?multiStatements=true" down
+
+.PHONY: migrate-force
+migrate-force:  ## migrate down
+	migrate -path db/migration/sql -database "mysql://root:admin@tcp(127.0.0.1:3306)/funcy?multiStatements=true" force 20221026122655

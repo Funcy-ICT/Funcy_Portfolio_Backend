@@ -50,6 +50,10 @@ func (s *Server) Route() {
 	authUseCase := usecase.NewAuthUseCase(authRepository)
 	authHandler := handler.NewAuthHandler(authUseCase)
 
+	workRepository := infrastructure.NewWorkRepository(s.db)
+	workUseCase := usecase.NewWorkUseCase(workRepository)
+	workHandler := handler.NewWorkHandler(workUseCase)
+
 	s.Router.Use(middleware.Logger)
 	//接続確認
 	s.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -63,6 +67,7 @@ func (s *Server) Route() {
 		mux.Get("/health/jwt", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("ok"))
 		})
+		mux.Post("/work", workHandler.CreateWork)
 	})
 	//
 	//s.Router.Group(func(r chi.Router) {
