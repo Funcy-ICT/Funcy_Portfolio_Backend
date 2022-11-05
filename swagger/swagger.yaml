@@ -649,13 +649,9 @@ components:
         message:
           type: string
           description: エラーメッセージ
-        discription:
-          type: string
-          description: エラー詳細メッセージ
       required:
         - code
         - message
-        - discription
   parameters:
     userID:
       name: userID

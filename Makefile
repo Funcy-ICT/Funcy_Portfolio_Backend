@@ -7,7 +7,6 @@ help:   ## This help
 
 .PHONY: run
 run:   ## local実行
-	nohup ./file-server/file &
 	$(DOCKER) up --build
 
 .PHONY: down
