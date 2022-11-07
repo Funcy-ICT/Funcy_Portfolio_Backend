@@ -1,4 +1,4 @@
-DOCKER=docker-compose
+DOCKER=docker compose
 ENV=LOCAL
 
 .PHONY: help
@@ -7,7 +7,6 @@ help:   ## This help
 
 .PHONY: run
 run:   ## local実行
-	nohup ./file-server/file &
 	$(DOCKER) up --build
 
 .PHONY: down
@@ -24,3 +23,7 @@ migrate:  ## migrate up
 .PHONY: migrate-down
 migrate-down:  ## migrate down
 	migrate -path db/migration/sql -database "mysql://root:admin@tcp(127.0.0.1:3306)/funcy?multiStatements=true" down
+
+.PHONY: migrate-force
+migrate-force:  ## migrate down
+	migrate -path db/migration/sql -database "mysql://root:admin@tcp(127.0.0.1:3306)/funcy?multiStatements=true" force 20221026122655

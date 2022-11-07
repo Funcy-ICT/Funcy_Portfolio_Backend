@@ -30,7 +30,6 @@ func Authentication(next http.Handler) http.Handler {
 				return
 			}
 			r = r.WithContext(context.WithValue(r.Context(), "user_id", userId))
-			r = r.WithContext(context.WithValue(r.Context(), "user_id", userId))
 		case ua.Desktop == true || ua.Name == "PostmanRuntime":
 			userId, err := auth.VerifyUserToken(token)
 			if err != nil {
