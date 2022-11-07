@@ -1,4 +1,4 @@
-DOCKER=docker-compose
+DOCKER=docker compose
 ENV=LOCAL
 
 .PHONY: help

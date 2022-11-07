@@ -7,7 +7,6 @@ import (
 	"github.com/mileusna/useragent"
 
 	"context"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -38,7 +37,6 @@ func Authentication(next http.Handler) http.Handler {
 				return
 			}
 			r = r.WithContext(context.WithValue(r.Context(), "user_id", userId))
-			log.Println("userID", r.Context().Value("user_id"))
 		default:
 			_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "authentication failure")
 			return
