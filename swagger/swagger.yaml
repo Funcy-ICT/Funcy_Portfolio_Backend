@@ -507,7 +507,7 @@ components:
       $ref: '#/components/schemas/work'
     ReadArticlesResponse:
       properties:
-        articles:
+        works:
           type: array
           items:
             $ref: '#/components/schemas/simpleArticleInformation'
@@ -602,7 +602,7 @@ components:
     simpleArticleInformation:
       type: object
       properties:
-        articleID:
+        workID:
           type: string
           description: 作品ID
           example: nb7890rwfbnvskd
