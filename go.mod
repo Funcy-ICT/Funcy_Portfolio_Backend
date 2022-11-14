@@ -14,15 +14,13 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/mileusna/useragent v1.2.1
 	github.com/pkg/errors v0.9.1
-	golang.org/x/crypto v0.1.0
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 )
 
 require (
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
-	github.com/lib/pq v1.10.7 // indirect
-	github.com/mattn/go-sqlite3 v1.14.16 // indirect
-	github.com/stretchr/testify v1.8.1 // indirect
-	golang.org/x/sys v0.1.0 // indirect
+	github.com/stretchr/testify v1.8.0 // indirect
+	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
 )

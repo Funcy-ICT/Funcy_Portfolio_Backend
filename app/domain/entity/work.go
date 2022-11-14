@@ -2,7 +2,6 @@ package entity
 
 import (
 	"backend/app/interfaces/request"
-
 	"github.com/google/uuid"
 )
 
@@ -26,13 +25,19 @@ type (
 		Image  string `db:"image_url"`
 	}
 	ReadWork struct {
-		Title       string  `db:"title"`
-		Description string  `db:"description"`
-		Images      []Image `db:"images"`
-		WorkURL     string  `db:"url"`
-		MovieUrl    string  `db:"movie_url"`
-		Tags        []Tag   `db:"tags"`
-		Security    int     `db:"security"`
+		Title       string
+		Description string
+		Images      []Image
+		URL         string
+		MovieUrl    string
+		Tags        []Tag
+		Security    int
+	}
+	ReadWorksList struct {
+		WorkID string
+		Title  string
+		Images string
+		Icon   string
 	}
 )
 
@@ -68,7 +73,6 @@ func NewWorkImages(work request.CreateWorkRequest, workID string) (*[]Image, err
 	}
 	return &images, nil
 }
-
 func NewWorkTags(work request.CreateWorkRequest, workID string) (*[]Tag, error) {
 	var tags []Tag
 	for _, i := range work.Tags {
