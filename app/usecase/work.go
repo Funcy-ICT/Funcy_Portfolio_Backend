@@ -35,3 +35,13 @@ func (w *WorkUseCase) CreateWork(r request.CreateWorkRequest, userId string) (st
 	}
 	return work.ID, nil
 }
+
+func (w *WorkUseCase) ReadWork(workID string) (*entity.ReadWork, error) {
+
+	work, err := w.workRepository.ReadWork(workID)
+	if err != nil {
+		return nil, err
+	}
+
+	return work, nil
+}

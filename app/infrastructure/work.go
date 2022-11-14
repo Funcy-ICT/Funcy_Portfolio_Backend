@@ -3,8 +3,9 @@ package infrastructure
 import (
 	"backend/app/domain/entity"
 	"backend/app/domain/repository"
-	"github.com/jmoiron/sqlx"
 	"log"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type workRepositoryImpl struct {
@@ -41,4 +42,21 @@ VALUES (?,?,?,?,?,?,?)`,
 		return err
 	}
 	return nil
+}
+
+func (ur *workRepositoryImpl) ReadWork(workID string) (*entity.ReadWork, error) {
+	tx, _ := ur.db.Beginx()
+
+	work := new(entity.ReadWork)
+	if err := tx.Get(work, "SELECT title,description,url,movie_url,security from works where id = ?", workID); err != nil {
+		return nil, err
+	}
+	if err := tx.Select(&work.Tags, "SELECT * from work_tags where work_id = ?", workID); err != nil {
+		return nil, err
+	}
+	if err := tx.Select(&work.Images, "SELECT * from work_images where work_id = ?", workID); err != nil {
+		return nil, err
+	}
+
+	return work, nil
 }
