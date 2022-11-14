@@ -2,6 +2,7 @@ package entity
 
 import (
 	"backend/app/interfaces/request"
+
 	"github.com/google/uuid"
 )
 
@@ -34,10 +35,11 @@ type (
 		Security    int
 	}
 	ReadWorksList struct {
-		WorkID string
-		Title  string
-		Images string
-		Icon   string
+		WorkID      string
+		Title       string
+		Images      string
+		Description string
+		Icon        string
 	}
 )
 
@@ -88,4 +90,14 @@ func NewWorkTags(work request.CreateWorkRequest, workID string) (*[]Tag, error) 
 		tags = append(tags, tag)
 	}
 	return &tags, nil
+}
+
+func NewReadWorksList(workID string, title string, images string, description string, icon string) *ReadWorksList {
+	return &ReadWorksList{
+		WorkID:      workID,
+		Title:       title,
+		Images:      images,
+		Description: description,
+		Icon:        icon,
+	}
 }
