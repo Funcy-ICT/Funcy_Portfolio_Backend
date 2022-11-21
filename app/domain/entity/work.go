@@ -35,11 +35,11 @@ type (
 		Security    int
 	}
 	ReadWorksList struct {
-		WorkID      string
-		Title       string
-		Images      string
-		Description string
-		Icon        string
+		WorkID      string `db:"id"`
+		Title       string `db:"title"`
+		Images      string `db:"image_url"`
+		Description string `db:"description"`
+		Icon        string `db:"icon"`
 	}
 )
 
