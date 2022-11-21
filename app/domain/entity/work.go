@@ -35,10 +35,11 @@ type (
 		Security    int      `db:"security"`
 	}
 	ReadWorksList struct {
-		WorkID string
-		Title  string
-		Images string
-		Icon   string
+		WorkID      string `db:"id"`
+		Title       string `db:"title"`
+		Images      string `db:"image_url"`
+		Description string `db:"description"`
+		Icon        string `db:"icon"`
 	}
 )
 
@@ -90,4 +91,14 @@ func NewWorkTags(work request.CreateWorkRequest, workID string) (*[]Tag, error) 
 		tags = append(tags, tag)
 	}
 	return &tags, nil
+}
+
+func NewReadWorksList(workID string, title string, images string, description string, icon string) *ReadWorksList {
+	return &ReadWorksList{
+		WorkID:      workID,
+		Title:       title,
+		Images:      images,
+		Description: description,
+		Icon:        icon,
+	}
 }

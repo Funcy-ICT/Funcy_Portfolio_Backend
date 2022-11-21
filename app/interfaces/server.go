@@ -74,6 +74,8 @@ func (s *Server) Route() {
 		r.Get("/", workHandler.ReadWork)
 	})
 
+	s.Router.Get("/works/{number}", workHandler.ReadWorks)
+
 	//
 	//s.Router.Group(func(r chi.Router) {
 	//

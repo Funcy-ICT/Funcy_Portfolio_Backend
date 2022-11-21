@@ -19,4 +19,14 @@ type (
 		Tags        []Tag   `json:"tags"`
 		Security    int     `json:"security"`
 	}
+	Work struct {
+		WorkID      string `json:"workID"`
+		Title       string `json:"title"`
+		Image       string `json:"image"`
+		Description string `json:"description"`
+		Icon        string `json:"icon"`
+	}
+	Works struct {
+		Works []Work `json:"works"`
+	}
 )
