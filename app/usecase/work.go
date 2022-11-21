@@ -45,11 +45,9 @@ func (w *WorkUseCase) ReadWorks(numberOfWorks uint) (*[]*entity.ReadWorksList, e
 }
 
 func (w *WorkUseCase) ReadWork(workID string) (*entity.ReadWork, error) {
-
-	work, err := w.workRepository.ReadWork(workID)
+	work, err := w.workRepository.SelectWork(workID)
 	if err != nil {
 		return nil, err
 	}
-
 	return work, nil
 }

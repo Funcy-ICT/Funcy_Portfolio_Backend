@@ -57,7 +57,7 @@ func (ur *workRepositoryImpl) SelectWorks(numberOfWorks uint) (*[]*entity.ReadWo
 	return works, nil
 }
 
-func (ur *workRepositoryImpl) ReadWork(workID string) (*entity.ReadWork, error) {
+func (ur *workRepositoryImpl) SelectWork(workID string) (*entity.ReadWork, error) {
 	work := new(entity.ReadWork)
 
 	if err := ur.db.Get(work,

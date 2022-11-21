@@ -10,7 +10,7 @@ type (
 	Image struct {
 		Image string `json:"image"`
 	}
-	ReadWorkResponse struct {
+	ReadWork struct {
 		Title       string  `json:"title"`
 		Description string  `json:"description"`
 		Images      []Image `json:"images"`
@@ -19,14 +19,14 @@ type (
 		Tags        []Tag   `json:"tags"`
 		Security    int     `json:"security"`
 	}
-	Work struct {
+	ReadWorks struct {
 		WorkID      string `json:"workID"`
 		Title       string `json:"title"`
 		Image       string `json:"image"`
 		Description string `json:"description"`
 		Icon        string `json:"icon"`
 	}
-	Works struct {
-		Works []Work `json:"works"`
+	ReadWorksList struct {
+		Works []ReadWorks `json:"works"`
 	}
 )
