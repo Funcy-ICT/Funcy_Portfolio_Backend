@@ -69,6 +69,9 @@ func (s *Server) Route() {
 		})
 		mux.Post("/work", workHandler.CreateWork)
 	})
+
+	s.Router.Get("/works/{number}", workHandler.ReadWorks)
+
 	//
 	//s.Router.Group(func(r chi.Router) {
 	//

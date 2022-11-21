@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+
+	"github.com/go-chi/chi"
 )
 
 type WorkHandler struct {
@@ -47,6 +49,45 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
+	w.WriteHeader(http.StatusOK)
+	w.Write(resBody)
+}
+
+func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
+	var numberOfWorks uint
+	if n, err := strconv.ParseUint(chi.URLParam(r, "number"), 10, 32); err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "the number out of range")
+		return
+	} else if n == 0 {
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "the number out of range")
+		return
+	} else {
+		numberOfWorks = uint(n)
+	}
+
+	works, err := h.workUseCase.ReadWorks(numberOfWorks)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+	}
+
+	worksRes := new([]response.Work)
+	for i := range *works {
+		n := (*works)[i]
+		newWorkRes := response.Work{WorkID: n.WorkID, Title: n.Title, Image: n.Images, Description: n.Description, Icon: n.Icon}
+		*worksRes = append(*worksRes, newWorkRes)
+	}
+
+	res := response.Works{
+		Works: *worksRes,
+	}
+
+	resBody, err := json.Marshal(res)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
 	}
 
 	w.Header().Set("Content-Type", "application/json")
