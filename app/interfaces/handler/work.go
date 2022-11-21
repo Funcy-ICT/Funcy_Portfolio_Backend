@@ -72,17 +72,17 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	images := make([]response.Image, len(raw.Images))
-	for i, rimg := range raw.Images {
+	images := make([]response.Image, len(raw.ImageURLs))
+	for i, img := range raw.ImageURLs {
 		images[i] = response.Image{
-			Image: rimg.Image,
+			Image: img,
 		}
 	}
 
 	tags := make([]response.Tag, len(raw.Tags))
-	for i, rtag := range raw.Tags {
+	for i, tag := range raw.Tags {
 		tags[i] = response.Tag{
-			Tag: rtag.Tag,
+			Tag: tag,
 		}
 	}
 

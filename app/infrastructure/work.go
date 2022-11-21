@@ -45,16 +45,20 @@ VALUES (?,?,?,?,?,?,?)`,
 }
 
 func (ur *workRepositoryImpl) ReadWork(workID string) (*entity.ReadWork, error) {
-	tx, _ := ur.db.Beginx()
-
 	work := new(entity.ReadWork)
-	if err := tx.Get(work, "SELECT title,description,url,movie_url,security from works where id = ?", workID); err != nil {
+
+	if err := ur.db.Get(work,
+		"SELECT works.title, works.description, works.url, works.movie_url, works.security from works where works.id = ?", workID); err != nil {
 		return nil, err
 	}
-	if err := tx.Select(&work.Tags, "SELECT * from work_tags where work_id = ?", workID); err != nil {
+
+	if err := ur.db.Select(&work.ImageURLs,
+		"SELECT work_images.image_url from work_images where work_images.work_id = ?", workID); err != nil {
 		return nil, err
 	}
-	if err := tx.Select(&work.Images, "SELECT * from work_images where work_id = ?", workID); err != nil {
+
+	if err := ur.db.Select(&work.Tags,
+		"SELECT work_tags.tag from work_tags where work_tags.work_id = ?", workID); err != nil {
 		return nil, err
 	}
 

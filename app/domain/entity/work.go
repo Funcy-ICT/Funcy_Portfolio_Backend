@@ -26,13 +26,13 @@ type (
 		Image  string `db:"image_url"`
 	}
 	ReadWork struct {
-		Title       string  `db:"title"`
-		Description string  `db:"description"`
-		Images      []Image `db:"images"`
-		WorkURL     string  `db:"url"`
-		MovieUrl    string  `db:"movie_url"`
-		Tags        []Tag   `db:"tags"`
-		Security    int     `db:"security"`
+		Title       string   `db:"title"`
+		Description string   `db:"description"`
+		ImageURLs   []string `db:"image_url"`
+		Tags        []string `db:"tag"`
+		WorkURL     string   `db:"url"`
+		MovieUrl    string   `db:"movie_url"`
+		Security    int      `db:"security"`
 	}
 )
 
