@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"strings"
+
 	"github.com/go-chi/chi"
 )
 
@@ -37,10 +39,12 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 
 	userID := r.Context().Value("user_id")
 	workID, err := h.workUseCase.CreateWork(req, userID.(string))
+
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+
 	res := response.WorkID{
 		WorkID: workID,
 	}
@@ -55,6 +59,57 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
 	w.WriteHeader(http.StatusOK)
 	w.Write(resBody)
+}
+
+func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
+
+	workID := strings.TrimPrefix(r.URL.Path, "/work/")
+	if workID == "" {
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
+		return
+	}
+
+	raw, err := h.workUseCase.ReadWork(workID)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	images := make([]response.Image, len(raw.ImageURLs))
+	for i, img := range raw.ImageURLs {
+		images[i] = response.Image{
+			Image: img,
+		}
+	}
+
+	tags := make([]response.Tag, len(raw.Tags))
+	for i, tag := range raw.Tags {
+		tags[i] = response.Tag{
+			Tag: tag,
+		}
+	}
+
+	res := &response.ReadWork{
+		Title:       raw.Title,
+		Description: raw.Description,
+		Images:      images,
+		WorkURL:     raw.WorkURL,
+		MovieUrl:    raw.MovieUrl,
+		Tags:        tags,
+		Security:    raw.Security,
+	}
+
+	resBody, err := json.Marshal(res)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
+	w.WriteHeader(http.StatusOK)
+	w.Write(resBody)
+
 }
 
 func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
@@ -74,14 +129,14 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
 	}
 
-	worksRes := new([]response.Work)
+	worksRes := new([]response.ReadWorks)
 	for i := range *works {
 		n := (*works)[i]
-		newWorkRes := response.Work{WorkID: n.WorkID, Title: n.Title, Image: n.Images, Description: n.Description, Icon: n.Icon}
+		newWorkRes := response.ReadWorks{WorkID: n.WorkID, Title: n.Title, Image: n.Images, Description: n.Description, Icon: n.Icon}
 		*worksRes = append(*worksRes, newWorkRes)
 	}
 
-	res := response.Works{
+	res := response.ReadWorksList{
 		Works: *worksRes,
 	}
 

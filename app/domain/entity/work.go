@@ -26,13 +26,13 @@ type (
 		Image  string `db:"image_url"`
 	}
 	ReadWork struct {
-		Title       string
-		Description string
-		Images      []Image
-		URL         string
-		MovieUrl    string
-		Tags        []Tag
-		Security    int
+		Title       string   `db:"title"`
+		Description string   `db:"description"`
+		ImageURLs   []string `db:"image_url"`
+		Tags        []string `db:"tag"`
+		WorkURL     string   `db:"url"`
+		MovieUrl    string   `db:"movie_url"`
+		Security    int      `db:"security"`
 	}
 	ReadWorksList struct {
 		WorkID      string `db:"id"`
@@ -75,6 +75,7 @@ func NewWorkImages(work request.CreateWorkRequest, workID string) (*[]Image, err
 	}
 	return &images, nil
 }
+
 func NewWorkTags(work request.CreateWorkRequest, workID string) (*[]Tag, error) {
 	var tags []Tag
 	for _, i := range work.Tags {

@@ -3,7 +3,6 @@ package infrastructure
 import (
 	"backend/app/domain/entity"
 	"backend/app/domain/repository"
-
 	"log"
 
 	"github.com/jmoiron/sqlx"
@@ -56,4 +55,25 @@ func (ur *workRepositoryImpl) SelectWorks(numberOfWorks uint) (*[]*entity.ReadWo
 	}
 
 	return works, nil
+}
+
+func (ur *workRepositoryImpl) SelectWork(workID string) (*entity.ReadWork, error) {
+	work := new(entity.ReadWork)
+
+	if err := ur.db.Get(work,
+		"SELECT works.title, works.description, works.url, works.movie_url, works.security from works where works.id = ?", workID); err != nil {
+		return nil, err
+	}
+
+	if err := ur.db.Select(&work.ImageURLs,
+		"SELECT work_images.image_url from work_images where work_images.work_id = ?", workID); err != nil {
+		return nil, err
+	}
+
+	if err := ur.db.Select(&work.Tags,
+		"SELECT work_tags.tag from work_tags where work_tags.work_id = ?", workID); err != nil {
+		return nil, err
+	}
+
+	return work, nil
 }
