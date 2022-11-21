@@ -34,6 +34,12 @@ type (
 		MovieUrl    string   `db:"movie_url"`
 		Security    int      `db:"security"`
 	}
+	ReadWorksList struct {
+		WorkID string
+		Title  string
+		Images string
+		Icon   string
+	}
 )
 
 func NewWork(work request.CreateWorkRequest) (*WorkTable, error) {
