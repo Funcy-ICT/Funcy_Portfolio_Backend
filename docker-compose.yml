@@ -40,6 +40,14 @@ services:
       - 8002:8080
     volumes:
       - ./swagger/:/swagger
+  swagger-api:
+    image: stoplight/prism:3
+    container_name: swagger-api
+    ports:
+      - 8003:4010
+    command: mock -h 0.0.0.0 /swagger.yaml
+    volumes:
+      - ./swagger/swagger.yaml:/swagger.yaml
 volumes:
   db-data:
     driver: local

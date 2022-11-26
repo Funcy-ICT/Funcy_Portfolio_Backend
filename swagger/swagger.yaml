@@ -5,6 +5,7 @@ info:
   version: 1.0.0
 servers:
   - url: http://localhost:9000/
+  - url: http://localhost:8003/
 tags:
   - name: auth
     description: 認証API
@@ -177,7 +178,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateArticleRequest'
+              $ref: '#/components/schemas/CreateWorkRequest'
         required: true
       responses:
         '200':
@@ -185,7 +186,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateArticleResponse'
+                $ref: '#/components/schemas/CreateWorkResponse'
         '400':
           description: Bad Request
           content:
@@ -212,7 +213,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReadArticleResponse'
+                $ref: '#/components/schemas/ReadWorkResponse'
         '400':
           description: Bad Request
           content:
@@ -239,7 +240,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateArticleRequest'
+              $ref: '#/components/schemas/UpdateWorkRequest'
         required: true
       responses:
         '200':
@@ -247,7 +248,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateArticleResponse'
+                $ref: '#/components/schemas/CreateWorkResponse'
         '400':
           description: Bad Request
           content:
@@ -275,7 +276,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateArticleResponse'
+                $ref: '#/components/schemas/CreateWorkResponse'
         '400':
           description: Bad Request
           content:
@@ -302,7 +303,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReadArticlesResponse'
+                $ref: '#/components/schemas/ReadWorksResponse'
         '400':
           description: Bad Request
           content:
@@ -329,7 +330,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReadArticlesByTagResponse'
+                $ref: '#/components/schemas/ReadWorksByTagResponse'
         '400':
           description: Bad Request
           content:
@@ -368,7 +369,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchTagUserAndGrousByWordResponse'
+                $ref: '#/components/schemas/SearchTagUserAndGroupsByWordResponse'
         '400':
           description: Bad Request
           content:
@@ -463,7 +464,7 @@ components:
         icon:
           type: string
           description: アイコン画像
-        hedder:
+        header:
           type: string
           description: ヘッダー画像
         user_description:
@@ -487,37 +488,37 @@ components:
         displayName:
           type: string
           description: 表示名
-        articles:
+        works:
           type: array
           items:
-            $ref: '#/components/schemas/simpleArticleInformation'
+            $ref: '#/components/schemas/simpleWorkInformation'
       required:
         - userID
         - password
-    CreateArticleRequest:
+    CreateWorkRequest:
       $ref: '#/components/schemas/work'
-    CreateArticleResponse:
+    CreateWorkResponse:
       properties:
-        articleID:
+        workID:
           type: string
           description: 作品ID
-    ReadArticleResponse:
+    ReadWorkResponse:
       $ref: '#/components/schemas/work'
-    UpdateArticleRequest:
+    UpdateWorkRequest:
       $ref: '#/components/schemas/work'
-    ReadArticlesResponse:
+    ReadWorksResponse:
       properties:
         works:
           type: array
           items:
-            $ref: '#/components/schemas/simpleArticleInformation'
-    ReadArticlesByTagResponse:
+            $ref: '#/components/schemas/simpleWorkInformation'
+    ReadWorksByTagResponse:
       properties:
-        articles:
+        works:
           type: array
           items:
-            $ref: '#/components/schemas/simpleArticleInformation'
-    SearchTagUserAndGrousByWordResponse:
+            $ref: '#/components/schemas/simpleWorkInformation'
+    SearchTagUserAndGroupsByWordResponse:
       properties:
         tags:
           type: array
@@ -599,7 +600,7 @@ components:
           type: integer
           description: 公開設定（0:非公開，1:公開，2:下書き保存）
           example: 1
-    simpleArticleInformation:
+    simpleWorkInformation:
       type: object
       properties:
         workID:
