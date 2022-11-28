@@ -19,6 +19,18 @@ type ValidateError struct {
 	ValidationError []utils.ValidateErr `json:"validationError"`
 }
 
+const (
+	NoRows = "requested item was not found"
+)
+
+func UnwrapError(err error) Error {
+	if err.Error() == NoRows {
+		return Error{Code: http.StatusBadRequest, Message: err.Error()}
+	} else {
+		return Error{Code: http.StatusInternalServerError, Message: err.Error()}
+	}
+}
+
 func ReturnErrorResponse(w http.ResponseWriter, code int, msg string) error {
 	body := &Error{
 		Code:    code,

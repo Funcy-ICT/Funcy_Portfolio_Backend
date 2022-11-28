@@ -77,3 +77,31 @@ func (ur *workRepositoryImpl) SelectWork(workID string) (*entity.ReadWork, error
 
 	return work, nil
 }
+
+func (ur *workRepositoryImpl) DeleteWork(workID string) error {
+	tx, _ := ur.db.Beginx()
+
+	_, err := tx.Exec("DELETE FROM funcy.works WHERE id=?", workID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	_, err = tx.Exec("DELETE FROM funcy.work_tags WHERE work_id=?", workID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	_, err = tx.Exec("DELETE FROM funcy.work_images WHERE work_id=?", workID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+
+	return nil
+}
