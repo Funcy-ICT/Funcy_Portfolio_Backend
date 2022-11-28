@@ -69,6 +69,7 @@ func (s *Server) Route() {
 			w.Write([]byte("ok"))
 		})
 		mux.Post("/work", workHandler.CreateWork)
+		mux.Delete("/work/{workID}", workHandler.DeleteWork)
 	})
 
 	// no auth

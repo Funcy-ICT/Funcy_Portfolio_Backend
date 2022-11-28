@@ -4,6 +4,9 @@ import (
 	"backend/app/domain/entity"
 	"backend/app/domain/repository"
 	"backend/app/interfaces/request"
+	"backend/app/interfaces/response"
+
+	"errors"
 )
 
 type WorkUseCase struct {
@@ -50,4 +53,17 @@ func (w *WorkUseCase) ReadWork(workID string) (*entity.ReadWork, error) {
 		return nil, err
 	}
 	return work, nil
+}
+
+func (w *WorkUseCase) DeleteWork(workID string) error {
+	_, err := w.workRepository.SelectWork(workID)
+	if err != nil {
+		return errors.New(response.NoRows)
+	}
+
+	err = w.workRepository.DeleteWork(workID)
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -150,3 +150,29 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(resBody)
 }
+
+func (h *WorkHandler) DeleteWork(w http.ResponseWriter, r *http.Request) {
+	workID := chi.URLParam(r, "workID")
+
+	err := h.workUseCase.DeleteWork(workID)
+	if err != nil {
+		e := response.UnwrapError(err)
+		_ = response.ReturnErrorResponse(w, e.Code, e.Message)
+		return
+	}
+
+	res := response.WorkID{
+		WorkID: workID,
+	}
+
+	resBody, err := json.Marshal(res)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
+	w.WriteHeader(http.StatusOK)
+	w.Write(resBody)
+}
