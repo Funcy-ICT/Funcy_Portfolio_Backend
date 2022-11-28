@@ -72,6 +72,7 @@ func (s *Server) Route() {
 	})
 
 	// no auth
-	s.Router.Get("/{workID}", workHandler.ReadWork)
-	s.Router.Get("/{number}", workHandler.ReadWorks)
+	s.Router.Get("/work/{workID}", workHandler.ReadWork)
+	s.Router.Get("/works/{number}", workHandler.ReadWorks)
+
 }
