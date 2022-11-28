@@ -62,6 +62,7 @@ func (s *Server) Route() {
 	s.Router.Post("/sign/up", authHandler.SignUp)
 	s.Router.Post("/login", authHandler.SignIn)
 
+	// auth
 	s.Router.Group(func(mux chi.Router) {
 		mux.Use(middleware2.Authentication)
 		mux.Get("/health/jwt", func(w http.ResponseWriter, r *http.Request) {
@@ -70,40 +71,7 @@ func (s *Server) Route() {
 		mux.Post("/work", workHandler.CreateWork)
 	})
 
-	s.Router.Route("/work", func(r chi.Router) {
-		r.Get("/{workID}", workHandler.ReadWork)
-	})
-
-	s.Router.Route("/works", func(r chi.Router) {
-		r.Get("/{number}", workHandler.ReadWorks)
-	})
-
-	//
-	//s.Router.Group(func(r chi.Router) {
-	//
-	//	//接続確認
-	//	s.Router.Get("/health", func(w http.ResponseWriter, r *http.Request) {
-	//		w.Write([]byte("ok"))
-	//	})
-	//})
-	//Server.POST("/sign/up", handler.SignUp())
-	//Server.POST("/sign/in", handler.SignIn())
-	//
-	////ユーザ関連
-	//
-	////作品関連
-	//work := Server.Group("/work")
-	//{
-	//	work.POST("", middleware.Authenticate(handler.CreateWork()))
-	//	work.GET("/:id", middleware.Authenticate(handler.ReadWork()))
-	//}
-	//works := Server.Group("/works")
-	//{
-	//	works.GET("/:number", middleware.Authenticate(handler.ReadWorksList()))
-	//}
-
-	//グループ関連
-
-	//検索関連
-
+	// no auth
+	s.Router.Get("/{workID}", workHandler.ReadWork)
+	s.Router.Get("/{number}", workHandler.ReadWorks)
 }
