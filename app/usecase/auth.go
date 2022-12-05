@@ -10,7 +10,6 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/mileusna/useragent"
 )
 
 type AuthUseCase struct {
@@ -48,7 +47,7 @@ func (a *AuthUseCase) CreateAccount(r request.SignUpRequest) error {
 	return nil
 }
 
-func (a *AuthUseCase) Login(r request.SignInRequest, agent string) (string, error) {
+func (a *AuthUseCase) Login(r request.SignInRequest) (string, error) {
 	user, err := a.authRepository.GetPassword(r.Mail)
 	if err != nil {
 		return "", err
@@ -58,15 +57,20 @@ func (a *AuthUseCase) Login(r request.SignInRequest, agent string) (string, erro
 		return "", errors.New("not match password")
 	}
 
-	ua := useragent.Parse(agent)
-	switch {
-	case ua.Mobile == true:
-		jwt, _ := auth.IssueMobileUserToken(user.UserID)
-		return jwt, nil
-	case ua.Desktop == true || ua.Name == "PostmanRuntime":
-		jwt, _ := auth.IssueUserToken(user.UserID)
-		return jwt, nil
-	default:
-		return "", errors.New("not permitted os")
+	jwt, _ := auth.IssueUserToken(user.UserID)
+	return jwt, nil
+}
+
+func (a *AuthUseCase) LoginMobile(r request.SignInRequest) (string, error) {
+	user, err := a.authRepository.GetPassword(r.Mail)
+	if err != nil {
+		return "", err
 	}
+	err = utils.CompareHashAndPassword(user.Password, r.Password)
+	if err != nil {
+		return "", errors.New("not match password")
+	}
+
+	jwt, _ := auth.IssueMobileUserToken(user.UserID)
+	return jwt, nil
 }
