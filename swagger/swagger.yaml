@@ -511,7 +511,588 @@ components:
         works:
           type: array
           items:
-            $ref: '#/components/schemas/simpleWorkInformation'
+            example:
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+              - workID:
+                  type: string
+                  description: 作品ID
+                  example: nb7890rwfbnvskd
+                title:
+                  type: string
+                  description: タイトル
+                  example: hoge
+                image:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+                description:
+                  type: string
+                  description: 説明文
+                  example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+                icon:
+                  type: object
+                  description: 画像
+                  example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+
     ReadWorksByTagResponse:
       properties:
         works:
@@ -623,7 +1204,6 @@ components:
           type: object
           description: 画像
           example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
-
     ErrorResponse:
       type: object
       properties:
