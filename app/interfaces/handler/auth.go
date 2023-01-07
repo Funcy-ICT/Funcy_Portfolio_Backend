@@ -34,13 +34,17 @@ func (h *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.authUseCase.CreateAccount(req)
+	userID, err := h.authUseCase.CreateAccount(req)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	resBody, err := json.Marshal(req)
+	res := response.UserID{
+		UserID: userID,
+	}
+
+	resBody, err := json.Marshal(res)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
