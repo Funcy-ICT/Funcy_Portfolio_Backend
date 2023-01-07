@@ -44,6 +44,9 @@ func (a *AuthUseCase) CreateAccount(r request.SignUpRequest) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	//メール送信
+
 	return userID.String(), nil
 }
 
