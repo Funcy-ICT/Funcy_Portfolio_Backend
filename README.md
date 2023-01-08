@@ -40,3 +40,16 @@ make run
 ```
 make migrate
 ```
+golang-migrate環境がない方はこちら
+```
+//make run後
+$ docker container exec -it funcy_portfolio_backend-api-1 bash
+
+$ make migrate-demo
+```
+成功していれば以下のような表示
+```
+20221026122655/u create_users (20.390913ms)
+20221105092401/u work (60.712116ms)
+20230103140307/u alter_users_status (89.638866ms)
+```
