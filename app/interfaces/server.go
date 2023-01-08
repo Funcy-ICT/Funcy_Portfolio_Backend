@@ -63,6 +63,8 @@ func (s *Server) Route() {
 	s.Router.Post("/login", authHandler.SignIn)
 	//応急処置
 	s.Router.Post("/mlogin", authHandler.SignInMobile)
+	//アカウント認証
+	s.Router.Post("/auth/code", authHandler.AuthCode)
 
 	// auth
 	s.Router.Group(func(mux chi.Router) {

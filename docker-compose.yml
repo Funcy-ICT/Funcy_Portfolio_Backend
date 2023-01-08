@@ -9,6 +9,8 @@ services:
     stdin_open: true
     volumes:
       - ./:/app
+    env_file:
+      - .env
     working_dir: /app
     ports:
       - 9000:9000

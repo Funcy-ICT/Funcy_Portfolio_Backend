@@ -6,10 +6,13 @@ import (
 	"backend/app/interfaces/request"
 	"backend/app/packages/utils"
 	"backend/app/packages/utils/auth"
+	"backend/app/packages/utils/mail"
+	"github.com/google/uuid"
 
 	"errors"
-
-	"github.com/google/uuid"
+	"math/rand"
+	"strconv"
+	"time"
 )
 
 type AuthUseCase struct {
@@ -35,7 +38,14 @@ func (a *AuthUseCase) CreateAccount(r request.SignUpRequest) (string, error) {
 		return "", errors.New("tokenID generate is failed")
 	}
 
-	user, err := entity.NewUser(&r, userID.String(), token.String())
+	var authCode string
+	rand.Seed(time.Now().UnixNano())
+	for i := 0; i < 6; i++ {
+		r := rand.Intn(9)
+		authCode = authCode + strconv.Itoa(r)
+	}
+
+	user, err := entity.NewUser(&r, userID.String(), token.String(), authCode)
 	if err != nil {
 		return "", err
 	}
@@ -45,7 +55,20 @@ func (a *AuthUseCase) CreateAccount(r request.SignUpRequest) (string, error) {
 		return "", err
 	}
 
+	//mail本文生成
+	text := "認証コード:" + authCode + "\n\n もしお心当たりのない場合、本メールは破棄して頂けるようお願いいたします \n\n *このメールへの返信はできません。"
+	html := "認証コード:" + authCode + "<br><br>もしお心当たりのない場合、本メールは破棄して頂けるようお願いいたします<br><br><br>このメールへの返信はできません。"
+	content := mail.Mail{
+		Subject:     "認証コードのご連絡",
+		To:          r.Mail,
+		TextContent: text,
+		HtmlContent: html,
+	}
 	//メール送信
+	err = mail.SendMail(content)
+	if err != nil {
+		return "", nil
+	}
 
 	return userID.String(), nil
 }
@@ -76,4 +99,20 @@ func (a *AuthUseCase) LoginMobile(r request.SignInRequest) (string, error) {
 
 	jwt, _ := auth.IssueMobileUserToken(user.UserID)
 	return jwt, nil
+}
+
+func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) error {
+
+	code, err := a.authRepository.CheckMailAddr(r.UserID)
+	if err != nil {
+		return err
+	}
+	if code != r.Code {
+		return errors.New("not match code")
+	}
+	err = a.authRepository.UpdateStatus(r.UserID)
+	if code != r.Code {
+		return err
+	}
+	return nil
 }
