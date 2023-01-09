@@ -6,6 +6,7 @@ import (
 	"backend/app/packages/utils"
 	"backend/app/usecase"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -113,6 +114,7 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
+	log.Println("10")
 	var numberOfWorks uint
 	if n, err := strconv.ParseUint(chi.URLParam(r, "number"), 10, 32); err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "the number out of range")

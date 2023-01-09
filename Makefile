@@ -16,6 +16,7 @@ down:  ## docker compose down
 .PHONY: create-%
 create-%:  ## create sql file
 	migrate create -ext sql -dir db/migration/sql ${@:create-%=%}
+
 .PHONY: migrate
 migrate:  ## migrate up
 	migrate -path db/migration/sql -database "mysql://root:admin@tcp(127.0.0.1:3306)/funcy?multiStatements=true" up
@@ -31,3 +32,7 @@ migrate-force:  ## migrate down
 .PHONY: migrate-demo
 migrate-demo:  ## migrate down
 	./db/migrate -path db/migration/sql -database "mysql://root:admin@tcp(mysql:3306)/funcy?multiStatements=true" up
+
+.PHONY: create-mock-%
+create-%:  ## create sql file
+	migrate create -ext sql -dir db/migration/mock ${@:create-%=%}
