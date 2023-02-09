@@ -32,6 +32,13 @@ https://golang.org/doc/effective_go.html
 ## レビュー体制
 未定
 
+## メールの確認方法について
+以下の[URL](http://localhost:8025/)にアクセスしてメールの受信を確認してください
+```
+http://localhost:8025/
+```
+
+
 ## APIドキュメント
 ```
 make up
