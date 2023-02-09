@@ -50,7 +50,7 @@ paths:
     post:
       tags:
         - auth
-      summary: ログイン認証API
+      summary: web用ログイン認証API
       description: |-
         ユーザの認証をします。
         ユーザのログイン情報をリクエストで受け取り、サーバ内確認します。
@@ -69,6 +69,72 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SignInResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /mlogin:
+    post:
+      tags:
+        - auth
+      summary: モバイル用ログイン認証API
+      description: |-
+        モバイル専用
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignInResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/code:
+    post:
+      tags:
+        - auth
+      summary: アカウント認証用
+      description: |-
+        6桁のワンタイムパスワードを発行します
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthCodeRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthCodeResponse'
         '400':
           description: Bad Request
           content:
@@ -297,6 +363,8 @@ paths:
       description: 最新の作品一覧を取得します
       parameters:
         - $ref: '#/components/parameters/number'
+        - $ref: '#/components/parameters/tag'
+        - $ref: '#/components/parameters/page'
       responses:
         '200':
           description: OK
@@ -316,42 +384,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /works/{tag}:
-    get:
-      tags:
-        - work
-      summary: タグに基づく作品一覧取得API
-      description: タグに一致する作品一覧を取得します
-      parameters:
-        - $ref: '#/components/parameters/tag'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReadWorksByTagResponse'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
   /search/{word}:
     get:
       tags:
         - search
-      summary: ワードに基づくタグ，ユーザー，グループ検索API
-      description: URIのパスパラメーターに記述されたワードをもとにタグ，ユーザー，グループの検索を行います
+      summary: ワードに基づく作品検索
+      description: URIのクエリパラメーターに記述されたワードをもとに作品の検索を行います.部分一致で検索結果を返却します
       parameters:
         - name: "word"
-          in: "path"
+          in: query
           description: "検索したいワード"
           required: true
           schema:
@@ -369,7 +410,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchTagUserAndGroupsByWordResponse'
+                $ref: '#/components/schemas/ReadWorksResponse'
+#                $ref: '#/components/schemas/SearchTagUserAndGroupsByWordResponse'
         '400':
           description: Bad Request
           content:
@@ -412,32 +454,11 @@ components:
     SignUpRequest:
       type: object
       properties:
-        icon:
+        userID:
           type: string
-        familyName:
-          type: string
-          description: 性名
-        firstName:
-          type: string
-          description: 名前
-        mail:
-          type: string
-          description: メールアドレス
-        password:
-          type: string
-          description: パスワード
-        grade:
-          type: string
-          description: 学年
-        course:
-          type: string
-          description: 所属コース
-        displayName:
-          type: string
-          description: 表示名
+          description: ユーザID
       required:
         - userID
-        - password
     SignInRequest:
       type: object
       properties:
@@ -623,7 +644,20 @@ components:
           type: object
           description: 画像
           example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
-
+    AuthCodeRequest:
+      type: object
+      properties:
+        userID:
+          type: string
+          description:  ユーザID
+          example: kajsdfiow
+    AuthCodeResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: ステータスコード
+          example: 123456
     ErrorResponse:
       type: object
       properties:
@@ -668,15 +702,24 @@ components:
     number:
       name: number
       in: path
+      description: 取得したい件数
       required: true
       schema:
         type: integer
     tag:
       name: tag
-      in: path
-      required: true
+      in: query
+      description: tagによる絞り込み
+      required: false
       schema:
         type: string
+    page:
+      name: page
+      in: query
+      description: ロード用のクエリ
+      required: false
+      schema:
+        type: number
   securitySchemes:
     Bearer:
       type: http

@@ -32,6 +32,13 @@ https://golang.org/doc/effective_go.html
 ## レビュー体制
 未定
 
+## APIドキュメント
+```
+make up
+```
+上記コマンドでコンテナ立ち上げ後にswagger UI にアクセス
+[swagger UI](http://localhost:8002/)
+
 ## 検証用
 web、モバイル班の方たち用になります。
 dev/1ブランチを使用します。
