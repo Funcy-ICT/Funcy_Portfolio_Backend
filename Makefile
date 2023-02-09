@@ -13,6 +13,12 @@ up:   ## local実行
 down:  ## docker compose down
 	$(DOCKER) down
 
+.PHONY: demo
+demo:  ## demo
+	$(DOCKER) up --build
+	docker exec funcy_portfolio_backend-api-1 ./db/migrate -path db/migration/sql -database "mysql://root:admin@tcp(mysql:3306)/funcy?multiStatements=true" up
+	docker restart funcy_portfolio_backend-api-1
+
 .PHONY: create-%
 create-%:  ## create sql file
 	migrate create -ext sql -dir db/migration/sql ${@:create-%=%}
