@@ -454,22 +454,34 @@ components:
     SignUpRequest:
       type: object
       properties:
-        userID:
+        icon:
           type: string
-          description: ユーザID
-      required:
-        - userID
-    SignInRequest:
-      type: object
-      properties:
+        familyName:
+          type: string
+          description: 性名
+          example: fun
+        firstName:
+          type: string
+          description: 名前
+          example: cy
         mail:
           type: string
           description: メールアドレス
+          example: funcy@fun.ac.jp
         password:
           type: string
           description: パスワード
+        grade:
+          type: string
+          description: 学年
+        course:
+          type: string
+          description: 所属コース
+        displayName:
+          type: string
+          description: 表示名
       required:
-        - mail
+        - userID
         - password
     SignInResponse:
       type: object

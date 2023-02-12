@@ -47,11 +47,14 @@ services:
       - 8002:8080
     volumes:
       - ./swagger/:/swagger
-  mail:
+  mailhog:
+    container_name: mailhog
     image: mailhog/mailhog:latest
+    expose:
+      - 8025
+      - 1025
     ports:
       - 8025:8025
-      - 1025:1025
 #  swagger-api:
 #    image: stoplight/prism:3
 #    container_name: swagger-api
