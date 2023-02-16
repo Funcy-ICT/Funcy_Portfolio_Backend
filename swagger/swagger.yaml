@@ -483,6 +483,18 @@ components:
       required:
         - userID
         - password
+    SignInRequest:
+      type: object
+      properties:
+        mail:
+          type: string
+          description: メールアドレス
+        password:
+          type: string
+          description: パスワード
+      required:
+        - mail
+        - password
     SignInResponse:
       type: object
       properties:
