@@ -15,6 +15,7 @@ require (
 	github.com/mileusna/useragent v1.2.1
 	github.com/pkg/errors v0.9.1
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 )
 
 require (
@@ -23,4 +24,5 @@ require (
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/stretchr/testify v1.8.0 // indirect
 	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
+	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 )

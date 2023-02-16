@@ -2,6 +2,8 @@ package entity
 
 import (
 	"backend/app/interfaces/request"
+	"fmt"
+	"strings"
 )
 
 type Token struct {
@@ -19,9 +21,15 @@ type User struct {
 	Grade       string `db:"grade"`
 	Course      string `db:"course"`
 	DisplayName string `db:"display_name"`
+	AuthCode    string `db:"code"`
+	Status      string `db:"status"`
 }
 
-func NewUser(user *request.SignUpRequest, userID, token string) (*User, error) {
+func NewUser(user *request.SignUpRequest, userID, token, authCode, userStatus string) (*User, error) {
+
+	if !strings.HasSuffix(user.Mail, "@fun.ac.jp") {
+		return nil, fmt.Errorf("%s is not a valid email address", user.Mail)
+	}
 	body := User{
 		UserID:      userID,
 		Token:       token,
@@ -33,6 +41,8 @@ func NewUser(user *request.SignUpRequest, userID, token string) (*User, error) {
 		Grade:       user.Grade,
 		Course:      user.Course,
 		DisplayName: user.DisplayName,
+		AuthCode:    authCode,
+		Status:      userStatus,
 	}
 	return &body, nil
 }
