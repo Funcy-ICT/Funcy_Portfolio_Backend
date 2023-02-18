@@ -133,13 +133,15 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.authUseCase.CheckMail(req)
+	token, err := h.authUseCase.CheckMail(req)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	res := "ok"
+	res := response.Token{
+		Token: token,
+	}
 	resBody, err := json.Marshal(res)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
