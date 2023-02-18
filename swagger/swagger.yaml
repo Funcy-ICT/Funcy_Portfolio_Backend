@@ -34,6 +34,10 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignUpResponse'
         '400':
           description: Bad Request
           content:
@@ -483,6 +487,11 @@ components:
       required:
         - userID
         - password
+    SignUpResponse:
+      type: object
+      properties:
+        userID:
+          type: string
     SignInRequest:
       type: object
       properties:
@@ -675,13 +684,18 @@ components:
           type: string
           description:  ユーザID
           example: kajsdfiow
+        code:
+          type: string
+          description: ワンタイムパスワード
+          example: 123456
     AuthCodeResponse:
       type: object
       properties:
-        code:
-          type: integer
-          description: ステータスコード
-          example: 123456
+        token:
+          type: string
+          description: jwts
+      required:
+        - token
     ErrorResponse:
       type: object
       properties:
