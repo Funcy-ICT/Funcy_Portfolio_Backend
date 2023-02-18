@@ -684,6 +684,10 @@ components:
           type: string
           description:  ユーザID
           example: kajsdfiow
+        code:
+          type: string
+          description: ワンタイムパスワード
+          example: 123456
     AuthCodeResponse:
       type: object
       properties:
