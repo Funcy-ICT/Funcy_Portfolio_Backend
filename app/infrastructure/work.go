@@ -3,7 +3,6 @@ package infrastructure
 import (
 	"backend/app/domain/entity"
 	"backend/app/domain/repository"
-	"fmt"
 	"log"
 
 	"github.com/jmoiron/sqlx"
@@ -110,8 +109,6 @@ func (ur *workRepositoryImpl) DeleteWork(workID string) error {
 func (ur *workRepositoryImpl) UpdateWork(work *entity.WorkTable, images *[]entity.Image, tags *[]entity.Tag) error {
 	tx, _ := ur.db.Beginx()
 
-
-	fmt.Println(work)
 	_, err := tx.Exec("UPDATE funcy.works SET title=?, description=?, url=?, movie_url=?, security=? WHERE id=?", work.Title, work.Description, work.URL, work.MovieUrl, work.Security, work.ID)
 	if err != nil {
 		tx.Rollback()
