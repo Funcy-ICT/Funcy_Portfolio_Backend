@@ -12,13 +12,20 @@ services:
     working_dir: /app
     ports:
       - 9000:9000
+    networks:
+      - app
     depends_on:
       - mysql
   mysql:
-#    platform: linux/x86_64 # M1 macの場合必要
+    container_name: mysql
+    #    platform: linux/x86_64 # M1 macの場合必要
     image: mysql:5.7
+    expose:
+      - '3306'
     ports:
       - "3306:3306"
+    networks:
+      - app
     environment:
       MYSQL_ROOT_PASSWORD: 'admin'
       MYSQL_DATABASE: 'funcy'
@@ -40,14 +47,17 @@ services:
       - 8002:8080
     volumes:
       - ./swagger/:/swagger
-  swagger-api:
-    image: stoplight/prism:3
-    container_name: swagger-api
-    ports:
-      - 8003:4010
-    command: mock -h 0.0.0.0 /swagger.yaml
-    volumes:
-      - ./swagger/swagger.yaml:/swagger.yaml
+#  swagger-api:
+#    image: stoplight/prism:3
+#    container_name: swagger-api
+#    ports:
+#      - 8003:4010
+#    command: mock -h 0.0.0.0 /swagger.yaml
+#    volumes:
+#      - ./swagger/swagger.yaml:/swagger.yaml
 volumes:
   db-data:
     driver: local
+networks:
+  app:
+    driver: bridge

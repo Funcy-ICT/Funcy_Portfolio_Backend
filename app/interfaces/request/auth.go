@@ -17,3 +17,9 @@ type SignInRequest struct {
 	Mail     string `json:"mail" validate:"required"`
 	Password string `json:"password" validate:"required"`
 }
+
+// メールアドレス認証用
+type AuthCodeRequest struct {
+	UserID string `json:"userID" validate:"required"`
+	Code   string `json:"code" validate:"required"`
+}

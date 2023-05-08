@@ -32,6 +32,31 @@ https://golang.org/doc/effective_go.html
 ## レビュー体制
 未定
 
+## メールの確認方法について
+以下の[URL](http://localhost:8025/)にアクセスしてメールの受信を確認してください
+```
+http://localhost:8025/
+```
+
+
+## APIドキュメント
+```
+make up
+```
+上記コマンドでコンテナ立ち上げ後にswagger UI にアクセス
+[swagger UI](http://localhost:8002/)
+
+## 検証用
+web、モバイル班の方たち用になります。
+dev/1ブランチを使用します。
+dev/1に移動後に以下を実行。
+これで検証用サーバを利用できます。
+```
+make up
+# 別のターミナルを用意
+make maigrate-demo
+```
+
 ## 実行
 ```
 make run

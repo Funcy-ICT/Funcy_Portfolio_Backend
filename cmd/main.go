@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-
 	r := interfaces.NewServer()
 	err := r.Init()
 	if err != nil {
