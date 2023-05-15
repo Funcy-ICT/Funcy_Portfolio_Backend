@@ -6,11 +6,13 @@ import (
 	"backend/app/interfaces/request"
 	"backend/app/packages/utils"
 	"backend/app/packages/utils/auth"
+	"backend/app/packages/utils/mail"
+	"github.com/google/uuid"
+	"math/rand"
+	"strconv"
+	"time"
 
 	"errors"
-
-	"github.com/google/uuid"
-	"github.com/mileusna/useragent"
 )
 
 type AuthUseCase struct {
@@ -21,34 +23,58 @@ func NewAuthUseCase(authRepository repository.AuthRepository) *AuthUseCase {
 	return &AuthUseCase{authRepository: authRepository}
 }
 
-func (a *AuthUseCase) CreateAccount(r request.SignUpRequest) error {
+func (a *AuthUseCase) CreateAccount(r request.SignUpRequest) (string, error) {
 
 	userID, err := uuid.NewRandom()
 	if err != nil {
-		return errors.New("userID generate is failed")
+		return "", errors.New("userID generate is failed")
 	}
 	r.Password, err = utils.PasswordEncrypt(r.Password)
 	if err != nil {
-		return errors.New("password generate is failed")
+		return "", errors.New("password generate is failed")
 	}
 	token, err := uuid.NewRandom()
 	if err != nil {
-		return errors.New("tokenID generate is failed")
+		return "", errors.New("tokenID generate is failed")
 	}
 
-	user, err := entity.NewUser(&r, userID.String(), token.String())
+	userStatus := "inactive"
+
+	var authCode string
+	rand.Seed(time.Now().UnixNano())
+	for i := 0; i < 6; i++ {
+		r := rand.Intn(9)
+		authCode = authCode + strconv.Itoa(r)
+	}
+
+	user, err := entity.NewUser(&r, userID.String(), token.String(), authCode, userStatus)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	err = a.authRepository.InsertAccount(user)
 	if err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	//mail本文生成
+	text := "認証コード:" + authCode + "\n\n もしお心当たりのない場合、本メールは破棄して頂けるようお願いいたします \n\n *このメールへの返信はできません。"
+	html := "認証コード:" + authCode + "<br><br>もしお心当たりのない場合、本メールは破棄して頂けるようお願いいたします<br><br><br>このメールへの返信はできません。"
+	content := mail.Mail{
+		Subject:     "認証コードのご連絡",
+		To:          r.Mail,
+		TextContent: text,
+		HtmlContent: html,
+	}
+	//メール送信
+	err = mail.SendMail(content)
+	if err != nil {
+		return "", nil
+	}
+
+	return userID.String(), nil
 }
 
-func (a *AuthUseCase) Login(r request.SignInRequest, agent string) (string, error) {
+func (a *AuthUseCase) Login(r request.SignInRequest) (string, error) {
 	user, err := a.authRepository.GetPassword(r.Mail)
 	if err != nil {
 		return "", err
@@ -58,15 +84,39 @@ func (a *AuthUseCase) Login(r request.SignInRequest, agent string) (string, erro
 		return "", errors.New("not match password")
 	}
 
-	ua := useragent.Parse(agent)
-	switch {
-	case ua.Mobile == true:
-		jwt, _ := auth.IssueMobileUserToken(user.UserID)
-		return jwt, nil
-	case ua.Desktop == true || ua.Name == "PostmanRuntime":
-		jwt, _ := auth.IssueUserToken(user.UserID)
-		return jwt, nil
-	default:
-		return "", errors.New("not permitted os")
+	jwt, _ := auth.IssueUserToken(user.UserID)
+	return jwt, nil
+}
+
+func (a *AuthUseCase) LoginMobile(r request.SignInRequest) (string, error) {
+	user, err := a.authRepository.GetPassword(r.Mail)
+	if err != nil {
+		return "", err
 	}
+	err = utils.CompareHashAndPassword(user.Password, r.Password)
+	if err != nil {
+		return "", errors.New("not match password")
+	}
+
+	jwt, _ := auth.IssueMobileUserToken(user.UserID)
+	return jwt, nil
+}
+
+func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) (string, error) {
+
+	code, err := a.authRepository.CheckMailAddr(r.UserID)
+	if err != nil {
+		return "", err
+	}
+	if code != r.Code {
+		return "", errors.New("not match code")
+	}
+	err = a.authRepository.UpdateStatus(r.UserID)
+	if code != r.Code {
+		return "", err
+	}
+
+	token, err := a.authRepository.GetToken(r.UserID)
+
+	return token, nil
 }
