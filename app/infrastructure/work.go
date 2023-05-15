@@ -105,3 +105,45 @@ func (ur *workRepositoryImpl) DeleteWork(workID string) error {
 
 	return nil
 }
+
+func (ur *workRepositoryImpl) UpdateWork(work *entity.WorkTable, images *[]entity.Image, tags *[]entity.Tag) error {
+	tx, _ := ur.db.Beginx()
+
+	_, err := tx.Exec("UPDATE funcy.works SET title=?, description=?, url=?, movie_url=?, security=? WHERE id=?", work.Title, work.Description, work.URL, work.MovieUrl, work.Security, work.ID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	_, err = tx.Exec("DELETE FROM funcy.work_images WHERE work_id=?", work.ID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	_, err = tx.Exec("DELETE FROM funcy.work_tags WHERE work_id=?", work.ID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	_, err = tx.NamedExec(`INSERT INTO work_images (id,work_id,image_url) VALUES (:id,:work_id,:image_url)`,
+		*images)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	_, err = tx.NamedExec("INSERT INTO work_tags (id,work_id,tag) VALUES (:id,:work_id,:tag)",
+		*tags)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+
+	return nil
+}

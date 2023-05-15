@@ -43,6 +43,15 @@ type (
 		Description string `db:"description"`
 		Icon        string `db:"icon"`
 	}
+	UpdateWork struct {
+		Title       string   `db:"title"`
+		Description string   `db:"description"`
+		ImageURLs   []string `db:"image_url"`
+		Tags        []string `db:"tag"`
+		WorkURL     string   `db:"url"`
+		MovieUrl    string   `db:"movie_url"`
+		Security    int      `db:"security"`
+	}
 )
 
 func NewWork(work request.CreateWorkRequest) (*WorkTable, error) {
