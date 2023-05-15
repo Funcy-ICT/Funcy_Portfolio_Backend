@@ -7,6 +7,8 @@ import (
 	"backend/app/interfaces/response"
 
 	"errors"
+
+	"github.com/google/uuid"
 )
 
 type WorkUseCase struct {
@@ -19,24 +21,43 @@ func NewWorkUseCase(workRepository repository.WorkRepository) *WorkUseCase {
 
 func (w *WorkUseCase) CreateWork(r request.CreateWorkRequest, userId string) (string, error) {
 
-	work, err := entity.NewWork(r)
-	if err != nil {
-		return "", err
+	workId := uuid.NewString()
+
+	work := &entity.WorkTable{
+		ID:          workId,
+		Title:       r.Title,
+		Description: r.Description,
+		URL:         r.WorkUrl,
+		MovieUrl:    r.MovieUrl,
+		Security:    r.Security,
 	}
-	images, err := entity.NewWorkImages(r, work.ID)
-	if err != nil {
-		return "", err
+
+	images := make([]entity.Image, 0, len(r.Images))
+	for _, v := range r.Images {
+		image := entity.Image{
+			ID:     uuid.NewString(),
+			WorkID: workId,
+			Image:  v.Image,
+		}
+		images = append(images, image)
 	}
-	tags, err := entity.NewWorkTags(r, work.ID)
+
+	tags := make([]entity.Tag, 0, len(r.Tags))
+	for _, v := range r.Tags {
+		tag := entity.Tag{
+			ID:     uuid.NewString(),
+			WorkID: workId,
+			Tag:    v.Tag,
+		}
+		tags = append(tags, tag)
+	}
+
+	err := w.workRepository.InsertWork(userId, work, &images, &tags)
 	if err != nil {
 		return "", err
 	}
 
-	err = w.workRepository.InsertWork(userId, work, images, tags)
-	if err != nil {
-		return "", err
-	}
-	return work.ID, nil
+	return workId, nil
 }
 
 func (w *WorkUseCase) ReadWorks(numberOfWorks uint) (*[]*entity.ReadWorksList, error) {
