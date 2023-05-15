@@ -92,6 +92,7 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 	res := &response.ReadWork{
 		Title:       raw.Title,
 		Description: raw.Description,
+		Thumbnail:   raw.Thumbnail,
 		Images:      images,
 		WorkURL:     raw.WorkURL,
 		MovieUrl:    raw.MovieUrl,

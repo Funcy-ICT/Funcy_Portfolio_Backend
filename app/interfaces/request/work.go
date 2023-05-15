@@ -3,6 +3,7 @@ package request
 type CreateWorkRequest struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
+	Thumbnail   string `json:"thumbnail"`
 	Images      []struct {
 		Image string `json:"image"`
 	} `json:"images"`

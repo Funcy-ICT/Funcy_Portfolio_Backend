@@ -20,9 +20,9 @@ func (ur *workRepositoryImpl) InsertWork(userID string, work *entity.WorkTable, 
 	log.Println("nannde")
 	tx, _ := ur.db.Beginx()
 
-	_, err := tx.Exec(`INSERT INTO works (id,user_id,title,description,url,movie_url,security) 
-VALUES (?,?,?,?,?,?,?)`,
-		work.ID, userID, work.Title, work.Description, work.MovieUrl, work.URL, work.Security)
+	_, err := tx.Exec(`INSERT INTO works (id,user_id,title,description,thumbnail,url,movie_url,security) 
+VALUES (?,?,?,?,?,?,?,?)`,
+		work.ID, userID, work.Title, work.Description, work.Thumbnail, work.MovieUrl, work.URL, work.Security)
 	if err != nil {
 		return err
 	}
@@ -48,7 +48,7 @@ func (ur *workRepositoryImpl) SelectWorks(numberOfWorks uint) (*[]*entity.ReadWo
 	works := new([]*entity.ReadWorksList)
 	err := ur.db.Select(
 		works,
-		"SELECT works.id, works.title, work_images.image_url, works.description, users.icon FROM works INNER JOIN work_images ON works.id = work_images.work_id INNER JOIN users ON works.user_id = users.id ORDER BY works.created_at DESC LIMIT ?",
+		"SELECT works.id, works.title, work_images.image_url, works.description, thumbnail, users.icon FROM works INNER JOIN work_images ON works.id = work_images.work_id INNER JOIN users ON works.user_id = users.id ORDER BY works.created_at DESC LIMIT ?",
 		numberOfWorks)
 	if err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func (ur *workRepositoryImpl) SelectWork(workID string) (*entity.ReadWork, error
 	work := new(entity.ReadWork)
 
 	if err := ur.db.Get(work,
-		"SELECT works.title, works.description, works.url, works.movie_url, works.security from works where works.id = ?", workID); err != nil {
+		"SELECT works.title, works.description, thumbnail, works.url, works.movie_url, works.security from works where works.id = ?", workID); err != nil {
 		return nil, err
 	}
 

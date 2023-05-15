@@ -11,6 +11,7 @@ type (
 		ID          string `db:"id"`
 		Title       string `db:"title"`
 		Description string `db:"description"`
+		Thumbnail   string `db:"thumbnail"`
 		URL         string `db:"url"`
 		MovieUrl    string `db:"movie_url"`
 		Security    int    `db:"security"`
@@ -28,6 +29,7 @@ type (
 	ReadWork struct {
 		Title       string   `db:"title"`
 		Description string   `db:"description"`
+		Thumbnail   string   `db:"thumbnail"`
 		ImageURLs   []string `db:"image_url"`
 		Tags        []string `db:"tag"`
 		WorkURL     string   `db:"url"`
@@ -52,6 +54,7 @@ func NewWork(work request.CreateWorkRequest) (*WorkTable, error) {
 		ID:          u.String(),
 		Title:       work.Title,
 		Description: work.Description,
+		Thumbnail:   work.Thumbnail,
 		URL:         work.WorkUrl,
 		MovieUrl:    work.MovieUrl,
 		Security:    work.Security,

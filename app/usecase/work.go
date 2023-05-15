@@ -5,6 +5,7 @@ import (
 	"backend/app/domain/repository"
 	"backend/app/interfaces/request"
 	"backend/app/interfaces/response"
+	"log"
 
 	"errors"
 )
@@ -23,6 +24,7 @@ func (w *WorkUseCase) CreateWork(r request.CreateWorkRequest, userId string) (st
 	if err != nil {
 		return "", err
 	}
+	log.Println(work.Thumbnail)
 	images, err := entity.NewWorkImages(r, work.ID)
 	if err != nil {
 		return "", err
