@@ -5,5 +5,4 @@ type Userinfo struct {
 	Groups  *[]*Group
 	Skills  *[]*Skill
 	SNS     *[]*SNS
-	Works   *[]*ReadWorksList
 }
