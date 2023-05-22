@@ -74,7 +74,6 @@ func (s *Server) Route() {
 		})
 		mux.Post("/work", workHandler.CreateWork)
 		mux.Delete("/work/{workID}", workHandler.DeleteWork)
-		mux.Put("/work/{workID}", workHandler.UpdateWork)
 	})
 
 	// no auth
