@@ -20,6 +20,16 @@ func NewUserinfoUsecace(
 	}
 }
 
-func (u *UserinfoUseCase) GetUserinfo(userID string) (*entity.Userinfo, error) {
-	return u.userinfoRepository.SelectUserinfoByUserID(userID)
+func (u *UserinfoUseCase) GetUserinfo(userID string) (*entity.Userinfo, *[]*entity.ReadWorksList, error) {
+	userinfo, err := u.userinfoRepository.SelectUserinfoByUserID(userID)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	works, err := u.workRepository.SelectWorksByUserID(userID)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return userinfo, works, err
 }
