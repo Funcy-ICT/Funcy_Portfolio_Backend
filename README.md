@@ -47,7 +47,7 @@ M1, M2 macを使用している人はdocker-compose.yml 21行目のコメント�
 ```
 make up
 # 別のターミナルを用意
-make maigrate-demo
+make migrate-demo
 ```
 
 ## 実行
