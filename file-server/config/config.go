@@ -9,7 +9,7 @@ func GetServerPort() string {
 	var addr string
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "9000"
+		port = "3000"
 	}
 	// 接続情報は以下のように指定する.
 	// user:password@tcp(host:port)/database
