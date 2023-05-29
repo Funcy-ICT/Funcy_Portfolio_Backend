@@ -59,7 +59,7 @@ func (h *UserinfoHandler) GetUserinfo(w http.ResponseWriter, r *http.Request) {
 	res := &response.UserInfo{
 		Icon:            userinfo.Profile.Icon,
 		HeaderImagePath: userinfo.Profile.HeaderImagePath,
-		Bio:             userinfo.Profile.Biography,
+		UserDescription: userinfo.Profile.Biography,
 		SNS:             *sns,
 		Group:           *group,
 		Skills:          *skills,

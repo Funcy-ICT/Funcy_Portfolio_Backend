@@ -3,7 +3,7 @@ package response
 type UserInfo struct {
 	Icon            string      `json:"icon"`
 	HeaderImagePath string      `json:"header"`
-	Bio             string      `json:"bio"`
+	UserDescription string      `json:"user_description"`
 	SNS             []string    `json:"sns"`
 	Group           []string    `json:"group"`
 	Skills          []string    `json:"skills"`
