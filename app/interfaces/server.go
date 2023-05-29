@@ -2,7 +2,6 @@ package interfaces
 
 import (
 	"backend/app/configs"
-	"backend/app/domain/entity"
 	"backend/app/infrastructure"
 	"backend/app/interfaces/handler"
 	middleware2 "backend/app/interfaces/middleware"
@@ -85,40 +84,6 @@ func (s *Server) Route() {
 		mux.Delete("/work/{workID}", workHandler.DeleteWork)
 
 		mux.Get("/userinfo/{userID}", userinfoHandler.GetUserinfo)
-	})
-
-	s.Router.Post("/test", func(w http.ResponseWriter, r *http.Request) {
-		i := infrastructure.NewUserInfoRepository(s.db)
-		err := i.CreateNewUserinfo(&entity.Userinfo{
-			Profile: &entity.Profile{
-				UserID:          "7a27c640-071a-4703-a7db-cab765b3f2f1",
-				HeaderImagePath: "https://example.com/hoge.png",
-				Biography:       "git push origin master",
-			},
-			JoinedGroups: &[]*entity.GroupMember{
-				{
-					GroupID: "7516011c-ac6c-7889-bfd3-656cbae2f4be",
-					UserID:  "7a27c640-071a-4703-a7db-cab765b3f2f1",
-					Role:    "member",
-					Status:  true,
-				},
-			},
-			Skills: &[]*entity.Skill{
-				{
-					SkillName: "絶起",
-					UserID:    "7a27c640-071a-4703-a7db-cab765b3f2f1",
-				},
-			},
-			SNS: &[]*entity.SNS{
-				{
-					SnsURL: "https://twitter.com/jugesuke",
-					UserID: "7a27c640-071a-4703-a7db-cab765b3f2f1",
-				},
-			},
-		})
-		if err != nil {
-			w.Write([]byte(err.Error()))
-		}
 	})
 
 	// no auth
