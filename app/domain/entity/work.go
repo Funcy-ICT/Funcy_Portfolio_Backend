@@ -36,13 +36,3 @@ type (
 		Icon        string `db:"icon"`
 	}
 )
-
-func NewReadWorksList(workID string, title string, images string, description string, icon string) *ReadWorksList {
-	return &ReadWorksList{
-		WorkID:      workID,
-		Title:       title,
-		Images:      images,
-		Description: description,
-		Icon:        icon,
-	}
-}
