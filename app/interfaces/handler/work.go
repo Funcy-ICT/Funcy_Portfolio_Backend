@@ -92,6 +92,7 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 	res := &response.ReadWork{
 		Title:       raw.Title,
 		Description: raw.Description,
+		Thumbnail:   raw.Thumbnail,
 		Images:      images,
 		WorkURL:     raw.WorkURL,
 		MovieUrl:    raw.MovieUrl,
@@ -155,6 +156,44 @@ func (h *WorkHandler) DeleteWork(w http.ResponseWriter, r *http.Request) {
 	workID := chi.URLParam(r, "workID")
 
 	err := h.workUseCase.DeleteWork(workID)
+	if err != nil {
+		e := response.UnwrapError(err)
+		_ = response.ReturnErrorResponse(w, e.Code, e.Message)
+		return
+	}
+
+	res := response.WorkID{
+		WorkID: workID,
+	}
+
+	resBody, err := json.Marshal(res)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
+	w.WriteHeader(http.StatusOK)
+	w.Write(resBody)
+}
+
+func (h *WorkHandler) UpdateWork(w http.ResponseWriter, r *http.Request) {
+	var req request.UpdateWorkRequest
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
+		return
+	}
+	me, _ := utils.Validate(req)
+	if me != nil {
+		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
+		return
+	}
+
+	workID := chi.URLParam(r, "workID")
+
+	err = h.workUseCase.UpdateWork(req, workID)
 	if err != nil {
 		e := response.UnwrapError(err)
 		_ = response.ReturnErrorResponse(w, e.Code, e.Message)
