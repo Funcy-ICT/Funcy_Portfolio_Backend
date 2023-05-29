@@ -1,4 +1,6 @@
 # Funcy-portfolio
+feature/31/add_thumbnailの分岐です
+
 # お約束
 
 ## プログラムを書く上で
