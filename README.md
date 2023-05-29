@@ -1,6 +1,4 @@
 # Funcy-portfolio
-feature/31/add_thumbnailの分岐です
-
 # お約束
 
 ## プログラムを書く上で
@@ -32,7 +30,13 @@ https://golang.org/doc/effective_go.html
 - help wanted 助けて欲しいこと(基本わからないことがあったらこれ書いて)
 - question 質問、議論(わからないことではなく「これであっているのか不安だな」ということについて書いてください)
 ## レビュー体制
-大崎、伊藤がレビュー担当
+未定
+
+## メールの確認方法について
+以下の[URL](http://localhost:8025/)にアクセスしてメールの受信を確認してください
+```
+http://localhost:8025/
+```
 
 
 ## APIドキュメント
@@ -44,18 +48,18 @@ make up
 
 ## 検証用
 web、モバイル班の方たち用になります。
+dev/1ブランチを使用します。
+dev/1に移動後に以下を実行。
 これで検証用サーバを利用できます。
-M1, M2 macを使用している人はdocker-compose.yml 21行目のコメントアウトを解除してください。
 ```
 make up
 # 別のターミナルを用意
-make migrate-demo
+make maigrate-demo
 ```
 
 ## 実行
-サーバ班
 ```
-make up
+make run
 ```
 ### マイグレーション
 ```
