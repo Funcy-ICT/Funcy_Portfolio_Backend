@@ -23,11 +23,3 @@ func NewGroup(name string) *Group {
 		Name:    name,
 	}
 }
-
-func NewGroupMember(groupID, userID, role string) *GroupMember {
-	return &GroupMember{
-		GroupID: groupID,
-		UserID:  userID,
-		Role:    role,
-	}
-}
