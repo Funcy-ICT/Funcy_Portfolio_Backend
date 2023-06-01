@@ -28,6 +28,7 @@ type (
 	ReadWork struct {
 		Title       string   `db:"title"`
 		Description string   `db:"description"`
+		UserId      string   `db:"user_id"`
 		ImageURLs   []string `db:"image_url"`
 		Tags        []string `db:"tag"`
 		WorkURL     string   `db:"url"`

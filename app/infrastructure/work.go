@@ -57,21 +57,35 @@ func (ur *workRepositoryImpl) SelectWorks(numberOfWorks uint) (*[]*entity.ReadWo
 	return works, nil
 }
 
+func (ur *workRepositoryImpl) SelectWorkUser(userID string) (*entity.User, error) {
+	var user entity.User
+	err := ur.db.Get(
+		&user,
+		"select users.icon, users.display_name from users where users.id = ?",
+		userID)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 func (ur *workRepositoryImpl) SelectWork(workID string) (*entity.ReadWork, error) {
 	work := new(entity.ReadWork)
 
 	if err := ur.db.Get(work,
-		"SELECT works.title, works.description, works.url, works.movie_url, works.security from works where works.id = ?", workID); err != nil {
+		"SELECT works.title, works.description, works.user_id, works.url, works.movie_url, works.security from works where works.id = ?", workID); err != nil {
+		log.Println("work", err)
 		return nil, err
 	}
-
 	if err := ur.db.Select(&work.ImageURLs,
 		"SELECT work_images.image_url from work_images where work_images.work_id = ?", workID); err != nil {
+		log.Println("urls", err)
 		return nil, err
 	}
 
 	if err := ur.db.Select(&work.Tags,
 		"SELECT work_tags.tag from work_tags where work_tags.work_id = ?", workID); err != nil {
+		log.Println("tags", err)
 		return nil, err
 	}
 
