@@ -630,6 +630,14 @@ components:
           type: string
           description: 説明文
           example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+        user_icon:
+          type: string
+          description: ユーザアイコン
+          example: https://
+        user_name:
+          type: string
+          description: ユーザ名
+          example: FUN太郎
         images:
           type: array
           items:

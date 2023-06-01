@@ -13,6 +13,8 @@ type (
 	ReadWork struct {
 		Title       string  `json:"title"`
 		Description string  `json:"description"`
+		UserIcon    string  `json:"user_icon"`
+		UserName    string  `json:"user_name"`
 		Images      []Image `json:"images"`
 		WorkURL     string  `json:"work_url"`
 		MovieUrl    string  `json:"movie_url"`

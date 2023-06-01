@@ -69,7 +69,7 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	raw, err := h.workUseCase.ReadWork(workID)
+	raw, user, err := h.workUseCase.ReadWork(workID)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
@@ -92,6 +92,8 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 	res := &response.ReadWork{
 		Title:       raw.Title,
 		Description: raw.Description,
+		UserIcon:    user.Icon,
+		UserName:    user.DisplayName,
 		Images:      images,
 		WorkURL:     raw.WorkURL,
 		MovieUrl:    raw.MovieUrl,

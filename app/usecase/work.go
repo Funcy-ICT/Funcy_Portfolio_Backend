@@ -47,12 +47,16 @@ func (w *WorkUseCase) ReadWorks(numberOfWorks uint) (*[]*entity.ReadWorksList, e
 	return works, nil
 }
 
-func (w *WorkUseCase) ReadWork(workID string) (*entity.ReadWork, error) {
+func (w *WorkUseCase) ReadWork(workID string) (*entity.ReadWork, *entity.User, error) {
 	work, err := w.workRepository.SelectWork(workID)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return work, nil
+	user, err := w.workRepository.SelectWorkUser(work.UserId)
+	if err != nil {
+		return nil, nil, err
+	}
+	return work, user, nil
 }
 
 func (w *WorkUseCase) DeleteWork(workID string) error {
