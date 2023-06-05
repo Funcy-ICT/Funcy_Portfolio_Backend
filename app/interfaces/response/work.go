@@ -15,7 +15,7 @@ type (
 		Description string  `json:"description"`
 		Thumbnail   string  `json:"thumbnail"`
 		Images      []Image `json:"images"`
-		WorkUrl     string  `json:"work_url"`
+		WorkURL     string  `json:"work_url"`
 		MovieUrl    string  `json:"movie_url"`
 		Tags        []Tag   `json:"tags"`
 		Security    int     `json:"security"`
@@ -23,7 +23,6 @@ type (
 	ReadWorks struct {
 		WorkID      string `json:"workID"`
 		Title       string `json:"title"`
-		Thumbnail   string `json:"thumbnail"`
 		Image       string `json:"image"`
 		Description string `json:"description"`
 		Icon        string `json:"icon"`

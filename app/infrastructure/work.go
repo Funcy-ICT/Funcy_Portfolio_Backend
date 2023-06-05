@@ -22,7 +22,7 @@ func (ur *workRepositoryImpl) InsertWork(userID string, work *entity.WorkTable, 
 
 	_, err := tx.Exec(`INSERT INTO works (id,user_id,title,description,thumbnail,url,movie_url,security) 
 VALUES (?,?,?,?,?,?,?,?)`,
-		work.ID, userID, work.Title, work.Description, work.Thumbnail, work.WorkUrl, work.MovieUrl, work.Security)
+		work.ID, userID, work.Title, work.Description, work.Thumbnail, work.MovieUrl, work.URL, work.Security)
 	if err != nil {
 		return err
 	}
@@ -109,7 +109,7 @@ func (ur *workRepositoryImpl) DeleteWork(workID string) error {
 func (ur *workRepositoryImpl) UpdateWork(work *entity.WorkTable, images *[]entity.Image, tags *[]entity.Tag) error {
 	tx, _ := ur.db.Beginx()
 
-	_, err := tx.Exec("UPDATE funcy.works SET title=?, description=?, thumbnail=?, url=?, movie_url=?, security=? WHERE id=?", work.Title, work.Description, work.Thumbnail, work.WorkUrl, work.MovieUrl, work.Security, work.ID)
+	_, err := tx.Exec("UPDATE funcy.works SET title=?, description=?, url=?, movie_url=?, security=? WHERE id=?", work.Title, work.Description, work.URL, work.MovieUrl, work.Security, work.ID)
 	if err != nil {
 		tx.Rollback()
 		return err

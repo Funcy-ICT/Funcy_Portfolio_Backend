@@ -46,7 +46,7 @@ func (w *WorkUseCase) CreateWork(r request.CreateWorkRequest, userId string) (st
 func (w *WorkUseCase) ReadWorks(numberOfWorks uint) (*[]*entity.ReadWorksList, error) {
 	works, err := w.workRepository.SelectWorks(numberOfWorks)
 	if err != nil {
-		return &[]*entity.ReadWorksList{}, err
+		return nil, err
 	}
 	return works, nil
 }
@@ -82,8 +82,7 @@ func (w *WorkUseCase) UpdateWork(r request.UpdateWorkRequest, workID string) err
 		ID:          workID,
 		Title:       r.Title,
 		Description: r.Description,
-		Thumbnail:   r.Thumbnail,
-		WorkUrl:     r.WorkUrl,
+		URL:         r.WorkUrl,
 		MovieUrl:    r.MovieUrl,
 		Security:    r.Security,
 	}

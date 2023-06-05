@@ -12,7 +12,7 @@ type (
 		Title       string `db:"title"`
 		Description string `db:"description"`
 		Thumbnail   string `db:"thumbnail"`
-		WorkUrl     string `db:"work_url"`
+		URL         string `db:"url"`
 		MovieUrl    string `db:"movie_url"`
 		Security    int    `db:"security"`
 	}
@@ -32,14 +32,13 @@ type (
 		Thumbnail   string   `db:"thumbnail"`
 		ImageURLs   []string `db:"image_url"`
 		Tags        []string `db:"tag"`
-		WorkUrl     string   `db:"url"`
+		WorkURL     string   `db:"url"`
 		MovieUrl    string   `db:"movie_url"`
 		Security    int      `db:"security"`
 	}
 	ReadWorksList struct {
 		WorkID      string `db:"id"`
 		Title       string `db:"title"`
-		Thumbnail   string `db:"thumbnail"`
 		Images      string `db:"image_url"`
 		Description string `db:"description"`
 		Icon        string `db:"icon"`
@@ -47,10 +46,9 @@ type (
 	UpdateWork struct {
 		Title       string   `db:"title"`
 		Description string   `db:"description"`
-		Thumbnail   string   `db:"thumbnail"`
 		ImageURLs   []string `db:"image_url"`
 		Tags        []string `db:"tag"`
-		WorkUrl     string   `db:"work_url"`
+		WorkURL     string   `db:"url"`
 		MovieUrl    string   `db:"movie_url"`
 		Security    int      `db:"security"`
 	}
@@ -66,7 +64,7 @@ func NewWork(work request.CreateWorkRequest) (*WorkTable, error) {
 		Title:       work.Title,
 		Description: work.Description,
 		Thumbnail:   work.Thumbnail,
-		WorkUrl:     work.WorkUrl,
+		URL:         work.WorkUrl,
 		MovieUrl:    work.MovieUrl,
 		Security:    work.Security,
 	}
