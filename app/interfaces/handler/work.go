@@ -94,7 +94,7 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 		Description: raw.Description,
 		Thumbnail:   raw.Thumbnail,
 		Images:      images,
-		WorkUrl:     raw.WorkUrl,
+		WorkURL:     raw.WorkURL,
 		MovieUrl:    raw.MovieUrl,
 		Tags:        tags,
 		Security:    raw.Security,
@@ -130,14 +130,15 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
 	}
 
-	worksRes := []response.ReadWorks{}
-	for _, work := range *works {
-		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Image: work.Images, Description: work.Description, Icon: work.Icon}
-		worksRes = append(worksRes, newWorkRes)
+	worksRes := new([]response.ReadWorks)
+	for i := range *works {
+		n := (*works)[i]
+		newWorkRes := response.ReadWorks{WorkID: n.WorkID, Title: n.Title, Image: n.Images, Description: n.Description, Icon: n.Icon}
+		*worksRes = append(*worksRes, newWorkRes)
 	}
 
 	res := response.ReadWorksList{
-		Works: worksRes,
+		Works: *worksRes,
 	}
 
 	resBody, err := json.Marshal(res)
