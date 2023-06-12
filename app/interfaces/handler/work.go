@@ -31,6 +31,7 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
 		return
 	}
+
 	me, _ := utils.Validate(req)
 	if me != nil {
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
@@ -69,7 +70,7 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	raw, err := h.workUseCase.ReadWork(workID)
+	raw, user, err := h.workUseCase.ReadWork(workID)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
@@ -93,6 +94,8 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 		Title:       raw.Title,
 		Description: raw.Description,
 		Thumbnail:   raw.Thumbnail,
+		UserIcon:    user.Icon,
+		UserName:    user.DisplayName,
 		Images:      images,
 		WorkUrl:     raw.WorkUrl,
 		MovieUrl:    raw.MovieUrl,

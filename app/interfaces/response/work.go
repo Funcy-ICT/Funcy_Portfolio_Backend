@@ -14,6 +14,8 @@ type (
 		Title       string  `json:"title"`
 		Description string  `json:"description"`
 		Thumbnail   string  `json:"thumbnail"`
+		UserIcon    string  `json:"user_icon"`
+		UserName    string  `json:"user_name"`
 		Images      []Image `json:"images"`
 		WorkUrl     string  `json:"work_url"`
 		MovieUrl    string  `json:"movie_url"`

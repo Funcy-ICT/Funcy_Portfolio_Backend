@@ -620,10 +620,21 @@ components:
           type: string
           description: 説明文
           example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+<<<<<<< HEAD
         thumbnail:
           type: string
           description: サムネイル
           example: https://pbs.twimg.com/hoge/fuga
+=======
+        user_icon:
+          type: string
+          description: ユーザアイコン
+          example: https://
+        user_name:
+          type: string
+          description: ユーザ名
+          example: FUN太郎
+>>>>>>> develop
         images:
           type: array
           items:

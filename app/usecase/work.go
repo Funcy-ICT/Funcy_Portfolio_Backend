@@ -5,7 +5,6 @@ import (
 	"backend/app/domain/repository"
 	"backend/app/interfaces/request"
 	"backend/app/interfaces/response"
-	"log"
 
 	"errors"
 
@@ -22,25 +21,43 @@ func NewWorkUseCase(workRepository repository.WorkRepository) *WorkUseCase {
 
 func (w *WorkUseCase) CreateWork(r request.CreateWorkRequest, userId string) (string, error) {
 
-	work, err := entity.NewWork(r)
-	if err != nil {
-		return "", err
+	workId := uuid.NewString()
+
+	work := &entity.WorkTable{
+		ID:          workId,
+		Title:       r.Title,
+		Description: r.Description,
+		WorkUrl:     r.WorkUrl,
+		MovieUrl:    r.MovieUrl,
+		Security:    r.Security,
 	}
-	log.Println(work.Thumbnail)
-	images, err := entity.NewWorkImages(r, work.ID)
-	if err != nil {
-		return "", err
+
+	images := make([]entity.Image, 0, len(r.Images))
+	for _, v := range r.Images {
+		image := entity.Image{
+			ID:     uuid.NewString(),
+			WorkID: workId,
+			Image:  v.Image,
+		}
+		images = append(images, image)
 	}
-	tags, err := entity.NewWorkTags(r, work.ID)
+
+	tags := make([]entity.Tag, 0, len(r.Tags))
+	for _, v := range r.Tags {
+		tag := entity.Tag{
+			ID:     uuid.NewString(),
+			WorkID: workId,
+			Tag:    v.Tag,
+		}
+		tags = append(tags, tag)
+	}
+
+	err := w.workRepository.InsertWork(userId, work, &images, &tags)
 	if err != nil {
 		return "", err
 	}
 
-	err = w.workRepository.InsertWork(userId, work, images, tags)
-	if err != nil {
-		return "", err
-	}
-	return work.ID, nil
+	return workId, nil
 }
 
 func (w *WorkUseCase) ReadWorks(numberOfWorks uint) (*[]*entity.ReadWorksList, error) {
@@ -51,12 +68,16 @@ func (w *WorkUseCase) ReadWorks(numberOfWorks uint) (*[]*entity.ReadWorksList, e
 	return works, nil
 }
 
-func (w *WorkUseCase) ReadWork(workID string) (*entity.ReadWork, error) {
+func (w *WorkUseCase) ReadWork(workID string) (*entity.ReadWork, *entity.User, error) {
 	work, err := w.workRepository.SelectWork(workID)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return work, nil
+	user, err := w.workRepository.SelectWorkUser(work.UserId)
+	if err != nil {
+		return nil, nil, err
+	}
+	return work, user, nil
 }
 
 func (w *WorkUseCase) DeleteWork(workID string) error {
