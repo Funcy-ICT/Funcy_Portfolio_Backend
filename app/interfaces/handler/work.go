@@ -93,10 +93,11 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 	res := &response.ReadWork{
 		Title:       raw.Title,
 		Description: raw.Description,
+		Thumbnail:   raw.Thumbnail,
 		UserIcon:    user.Icon,
 		UserName:    user.DisplayName,
 		Images:      images,
-		WorkURL:     raw.WorkURL,
+		WorkUrl:     raw.WorkUrl,
 		MovieUrl:    raw.MovieUrl,
 		Tags:        tags,
 		Security:    raw.Security,
@@ -132,15 +133,14 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
 	}
 
-	worksRes := new([]response.ReadWorks)
-	for i := range *works {
-		n := (*works)[i]
-		newWorkRes := response.ReadWorks{WorkID: n.WorkID, Title: n.Title, Image: n.Images, Description: n.Description, Icon: n.Icon}
-		*worksRes = append(*worksRes, newWorkRes)
+	worksRes := []response.ReadWorks{}
+	for _, work := range *works {
+		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Image: work.Images, Description: work.Description, Icon: work.Icon}
+		worksRes = append(worksRes, newWorkRes)
 	}
 
 	res := response.ReadWorksList{
-		Works: *worksRes,
+		Works: worksRes,
 	}
 
 	resBody, err := json.Marshal(res)
@@ -158,6 +158,44 @@ func (h *WorkHandler) DeleteWork(w http.ResponseWriter, r *http.Request) {
 	workID := chi.URLParam(r, "workID")
 
 	err := h.workUseCase.DeleteWork(workID)
+	if err != nil {
+		e := response.UnwrapError(err)
+		_ = response.ReturnErrorResponse(w, e.Code, e.Message)
+		return
+	}
+
+	res := response.WorkID{
+		WorkID: workID,
+	}
+
+	resBody, err := json.Marshal(res)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
+	w.WriteHeader(http.StatusOK)
+	w.Write(resBody)
+}
+
+func (h *WorkHandler) UpdateWork(w http.ResponseWriter, r *http.Request) {
+	var req request.UpdateWorkRequest
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
+		return
+	}
+	me, _ := utils.Validate(req)
+	if me != nil {
+		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
+		return
+	}
+
+	workID := chi.URLParam(r, "workID")
+
+	err = h.workUseCase.UpdateWork(req, workID)
 	if err != nil {
 		e := response.UnwrapError(err)
 		_ = response.ReturnErrorResponse(w, e.Code, e.Message)

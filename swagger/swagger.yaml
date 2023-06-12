@@ -437,10 +437,6 @@ paths:
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: ''
         '400':
           description: Bad Request
           content:
@@ -463,11 +459,11 @@ components:
         familyName:
           type: string
           description: 性名
-          example: はこだて
+          example: fun
         firstName:
           type: string
           description: 名前
-          example: たろう
+          example: cy
         mail:
           type: string
           description: メールアドレス
@@ -475,19 +471,15 @@ components:
         password:
           type: string
           description: パスワード
-          example: pass
         grade:
           type: string
           description: 学年
-          example: B1
         course:
           type: string
           description: 所属コース
-          example: 知能システムコース
         displayName:
           type: string
           description: 表示名
-          example: タロー
       required:
         - userID
         - password
@@ -502,11 +494,9 @@ components:
         mail:
           type: string
           description: メールアドレス
-          example: funcy@fun.ac.jp
         password:
           type: string
           description: パスワード
-          example: pass
       required:
         - mail
         - password
@@ -630,6 +620,10 @@ components:
           type: string
           description: 説明文
           example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+        thumbnail:
+          type: string
+          description: サムネイル
+          example: https://pbs.twimg.com/hoge/fuga
         user_icon:
           type: string
           description: ユーザアイコン
@@ -646,7 +640,7 @@ components:
               image:
                 type: string
                 description: 画像
-                example: https://
+                example: ijaigjjasopdfjgoiwergio
         work_url:
           type: string
           description: 作品のURL
@@ -654,7 +648,7 @@ components:
         movie_url:
           type: string
           description: 動画のURL
-          example: :https://youtu.be/lEfCZF_FQjw
+          example: https://youtube.com/hoge/fuga
         tags:
           type: array
           items:
@@ -664,10 +658,10 @@ components:
                 type: string
                 description: タグ
                 example: ほげ
-        groupID:
+        group:
           type: string
           description: どのグループに投稿するか
-          example: ojkafw94
+          example: FUNcy
         security:
           type: integer
           description: 公開設定（0:非公開，1:公開，2:下書き保存）
