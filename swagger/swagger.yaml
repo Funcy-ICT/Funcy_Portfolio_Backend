@@ -187,8 +187,6 @@ paths:
       description: マイページを更新する
       security:
         - Bearer: []
-      parameters:
-        - $ref: '#/components/parameters/userID'
       responses:
         '200':
           description: OK
