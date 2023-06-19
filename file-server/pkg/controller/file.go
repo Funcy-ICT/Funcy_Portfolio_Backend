@@ -3,10 +3,11 @@ package controller
 import (
 	"backend/file-server/pkg/view"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type Image struct {
@@ -61,7 +62,7 @@ func UploadImage() gin.HandlerFunc {
 					"file name is null",
 				)
 			}
-			urlName := fmt.Sprintf("http://localhost:9000/%s%s", uuID, file.Filename)
+			urlName := fmt.Sprintf("http://localhost:3004/%s%s", uuID, file.Filename)
 			urls = append(urls, urlName)
 		}
 

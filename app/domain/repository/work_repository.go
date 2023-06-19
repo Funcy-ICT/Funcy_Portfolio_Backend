@@ -8,4 +8,5 @@ type WorkRepository interface {
 	SelectWorkUser(userID string) (*entity.User, error)
 	SelectWorks(numberOfWorks uint, tag string) (*[]*entity.ReadWorksList, error)
 	DeleteWork(workID string) error
+	UpdateWork(work *entity.WorkTable, images *[]entity.Image, tags *[]entity.Tag) error			
 }

@@ -7,10 +7,11 @@ import (
 	"backend/app/packages/utils"
 	"backend/app/packages/utils/auth"
 	"backend/app/packages/utils/mail"
-	"github.com/google/uuid"
 	"math/rand"
 	"strconv"
 	"time"
+
+	"github.com/google/uuid"
 
 	"errors"
 )
@@ -117,6 +118,9 @@ func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) (string, error) {
 	}
 
 	token, err := a.authRepository.GetToken(r.UserID)
+	if err != nil {
+		return "", err
+	}
 
 	return token, nil
 }
