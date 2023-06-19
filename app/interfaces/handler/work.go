@@ -135,7 +135,7 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 
 	worksRes := []response.ReadWorks{}
 	for _, work := range *works {
-		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Image: work.Images, Description: work.Description, Icon: work.Icon}
+		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon}
 		worksRes = append(worksRes, newWorkRes)
 	}
 

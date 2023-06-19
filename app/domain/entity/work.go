@@ -35,7 +35,6 @@ type (
 		WorkID      string `db:"id"`
 		Title       string `db:"title"`
 		Thumbnail   string `db:"thumbnail"`
-		Images      string `db:"image_url"`
 		Description string `db:"description"`
 		Icon        string `db:"icon"`
 	}

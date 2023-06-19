@@ -27,6 +27,7 @@ func (w *WorkUseCase) CreateWork(r request.CreateWorkRequest, userId string) (st
 		ID:          workId,
 		Title:       r.Title,
 		Description: r.Description,
+		Thumbnail:   r.Thumbnail,
 		WorkUrl:     r.WorkUrl,
 		MovieUrl:    r.MovieUrl,
 		Security:    r.Security,
@@ -73,10 +74,12 @@ func (w *WorkUseCase) ReadWork(workID string) (*entity.ReadWork, *entity.User, e
 	if err != nil {
 		return nil, nil, err
 	}
+
 	user, err := w.workRepository.SelectWorkUser(work.UserId)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	return work, user, nil
 }
 
