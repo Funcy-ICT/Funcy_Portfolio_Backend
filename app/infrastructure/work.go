@@ -44,12 +44,24 @@ VALUES (?,?,?,?,?,?,?)`,
 	return nil
 }
 
-func (ur *workRepositoryImpl) SelectWorks(numberOfWorks uint) (*[]*entity.ReadWorksList, error) {
+func (ur *workRepositoryImpl) SelectWorks(numberOfWorks uint, tag string) (*[]*entity.ReadWorksList, error) {
 	works := new([]*entity.ReadWorksList)
-	err := ur.db.Select(
-		works,
-		"SELECT works.id, works.title, work_images.image_url, works.description, users.icon FROM works INNER JOIN work_images ON works.id = work_images.work_id INNER JOIN users ON works.user_id = users.id ORDER BY works.created_at DESC LIMIT ?",
-		numberOfWorks)
+	var err error
+
+	if len(tag) != 0 {
+		err = ur.db.Select(
+			works,
+			"SELECT works.id, works.title, work_images.image_url, works.description, users.icon FROM works INNER JOIN work_images ON works.id = work_images.work_id INNER JOIN work_tags ON works.id = work_tags.work_id INNER JOIN users ON works.user_id = users.id WHERE work_tags.tag=? ORDER BY works.created_at DESC LIMIT ?",
+			tag,
+			numberOfWorks)
+
+	} else {
+		err = ur.db.Select(
+			works,
+			"SELECT works.id, works.title, work_images.image_url, works.description, users.icon FROM works INNER JOIN work_images ON works.id = work_images.work_id INNER JOIN users ON works.user_id = users.id ORDER BY works.created_at DESC LIMIT ?",
+			numberOfWorks)
+	}
+
 	if err != nil {
 		return nil, err
 	}

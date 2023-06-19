@@ -60,11 +60,12 @@ func (w *WorkUseCase) CreateWork(r request.CreateWorkRequest, userId string) (st
 	return workId, nil
 }
 
-func (w *WorkUseCase) ReadWorks(numberOfWorks uint) (*[]*entity.ReadWorksList, error) {
-	works, err := w.workRepository.SelectWorks(numberOfWorks)
+func (w *WorkUseCase) ReadWorks(numberOfWorks uint, tag string) (*[]*entity.ReadWorksList, error) {
+	works, err := w.workRepository.SelectWorks(numberOfWorks, tag)
 	if err != nil {
 		return nil, err
 	}
+
 	return works, nil
 }
 
@@ -77,6 +78,7 @@ func (w *WorkUseCase) ReadWork(workID string) (*entity.ReadWork, *entity.User, e
 	if err != nil {
 		return nil, nil, err
 	}
+
 	return work, user, nil
 }
 
@@ -90,5 +92,6 @@ func (w *WorkUseCase) DeleteWork(workID string) error {
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

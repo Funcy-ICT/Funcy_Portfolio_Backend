@@ -127,7 +127,9 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 		numberOfWorks = uint(n)
 	}
 
-	works, err := h.workUseCase.ReadWorks(numberOfWorks)
+	tag := r.URL.Query().Get("tag")
+
+	works, err := h.workUseCase.ReadWorks(numberOfWorks, tag)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
 	}
