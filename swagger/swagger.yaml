@@ -675,9 +675,9 @@ components:
           type: string
           description: タイトル
           example: hoge
-        image:
+        thumbnail:
           type: object
-          description: 画像
+          description: サムネイル
           example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
         description:
           type: string
