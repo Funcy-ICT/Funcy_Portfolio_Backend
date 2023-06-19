@@ -40,6 +40,23 @@ http://localhost:8025/
 
 
 ## APIドキュメント
+### 設定が必要な環境変数
+(`*`: 必須項目)
+| * | NAME             | Default | Description            |
+| - | ---------------- | ------- | ---------------------- |
+|   | SUPER_ACCOUNT_ID |         | スーパアカウント用のID |
+
+
+### スーパアカウント
+`SUPER_ACCOUNT_ID`を指定すると、指定したユーザとしてログインできる実質的に有効期限のないTokenが発行されます。
+Tokenは、標準出力に、
+```
+[00] yyyy/mm/dd hh:nn:ss SuperAccountID: {SUPER_ACCOUNT_ID}
+[00] yyyy/mm/dd hh:nn:ss SuperAccountToken: {Access Token}
+```
+という形で出力されます。
+
+### 立ち上げ
 ```
 make up
 ```
