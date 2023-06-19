@@ -52,7 +52,7 @@ func (ur *workRepositoryImpl) SelectWorks(numberOfWorks uint, tag string) (*[]*e
 	if len(tag) != 0 {
 		err = ur.db.Select(
 			works,
-			"SELECT works.id, works.title, work_images.image_url, works.description, users.icon FROM works INNER JOIN work_images ON works.id = work_images.work_id INNER JOIN work_tags ON works.id = work_tags.work_id INNER JOIN users ON works.user_id = users.id WHERE work_tags.tag=? ORDER BY works.created_at DESC LIMIT ?",
+			"SELECT works.id, works.title, works.description, works.thumbnail, users.icon FROM works INNER JOIN work_images ON works.id = work_images.work_id INNER JOIN work_tags ON works.id = work_tags.work_id INNER JOIN users ON works.user_id = users.id WHERE work_tags.tag=? ORDER BY works.created_at DESC LIMIT ?",
 			tag,
 			numberOfWorks)
 
