@@ -1,4 +1,4 @@
-FROM golang:1.19-alpine as dev
+FROM golang:1.20-alpine as dev
 RUN apk update && \
     apk upgrade && \
     apk add bash git && \
@@ -7,7 +7,7 @@ RUN apk update && \
 
 RUN go install github.com/cespare/reflex@latest
 
-FROM golang:1.19-alpine
+FROM golang:1.20-alpine
 COPY --from=dev /go/bin/reflex /go/bin/reflex
 
 RUN apk update && \
