@@ -26,7 +26,6 @@ type (
 		WorkID      string `json:"workID"`
 		Title       string `json:"title"`
 		Thumbnail   string `json:"thumbnail"`
-		Image       string `json:"image"`
 		Description string `json:"description"`
 		Icon        string `json:"icon"`
 	}
