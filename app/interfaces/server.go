@@ -5,7 +5,9 @@ import (
 	"backend/app/infrastructure"
 	"backend/app/interfaces/handler"
 	middleware2 "backend/app/interfaces/middleware"
+	"backend/app/packages/utils/auth"
 	"backend/app/usecase"
+	"log"
 
 	"fmt"
 	"net/http"
@@ -38,6 +40,15 @@ func (s *Server) Init() error {
 }
 
 func (s *Server) Route() {
+	if configs.GetMode() == configs.Local && configs.GetSuperAccountID() != "" {
+		at, err := issueSuperAccountToken(configs.GetSuperAccountID())
+		if err != nil {
+			log.Printf("cannot create SuperAccountToken: %s\n", err.Error())
+		} else {
+			log.Printf("SuperAccountID: %s\n", configs.Local)
+			log.Printf("SuperAccountToken: %s\n", at)
+		}
+	}
 
 	s.Router.Use(cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
@@ -80,4 +91,8 @@ func (s *Server) Route() {
 	s.Router.Get("/work/{workID}", workHandler.ReadWork)
 	s.Router.Get("/works/{number}", workHandler.ReadWorks)
 
+}
+
+func issueSuperAccountToken(userID string) (string, error) {
+	return auth.IssueSuperUserToken(userID)
 }
