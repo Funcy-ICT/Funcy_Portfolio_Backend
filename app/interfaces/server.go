@@ -44,9 +44,10 @@ func (s *Server) Init() error {
 func (s *Server) Route() {
 
 	s.Router.Use(cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"},
-		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		AllowedOrigins:   []string{"http://*", "https://*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		AllowCredentials: true,
 	}).Handler)
 
 	//DI
@@ -82,7 +83,7 @@ func (s *Server) Route() {
 		})
 		mux.Post("/work", workHandler.CreateWork)
 		mux.Delete("/work/{workID}", workHandler.DeleteWork)
-
+		mux.Put("/work/{workID}", workHandler.UpdateWork)
 		mux.Get("/userinfo/{userID}", userinfoHandler.GetUserinfo)
 	})
 
