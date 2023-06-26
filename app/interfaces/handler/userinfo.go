@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"backend/app/interfaces/request"
 	"backend/app/interfaces/response"
+	"backend/app/packages/utils"
 	"backend/app/usecase"
 	"encoding/json"
 	"log"
@@ -79,6 +81,23 @@ func (h *UserinfoHandler) GetUserinfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *UserinfoHandler) PutUserinfo(w http.ResponseWriter, r *http.Request) {
+	userID := chi.URLParam(r, "userID")
+
+	var req request.UserInfo
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
+		return
+	}
+
+	log.Println(userID)
+
+	ve, _ := utils.Validate(req)
+	if ve != nil {
+		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), ve)
+		return
+	}
+
 	res := &response.UserInfo{}
 
 	resBody, err := json.Marshal(res)
