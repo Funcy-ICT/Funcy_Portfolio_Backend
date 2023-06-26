@@ -52,7 +52,7 @@ func (h *UserinfoHandler) GetUserinfo(w http.ResponseWriter, r *http.Request) {
 	worksRes := new([]response.ReadWorks)
 	for i := range *works {
 		n := (*works)[i]
-		newWorkRes := response.ReadWorks{WorkID: n.WorkID, Title: n.Title, Image: n.Images, Description: n.Description, Icon: n.Icon}
+		newWorkRes := response.ReadWorks{WorkID: n.WorkID, Title: n.Title, Thumbnail: n.Thumbnail, Description: n.Description, Icon: n.Icon}
 		*worksRes = append(*worksRes, newWorkRes)
 	}
 

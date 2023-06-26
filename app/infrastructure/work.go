@@ -74,7 +74,7 @@ func (ur *workRepositoryImpl) SelectWorksByUserID(userID string) (*[]*entity.Rea
 	works := new([]*entity.ReadWorksList)
 	err := ur.db.Select(
 		works,
-		"SELECT works.id, works.title, work_images.image_url, works.description, users.icon FROM works INNER JOIN work_images ON works.id = work_images.work_id INNER JOIN users ON works.user_id = users.id WHERE works.user_id = ?;",
+		"SELECT works.id, works.title, works.thumbnail, works.description, users.icon FROM works INNER JOIN users ON works.user_id = users.id WHERE works.user_id = ?;",
 		userID)
 	if err != nil {
 		return nil, err
