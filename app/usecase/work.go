@@ -62,12 +62,21 @@ func (w *WorkUseCase) CreateWork(r request.CreateWorkRequest, userId string) (st
 }
 
 func (w *WorkUseCase) ReadWorks(numberOfWorks uint, tag string) (*[]*entity.ReadWorksList, error) {
-	works, err := w.workRepository.SelectWorks(numberOfWorks, tag)
-	if err != nil {
-		return &[]*entity.ReadWorksList{}, err
-	}
+	if len(tag) == 0 {
+		works, err := w.workRepository.SelectWorks(numberOfWorks)
+		if err != nil {
+			return &[]*entity.ReadWorksList{}, err
+		}
 
-	return works, nil
+		return works, nil
+	} else {
+		works, err := w.workRepository.SelectWorksByTag(numberOfWorks, tag)
+		if err != nil {
+			return &[]*entity.ReadWorksList{}, err
+		}
+
+		return works, nil
+	}
 }
 
 func (w *WorkUseCase) ReadWork(workID string) (*entity.ReadWork, *entity.User, error) {
