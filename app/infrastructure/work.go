@@ -70,6 +70,19 @@ func (ur *workRepositoryImpl) SelectWorkUser(userID string) (*entity.User, error
 	return &user, nil
 }
 
+func (ur *workRepositoryImpl) SelectWorksByUserID(userID string) (*[]*entity.ReadWorksList, error) {
+	works := new([]*entity.ReadWorksList)
+	err := ur.db.Select(
+		works,
+		"SELECT works.id, works.title, works.thumbnail, works.description, users.icon FROM works INNER JOIN users ON works.user_id = users.id WHERE works.user_id = ?;",
+		userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return works, nil
+}
+
 func (ur *workRepositoryImpl) SelectWork(workID string) (*entity.ReadWork, error) {
 	work := new(entity.ReadWork)
 
