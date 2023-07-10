@@ -16,6 +16,10 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+type processor interface {
+	doSth() (error, string)
+}
+
 type Server struct {
 	Router *chi.Mux
 	db     *sqlx.DB
@@ -55,6 +59,10 @@ func (s *Server) Route() {
 	workUseCase := usecase.NewWorkUseCase(workRepository)
 	workHandler := handler.NewWorkHandler(workUseCase)
 
+	userinfoRepository := infrastructure.NewUserInfoRepository(s.db)
+	userinfoUseCase := usecase.NewUserinfoUsecace(userinfoRepository, workRepository)
+	userinfoHandler := handler.NewUserinfoHandler(userinfoUseCase)
+
 	s.Router.Use(middleware.Logger)
 	//接続確認
 	s.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -76,6 +84,7 @@ func (s *Server) Route() {
 		mux.Post("/work", workHandler.CreateWork)
 		mux.Delete("/work/{workID}", workHandler.DeleteWork)
 		mux.Put("/work/{workID}", workHandler.UpdateWork)
+		mux.Get("/userinfo/{userID}", userinfoHandler.GetUserinfo)
 	})
 
 	// no auth
