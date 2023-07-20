@@ -23,13 +23,14 @@ func (w *WorkUseCase) CreateWork(r request.CreateWorkRequest, userId string) (st
 
 	workId := uuid.NewString()
 
-	work := &entity.WorkTable{
+	work := &entity.InsertWork{
 		ID:          workId,
 		Title:       r.Title,
 		Description: r.Description,
 		Thumbnail:   r.Thumbnail,
 		WorkUrl:     r.WorkUrl,
 		MovieUrl:    r.MovieUrl,
+		GroupID:     r.GroupID,
 		Security:    r.Security,
 	}
 
@@ -102,13 +103,14 @@ func (w *WorkUseCase) UpdateWork(r request.UpdateWorkRequest, workID string) err
 		return errors.New(response.NoRows)
 	}
 
-	work := &entity.WorkTable{
+	work := &entity.UpdateWork{
 		ID:          workID,
 		Title:       r.Title,
 		Description: r.Description,
 		Thumbnail:   r.Thumbnail,
 		WorkUrl:     r.WorkUrl,
 		MovieUrl:    r.MovieUrl,
+		GroupID:     r.GroupID,
 		Security:    r.Security,
 	}
 

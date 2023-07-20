@@ -622,14 +622,6 @@ components:
           type: string
           description: サムネイル
           example: https://pbs.twimg.com/hoge/fuga
-        user_icon:
-          type: string
-          description: ユーザアイコン
-          example: https://
-        user_name:
-          type: string
-          description: ユーザ名
-          example: FUN太郎
         images:
           type: array
           items:
@@ -656,7 +648,7 @@ components:
                 type: string
                 description: タグ
                 example: ほげ
-        group:
+        group_id:
           type: string
           description: どのグループに投稿するか
           example: FUNcy

@@ -99,6 +99,7 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 		Images:      images,
 		WorkUrl:     raw.WorkUrl,
 		MovieUrl:    raw.MovieUrl,
+		GroupID:     raw.GroupID,
 		Tags:        tags,
 		Security:    raw.Security,
 	}

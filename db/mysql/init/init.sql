@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS `funcy`.`works` (
     `security` int NOT NULL COMMENT '公開設定',
     `created_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     `updated_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新時',
+    `group_id` VARCHAR(64) NOT NULL COMMENT 'グループID',
     PRIMARY KEY (`work_id`)
     );
 
