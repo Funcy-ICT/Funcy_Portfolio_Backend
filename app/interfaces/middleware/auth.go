@@ -11,13 +11,19 @@ import (
 	"strings"
 )
 
+var (
+	ErrCookie = "http: named cookie not present"
+)
+
 func Authentication(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := ""
 		cookie, err := r.Cookie("token")
 		if err != nil {
-			_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "authentication failure")
-			return
+			if err.Error() != ErrCookie {
+				_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "authentication failure")
+				return
+			}
 		}
 		if cookie != nil {
 			token = cookie.Value
