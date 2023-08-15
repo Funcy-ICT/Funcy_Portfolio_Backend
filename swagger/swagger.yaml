@@ -72,7 +72,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SignInResponse'
+                $ref: '#/components/schemas/UserID'
         '400':
           description: Bad Request
           content:
@@ -486,11 +486,17 @@ components:
       properties:
         userID:
           type: string
+    UserID:
+      type: object
+      properties:
+        userID:
+          type: string
     SignInRequest:
       type: object
       properties:
         mail:
           type: string
+          example: funcy@fun.ac.jp
           description: メールアドレス
         password:
           type: string
@@ -501,6 +507,8 @@ components:
     SignInResponse:
       type: object
       properties:
+        userID:
+          type: string
         token:
           type: string
           description: jwts
