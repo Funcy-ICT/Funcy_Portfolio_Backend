@@ -75,32 +75,32 @@ func (a *AuthUseCase) CreateAccount(r request.SignUpRequest) (string, error) {
 	return userID.String(), nil
 }
 
-func (a *AuthUseCase) Login(r request.SignInRequest) (string, error) {
+func (a *AuthUseCase) Login(r request.SignInRequest) (*entity.User, string, error) {
 	user, err := a.authRepository.GetPassword(r.Mail)
 	if err != nil {
-		return "", err
+		return nil, "", err
 	}
 	err = utils.CompareHashAndPassword(user.Password, r.Password)
 	if err != nil {
-		return "", errors.New("not match password")
+		return nil, "", errors.New("not match password")
 	}
 
 	jwt, _ := auth.IssueUserToken(user.UserID)
-	return jwt, nil
+	return &user, jwt, nil
 }
 
-func (a *AuthUseCase) LoginMobile(r request.SignInRequest) (string, error) {
+func (a *AuthUseCase) LoginMobile(r request.SignInRequest) (*entity.User, string, error) {
 	user, err := a.authRepository.GetPassword(r.Mail)
 	if err != nil {
-		return "", err
+		return nil, "", err
 	}
 	err = utils.CompareHashAndPassword(user.Password, r.Password)
 	if err != nil {
-		return "", errors.New("not match password")
+		return nil, "", errors.New("not match password")
 	}
 
 	jwt, _ := auth.IssueMobileUserToken(user.UserID)
-	return jwt, nil
+	return &user, jwt, nil
 }
 
 func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) (string, error) {
