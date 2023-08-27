@@ -16,6 +16,7 @@ type (
 		Thumbnail   string  `json:"thumbnail"`
 		UserIcon    string  `json:"user_icon"`
 		UserName    string  `json:"user_name"`
+		WorkUserID  string  `json:"userID"`
 		Images      []Image `json:"images"`
 		WorkUrl     string  `json:"work_url"`
 		MovieUrl    string  `json:"movie_url"`
@@ -24,6 +25,8 @@ type (
 	}
 	ReadWorks struct {
 		WorkID      string `json:"workID"`
+		WorkUserID  string `json:"userID"`
+		UserName    string `json:"user_name"`
 		Title       string `json:"title"`
 		Thumbnail   string `json:"thumbnail"`
 		Description string `json:"description"`

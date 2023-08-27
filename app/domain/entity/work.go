@@ -33,6 +33,8 @@ type (
 	}
 	ReadWorksList struct {
 		WorkID      string `db:"id"`
+		UserId      string `db:"user_id"`
+		DisplayName string `db:"display_name"`
 		Title       string `db:"title"`
 		Thumbnail   string `db:"thumbnail"`
 		Description string `db:"description"`
