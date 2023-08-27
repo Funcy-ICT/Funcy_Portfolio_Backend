@@ -49,7 +49,7 @@ func (ur *workRepositoryImpl) SelectWorks(numberOfWorks uint) (*[]*entity.ReadWo
 	works := new([]*entity.ReadWorksList)
 	err := ur.db.Select(
 		works,
-		"SELECT works.id, works.user_id, works.title, works.description, works.thumbnail, users.icon FROM works INNER JOIN users ON works.user_id = users.id ORDER BY works.created_at DESC LIMIT ?",
+		"SELECT works.id, works.user_id, users.display_name, works.title, works.description, works.thumbnail, users.icon FROM works INNER JOIN users ON works.user_id = users.id ORDER BY works.created_at DESC LIMIT ?",
 		numberOfWorks)
 	if err != nil {
 		return nil, err
