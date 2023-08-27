@@ -687,6 +687,10 @@ components:
           type: string
           description: 作品を投稿したユーザのID
           example: oahf9023
+        user_name:
+          type: string
+          description: 作品を投稿したユーザの表示名
+          example: FUN太朗
         title:
           type: string
           description: タイトル
