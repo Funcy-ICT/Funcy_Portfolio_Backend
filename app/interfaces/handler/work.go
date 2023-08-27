@@ -96,6 +96,7 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 		Thumbnail:   raw.Thumbnail,
 		UserIcon:    user.Icon,
 		UserName:    user.DisplayName,
+		WorkUserID:  raw.UserId,
 		Images:      images,
 		WorkUrl:     raw.WorkUrl,
 		MovieUrl:    raw.MovieUrl,
@@ -135,7 +136,7 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 
 	worksRes := []response.ReadWorks{}
 	for _, work := range *works {
-		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon}
+		newWorkRes := response.ReadWorks{WorkID: work.WorkID, WorkUserID: work.UserId, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon}
 		worksRes = append(worksRes, newWorkRes)
 	}
 
