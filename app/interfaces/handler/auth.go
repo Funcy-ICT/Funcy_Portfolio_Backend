@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -148,12 +147,11 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.authUseCase.CheckMail(req)
+	err = h.authUseCase.CheckMail(req)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	log.Println(token)
 
 	jwt, _ := auth.IssueUserToken(req.UserID)
 

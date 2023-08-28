@@ -103,19 +103,19 @@ func (a *AuthUseCase) LoginMobile(r request.SignInRequest) (*entity.User, string
 	return &user, jwt, nil
 }
 
-func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) (string, error) {
+func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) error {
 
 	code, err := a.authRepository.CheckMailAddr(r.UserID)
 	if err != nil {
-		return "", err
+		return err
 	}
 	if code != r.Code {
-		return "", errors.New("not match code")
+		return errors.New("not match code")
 	}
 	err = a.authRepository.UpdateStatus(r.UserID)
 	if code != r.Code {
-		return "", err
+		return err
 	}
 
-	return "", nil
+	return nil
 }
