@@ -160,6 +160,7 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 	cookie := &http.Cookie{
 		Name:     "token",
 		Value:    jwt,
+		Path:     "/",
 		HttpOnly: true,
 		//Secure: true,
 	}

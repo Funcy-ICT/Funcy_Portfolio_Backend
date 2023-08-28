@@ -117,10 +117,5 @@ func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) (string, error) {
 		return "", err
 	}
 
-	token, err := a.authRepository.GetToken(r.UserID)
-	if err != nil {
-		return "", err
-	}
-
-	return token, nil
+	return "", nil
 }
