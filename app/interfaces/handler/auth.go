@@ -152,6 +152,14 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	cookie := &http.Cookie{
+		Name:     "token",
+		Value:    token,
+		HttpOnly: true,
+		//Secure: true,
+	}
+	http.SetCookie(w, cookie)
+
 	res := response.Token{
 		Token: token,
 	}
