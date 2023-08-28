@@ -2,12 +2,14 @@ package handler
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
 	"backend/app/interfaces/request"
 	"backend/app/interfaces/response"
 	"backend/app/packages/utils"
+	"backend/app/packages/utils/auth"
 	"backend/app/usecase"
 )
 
@@ -151,17 +153,20 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
+	log.Println(token)
+
+	jwt, _ := auth.IssueUserToken(req.UserID)
 
 	cookie := &http.Cookie{
 		Name:     "token",
-		Value:    token,
+		Value:    jwt,
 		HttpOnly: true,
 		//Secure: true,
 	}
 	http.SetCookie(w, cookie)
 
 	res := response.Token{
-		Token: token,
+		Token: jwt,
 	}
 	resBody, err := json.Marshal(res)
 	if err != nil {
