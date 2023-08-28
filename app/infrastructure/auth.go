@@ -61,12 +61,3 @@ func (ur *userRepositoryImpl) GetPassword(mail string) (entity.User, error) {
 	}
 	return user, nil
 }
-
-func (ur *userRepositoryImpl) GetToken(userID string) (string, error) {
-	var user entity.User
-	err := ur.db.Get(&user, `SELECT token FROM users WHERE id=?`, userID)
-	if err != nil {
-		return "", errors.New("Not a valid code")
-	}
-	return user.Token, nil
-}

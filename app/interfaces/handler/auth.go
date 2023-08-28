@@ -8,6 +8,7 @@ import (
 	"backend/app/interfaces/request"
 	"backend/app/interfaces/response"
 	"backend/app/packages/utils"
+	"backend/app/packages/utils/auth"
 	"backend/app/usecase"
 )
 
@@ -146,14 +147,25 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.authUseCase.CheckMail(req)
+	err = h.authUseCase.CheckMail(req)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
+	jwt, _ := auth.IssueUserToken(req.UserID)
+
+	cookie := &http.Cookie{
+		Name:     "token",
+		Value:    jwt,
+		Path:     "/",
+		HttpOnly: true,
+		//Secure: true,
+	}
+	http.SetCookie(w, cookie)
+
 	res := response.Token{
-		Token: token,
+		Token: jwt,
 	}
 	resBody, err := json.Marshal(res)
 	if err != nil {
