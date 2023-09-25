@@ -7,9 +7,9 @@ import (
 	middleware2 "backend/app/interfaces/middleware"
 	"backend/app/packages/utils/auth"
 	"backend/app/usecase"
-	"log"
 
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi"
