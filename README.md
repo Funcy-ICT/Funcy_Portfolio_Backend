@@ -55,6 +55,16 @@ golang-migrate環境がローカルにある人用
 ```
 make migrate
 ```
+### Tokenの取得方法
+/sign/up でユーザ作成済みのアカウントでログインすることでTokenを受け取ることができます
+
+mobile班：/mlogin
+フロントエンド班：/login (cookieに含んで返すためbodyには含まれない)
+
+#### swagger UIでのTokenの使い方
+swagger UI 右上側にあるAuthorizeをクリックし、表示されるモーダルにTokenを入力することでTokenが必要なAPIを使用できるようになります。
+![img.png](image/swagger_auth.png)
+
 ### file server 起動方法
 ```
 make file-server
