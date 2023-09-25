@@ -40,42 +40,19 @@ http://localhost:8025/
 
 
 ## APIドキュメント
-### 設定が必要な環境変数
-(`*`: 必須項目)
-| * | NAME             | Default | Description            |
-| - | ---------------- | ------- | ---------------------- |
-|   | SUPER_ACCOUNT_ID |         | スーパアカウント用のID |
-
-### 環境変数の設定
-`.env`ファイルに書き込まれた環境変数を読み取ります。
-`.env`ファイルがない場合は作成してください。
-ない場合は起動に失敗します。設定する内容がない場合も作成してください。
-
-```
-NAME=VALUE
-```
-
-の形で指定が出来ます。
-サーバ起動時にロードされます。
-
-### スーパアカウント
-`SUPER_ACCOUNT_ID`を指定すると、指定したユーザとしてログインできる実質的に有効期限のないTokenが発行されます。
-Tokenは、標準出力に、
-```
-[00] yyyy/mm/dd hh:nn:ss SuperAccountID: {SUPER_ACCOUNT_ID}
-[00] yyyy/mm/dd hh:nn:ss SuperAccountToken: {Access Token}
-```
-という形で出力されます。
-
-### 立ち上げ
-`.env`ファイルがない場合は作成してください。
-ない場合は起動に失敗します。
-
 ```
 make up
 ```
 上記コマンドでコンテナ立ち上げ後にswagger UI にアクセス
 [swagger UI](http://localhost:8002/)
+
+## スーパアカウント
+開発用に、実質無期限のtokenを発行することができます。
+```
+make create-superaccount
+```
+で作成することができます。
+Authorization Headerに`Bearer <token>`の形でセットすると認証されます。
 
 ## 検証用
 web、モバイル班の方たち用になります。
