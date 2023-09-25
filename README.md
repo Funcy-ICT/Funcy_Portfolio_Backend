@@ -46,6 +46,14 @@ make up
 上記コマンドでコンテナ立ち上げ後にswagger UI にアクセス
 [swagger UI](http://localhost:8002/)
 
+## スーパアカウント
+開発用に、実質無期限のtokenを発行することができます。
+```
+make create-superaccount
+```
+で作成することができます。
+Authorization Headerに`Bearer <token>`の形でセットすると認証されます。
+
 ## 検証用
 web、モバイル班の方たち用になります。
 dev/1ブランチを使用します。

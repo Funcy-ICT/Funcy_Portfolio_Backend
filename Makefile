@@ -38,3 +38,7 @@ migrate-force:  ## migrate down
 migrate-demo:  ## migrate up dmeo
 	docker exec funcy_portfolio_backend-api-1 ./db/migrate -path db/migration/sql -database "mysql://root:admin@tcp(mysql:3306)/funcy?multiStatements=true" up
 	docker restart funcy_portfolio_backend-api-1
+
+.PHONY: create-superaccount
+create-superaccount:
+	docker exec -it funcy_portfolio_backend-api-1 go run tool/main.go
