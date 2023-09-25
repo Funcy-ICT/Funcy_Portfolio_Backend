@@ -30,38 +30,56 @@ https://golang.org/doc/effective_go.html
 - help wanted 助けて欲しいこと(基本わからないことがあったらこれ書いて)
 - question 質問、議論(わからないことではなく「これであっているのか不安だな」ということについて書いてください)
 ## レビュー体制
-未定
+バックエンド班に依頼
 
 ## メールの確認方法について
-以下の[URL](http://localhost:8025/)にアクセスしてメールの受信を確認してください
-```
-http://localhost:8025/
-```
+現在、メールを用いた機能に関してはメール内容はログに出力されます。
 
+例：ワンタイムパスワード
 
-## APIドキュメント
-```
-make up
-```
-上記コマンドでコンテナ立ち上げ後にswagger UI にアクセス
-[swagger UI](http://localhost:8002/)
-
-## 検証用
-web、モバイル班の方たち用になります。
-dev/1ブランチを使用します。
-dev/1に移動後に以下を実行。
+## 起動方法
+developブランチを使用します。
 これで検証用サーバを利用できます。
 ```
 make up
 # 別のターミナルを用意
 make maigrate-demo
 ```
+### APIドキュメント
+以下のリンクからswagger UI にアクセス
+[swagger UI](http://localhost:8002/)
 
-## 実行
-```
-make run
-```
+
 ### マイグレーション
+golang-migrate環境がローカルにある人用
 ```
 make migrate
 ```
+### file server 起動方法
+```
+make file-server
+```
+### file-server 仕様
+検証はPostmanを使うと楽です
+![img.png](image/postman_file_server.png)
+
+##### エンドポイント
+[http://localhost:3004/](http://localhost:3004/)
+
+POST : http://localhost:3004/upload/file
+
+リクエスト
+```
+# form-data
+key:file, value:(画像ファイル)
+```
+レスポンス
+```
+{
+    "urls": [
+        "http://localhost:3004/fce8dec2-e50c-4a2f-ba5a-72150dfa1a20.png"
+    ]
+}
+```
+
+GET : http://localhost:3004/?????.jpg (file名)
