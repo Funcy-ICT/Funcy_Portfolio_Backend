@@ -93,3 +93,12 @@ key:file, value:(画像ファイル)
 ```
 
 GET : http://localhost:3004/?????.jpg (file名)
+
+※ 以下のようなエラーが発生した場合は`chmod 700 ./file-server/file`を実行し、ファイルサーバーのファイルに実行権限を与えてあげる必要がある。
+
+
+file-server起動時のエラー文
+```
+OCI runtime exec failed: exec failed: unable to start container process: exec: "./file-server/file": stat ./file-server/file: permission denied: unknown
+make: *** [file-server] Error 126
+```
