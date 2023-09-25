@@ -9,7 +9,6 @@ import (
 	"backend/app/usecase"
 
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -40,16 +39,6 @@ func (s *Server) Init() error {
 }
 
 func (s *Server) Route() {
-	if configs.GetMode() == configs.Local && configs.GetSuperAccountID() != "" {
-		at, err := issueSuperAccountToken(configs.GetSuperAccountID())
-		if err != nil {
-			log.Printf("cannot create SuperAccountToken: %s\n", err.Error())
-		} else {
-			log.Printf("SuperAccountID: %s\n", configs.Local)
-			log.Printf("SuperAccountToken: %s\n", at)
-		}
-	}
-
 	s.Router.Use(cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"},

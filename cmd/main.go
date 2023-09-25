@@ -16,6 +16,5 @@ func main() {
 	}
 	addr := configs.GetServerPort()
 	log.Println("port", addr, "Starting app")
-	log.Println("Execute Mode:", configs.GetMode())
 	http.ListenAndServe(addr, r.Router)
 }
