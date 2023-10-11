@@ -58,6 +58,20 @@ func (ur *workRepositoryImpl) SelectWorks(numberOfWorks uint) (*[]*entity.ReadWo
 	return works, nil
 }
 
+func (ur *workRepositoryImpl) SelectWorksByTag(numberOfWorks uint, tag string) (*[]*entity.ReadWorksList, error) {
+	works := new([]*entity.ReadWorksList)
+	err := ur.db.Select(
+		works,
+		"SELECT works.id, works.title, works.description, works.thumbnail, users.icon FROM works INNER JOIN work_images ON works.id = work_images.work_id INNER JOIN work_tags ON works.id = work_tags.work_id INNER JOIN users ON works.user_id = users.id WHERE work_tags.tag=? ORDER BY works.created_at DESC LIMIT ?",
+		tag,
+		numberOfWorks)
+	if err != nil {
+		return nil, err
+	}
+
+	return works, nil
+}
+
 func (ur *workRepositoryImpl) SelectWorkUser(userID string) (*entity.User, error) {
 	var user entity.User
 	err := ur.db.Get(
