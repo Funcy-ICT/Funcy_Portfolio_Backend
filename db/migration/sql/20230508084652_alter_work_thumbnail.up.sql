@@ -1,1 +1,1 @@
-ALTER TABLE `works` ADD thumbnail VARCHAR(32);
+ALTER TABLE `works` ADD thumbnail VARCHAR(128);

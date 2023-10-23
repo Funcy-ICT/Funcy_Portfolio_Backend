@@ -11,15 +11,31 @@ import (
 	"strings"
 )
 
+var (
+	ErrCookie = "http: named cookie not present"
+)
+
 func Authentication(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		authz := r.Header.Get("Authorization")
-		if authz == "" || !strings.HasPrefix(authz, "Bearer ") {
-			_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "authentication failure")
-			return
+		token := ""
+		cookie, err := r.Cookie("token")
+		if err != nil {
+			if err.Error() != ErrCookie {
+				_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "authentication failure")
+				return
+			}
 		}
-
-		token := strings.TrimPrefix(authz, "Bearer ")
+		if cookie != nil {
+			token = cookie.Value
+		}
+		if cookie == nil {
+			authz := r.Header.Get("Authorization")
+			if authz == "" || !strings.HasPrefix(authz, "Bearer ") {
+				_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "authentication failure")
+				return
+			}
+			token = strings.TrimPrefix(authz, "Bearer ")
+		}
 
 		ua := useragent.Parse(r.UserAgent())
 		switch {

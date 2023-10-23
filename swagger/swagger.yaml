@@ -72,7 +72,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SignInResponse'
+                $ref: '#/components/schemas/UserID'
         '400':
           description: Bad Request
           content:
@@ -118,7 +118,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /auth/code:
+  /authcode:
     post:
       tags:
         - auth
@@ -486,11 +486,17 @@ components:
       properties:
         userID:
           type: string
+    UserID:
+      type: object
+      properties:
+        userID:
+          type: string
     SignInRequest:
       type: object
       properties:
         mail:
           type: string
+          example: funcy@fun.ac.jp
           description: メールアドレス
         password:
           type: string
@@ -501,6 +507,8 @@ components:
     SignInResponse:
       type: object
       properties:
+        userID:
+          type: string
         token:
           type: string
           description: jwts
@@ -622,6 +630,18 @@ components:
           type: string
           description: サムネイル
           example: https://pbs.twimg.com/hoge/fuga
+        user_icon:
+          type: string
+          description: ユーザアイコン
+          example: https://
+        user_name:
+          type: string
+          description: ユーザ名
+          example: FUN太郎
+        userID:
+          type: string
+          description: 作品を投稿したユーザのID
+          example: aohf93q4
         images:
           type: array
           items:
@@ -663,6 +683,14 @@ components:
           type: string
           description: 作品ID
           example: nb7890rwfbnvskd
+        userID:
+          type: string
+          description: 作品を投稿したユーザのID
+          example: oahf9023
+        user_name:
+          type: string
+          description: 作品を投稿したユーザの表示名
+          example: FUN太朗
         title:
           type: string
           description: タイトル
