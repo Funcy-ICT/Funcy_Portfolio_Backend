@@ -1,1 +1,1 @@
-ALTER TABLE `works` ADD group_id VARCHAR(64) NOT NULL COMMENT 'グループID';
+ALTER TABLE `works` ADD group_id VARCHAR(64) COMMENT 'グループID';
