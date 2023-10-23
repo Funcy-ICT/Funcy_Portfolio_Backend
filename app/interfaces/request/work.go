@@ -12,7 +12,7 @@ type CreateWorkRequest struct {
 	Tags     []struct {
 		Tag string `json:"tag"`
 	} `json:"tags"`
-	Group    string `json:"group"`
+	GroupID  string `json:"group_id"`
 	Security int    `json:"security"`
 }
 
@@ -28,6 +28,6 @@ type UpdateWorkRequest struct {
 	Tags     []struct {
 		Tag string `json:"tag"`
 	} `json:"tags"`
-	Group    string `json:"group"`
+	GroupID  string `json:"group_id"`
 	Security int    `json:"security"`
 }
