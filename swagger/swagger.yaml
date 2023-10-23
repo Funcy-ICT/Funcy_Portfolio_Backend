@@ -735,7 +735,7 @@ components:
                 type: string
                 description: タグ
                 example: ほげ
-        group_id:
+        group:
           type: string
           description: どのグループに投稿するか
           example: FUNcy
