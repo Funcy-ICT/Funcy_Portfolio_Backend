@@ -386,6 +386,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /group:
+    post:
+      tags:
+        - group
+      summary: グループ作成API
+      security:
+        - Bearer: []
+      description: グループを作成します
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGroupRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateGroupResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /search/{word}:
     get:
       tags:
@@ -574,6 +608,39 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/simpleWorkInformation'
+    CreateGroupRequest:
+      properties:
+        name:
+          type: string
+          description: グループ名
+        description:
+          type: string
+          description: グループ詳細
+        leader_email:
+          type: string
+          example: funcy@fun.ac.jp
+          description: 代表者メールアドレス
+        icon:
+          type: string
+          example: https://
+          description: グループアイコン
+        group_skills:
+          type: array
+          description: グループのスキル
+          items:
+            type: string
+          example: [
+            "スキルA",
+            "スキルB"
+          ]
+      required:
+        - name
+        - leader_email
+    CreateGroupResponse:
+      properties:
+        groupID:
+          type: string
+          description: グループID
     SearchTagUserAndGroupsByWordResponse:
       properties:
         tags:
@@ -668,7 +735,7 @@ components:
                 type: string
                 description: タグ
                 example: ほげ
-        group:
+        group_id:
           type: string
           description: どのグループに投稿するか
           example: FUNcy
