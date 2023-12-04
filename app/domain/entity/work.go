@@ -63,8 +63,8 @@ func NewInsertWork(
 	workUrl string,
 	movieUrl string,
 	groupID string,
-	security int) *InsertWork {
-	return &InsertWork{
+	security int) InsertWork {
+	return InsertWork{
 		ID:          uuid.NewString(),
 		Title:       title,
 		Description: description,
@@ -84,8 +84,8 @@ func NewUpdateWork(
 	workUrl string,
 	movieUrl string,
 	groupID string,
-	security int) *UpdateWork {
-	return &UpdateWork{
+	security int) UpdateWork {
+	return UpdateWork{
 		ID:          id,
 		Title:       title,
 		Description: description,
@@ -94,5 +94,21 @@ func NewUpdateWork(
 		MovieUrl:    movieUrl,
 		GroupID:     groupID,
 		Security:    security,
+	}
+}
+
+func NewImage(workID string, image string) Image {
+	return Image{
+		ID:     uuid.NewString(),
+		WorkID: workID,
+		Image:  image,
+	}
+}
+
+func NewTag(workID string, tag string) Tag {
+	return Tag{
+		ID:     uuid.NewString(),
+		WorkID: workID,
+		Tag:    tag,
 	}
 }

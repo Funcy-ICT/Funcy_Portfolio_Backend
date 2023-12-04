@@ -3,8 +3,6 @@ package usecase
 import (
 	"backend/app/domain/entity"
 	"backend/app/domain/repository"
-
-	"github.com/google/uuid"
 )
 
 type WorkUseCase struct {
@@ -40,25 +38,15 @@ func (w *WorkUseCase) CreateWork(
 
 	imagesEntity := make([]entity.Image, 0, len(images))
 	for _, v := range images {
-		image := entity.Image{
-			ID:     uuid.NewString(),
-			WorkID: work.ID,
-			Image:  v,
-		}
-		imagesEntity = append(imagesEntity, image)
+		imagesEntity = append(imagesEntity, entity.NewImage(work.ID, v))
 	}
 
 	tagsEntity := make([]entity.Tag, 0, len(tags))
 	for _, v := range tags {
-		tag := entity.Tag{
-			ID:     uuid.NewString(),
-			WorkID: work.ID,
-			Tag:    v,
-		}
-		tagsEntity = append(tagsEntity, tag)
+		tagsEntity = append(tagsEntity, entity.NewTag(work.ID, v))
 	}
 
-	err := w.workRepository.InsertWork(userId, work, &imagesEntity, &tagsEntity)
+	err := w.workRepository.InsertWork(userId, &work, &imagesEntity, &tagsEntity)
 	if err != nil {
 		return "", err
 	}
@@ -104,7 +92,7 @@ func (w *WorkUseCase) UpdateWork(
 	images []string,
 	tags []string) error {
 
-	work := &entity.UpdateWork{
+	work := entity.UpdateWork{
 		ID:          workID,
 		Title:       title,
 		Description: description,
@@ -117,25 +105,15 @@ func (w *WorkUseCase) UpdateWork(
 
 	imagesEntity := make([]entity.Image, 0, len(images))
 	for _, v := range images {
-		image := entity.Image{
-			ID:     uuid.NewString(),
-			WorkID: work.ID,
-			Image:  v,
-		}
-		imagesEntity = append(imagesEntity, image)
+		imagesEntity = append(imagesEntity, entity.NewImage(work.ID, v))
 	}
 
 	tagsEntity := make([]entity.Tag, 0, len(tags))
 	for _, v := range tags {
-		tag := entity.Tag{
-			ID:     uuid.NewString(),
-			WorkID: work.ID,
-			Tag:    v,
-		}
-		tagsEntity = append(tagsEntity, tag)
+		tagsEntity = append(tagsEntity, entity.NewTag(work.ID, v))
 	}
 
-	err := w.workRepository.UpdateWork(work, &imagesEntity, &tagsEntity)
+	err := w.workRepository.UpdateWork(&work, &imagesEntity, &tagsEntity)
 	if err != nil {
 		return err
 	}
