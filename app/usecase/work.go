@@ -89,18 +89,7 @@ func (w *WorkUseCase) ReadWork(workID string) (*entity.ReadWork, *entity.User, e
 }
 
 func (w *WorkUseCase) DeleteWork(workID string) error {
-	_, err := w.workRepository.SelectWork(workID)
-	if err != nil {
-		// no rows set
-		// ここでは、エラーを返さない
-		return nil
-	}
-
-	err = w.workRepository.DeleteWork(workID)
-	if err != nil {
-		return err
-	}
-	return nil
+	return w.workRepository.DeleteWork(workID)
 }
 
 func (w *WorkUseCase) UpdateWork(
