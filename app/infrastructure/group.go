@@ -24,14 +24,14 @@ func (gr *GroupRepositoryImpl) InsertGroup(group *entity.Group, groupSkills *[]e
 	_, err = tx.Exec("INSERT INTO groups (id, name, description, leader_email, icon) VALUES (?,?,?,?,?)",
 		group.GroupID, group.Name, group.Description, group.LeaderEmail, group.Icon)
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 
-	for _, groupSkill := range *groupSkills {
-		_, err := tx.Exec("INSERT INTO group_skills (group_id, skill_name) VALUES (?,?)", groupSkill.GroupID, groupSkill.SkillName)
-		if err != nil {
-			return err
-		}
+	_, err = tx.NamedExec("INSERT INTO group_skills (group_id, skill_name) VALUES (:group_id, :skill_name)", *groupSkills)
+	if err != nil {
+		tx.Rollback()
+		return err
 	}
 
 	return tx.Commit()
