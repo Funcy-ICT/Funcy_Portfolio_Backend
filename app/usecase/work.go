@@ -3,12 +3,6 @@ package usecase
 import (
 	"backend/app/domain/entity"
 	"backend/app/domain/repository"
-	"backend/app/interfaces/request"
-	"backend/app/interfaces/response"
-
-	"errors"
-
-	"github.com/google/uuid"
 )
 
 type WorkUseCase struct {
@@ -19,47 +13,45 @@ func NewWorkUseCase(workRepository repository.WorkRepository) *WorkUseCase {
 	return &WorkUseCase{workRepository: workRepository}
 }
 
-func (w *WorkUseCase) CreateWork(r request.CreateWorkRequest, userId string) (string, error) {
+func (w *WorkUseCase) CreateWork(
+	userId string,
+	title string,
+	description string,
+	thumbnail string,
+	workUrl string,
+	movieUrl string,
+	groupID string,
+	security int,
+	images []string,
+	tags []string,
+) (string, error) {
 
-	workId := uuid.NewString()
+	work := entity.NewInsertWork(
+		title,
+		description,
+		thumbnail,
+		workUrl,
+		movieUrl,
+		groupID,
+		security,
+	)
 
-	work := &entity.InsertWork{
-		ID:          workId,
-		Title:       r.Title,
-		Description: r.Description,
-		Thumbnail:   r.Thumbnail,
-		WorkUrl:     r.WorkUrl,
-		MovieUrl:    r.MovieUrl,
-		GroupID:     r.GroupID,
-		Security:    r.Security,
+	imagesEntity := make([]entity.Image, 0, len(images))
+	for _, v := range images {
+		imagesEntity = append(imagesEntity, entity.NewImage(work.ID, v))
 	}
 
-	images := make([]entity.Image, 0, len(r.Images))
-	for _, v := range r.Images {
-		image := entity.Image{
-			ID:     uuid.NewString(),
-			WorkID: workId,
-			Image:  v.Image,
-		}
-		images = append(images, image)
+	tagsEntity := make([]entity.Tag, 0, len(tags))
+	for _, v := range tags {
+		tagsEntity = append(tagsEntity, entity.NewTag(work.ID, v))
 	}
 
-	tags := make([]entity.Tag, 0, len(r.Tags))
-	for _, v := range r.Tags {
-		tag := entity.Tag{
-			ID:     uuid.NewString(),
-			WorkID: workId,
-			Tag:    v.Tag,
-		}
-		tags = append(tags, tag)
-	}
-
-	err := w.workRepository.InsertWork(userId, work, &images, &tags)
+	err := w.workRepository.InsertWork(userId, &work, &imagesEntity, &tagsEntity)
 	if err != nil {
 		return "", err
 	}
 
-	return workId, nil
+	return work.ID, nil
 }
 
 func (w *WorkUseCase) ReadWorks(numberOfWorks uint) (*[]*entity.ReadWorksList, error) {
@@ -85,56 +77,43 @@ func (w *WorkUseCase) ReadWork(workID string) (*entity.ReadWork, *entity.User, e
 }
 
 func (w *WorkUseCase) DeleteWork(workID string) error {
-	_, err := w.workRepository.SelectWork(workID)
-	if err != nil {
-		return errors.New(response.NoRows)
-	}
-
-	err = w.workRepository.DeleteWork(workID)
-	if err != nil {
-		return err
-	}
-	return nil
+	return w.workRepository.DeleteWork(workID)
 }
 
-func (w *WorkUseCase) UpdateWork(r request.UpdateWorkRequest, workID string) error {
-	_, err := w.workRepository.SelectWork(workID)
-	if err != nil {
-		return errors.New(response.NoRows)
-	}
+func (w *WorkUseCase) UpdateWork(
+	workID string,
+	title string,
+	description string,
+	thumbnail string,
+	workUrl string,
+	movieUrl string,
+	groupID string,
+	security int,
+	images []string,
+	tags []string) error {
 
-	work := &entity.UpdateWork{
+	work := entity.UpdateWork{
 		ID:          workID,
-		Title:       r.Title,
-		Description: r.Description,
-		Thumbnail:   r.Thumbnail,
-		WorkUrl:     r.WorkUrl,
-		MovieUrl:    r.MovieUrl,
-		GroupID:     r.GroupID,
-		Security:    r.Security,
+		Title:       title,
+		Description: description,
+		Thumbnail:   thumbnail,
+		WorkUrl:     workUrl,
+		MovieUrl:    movieUrl,
+		GroupID:     groupID,
+		Security:    security,
 	}
 
-	images := make([]entity.Image, 0, len(r.Images))
-	for _, v := range r.Images {
-		image := entity.Image{
-			ID:     uuid.NewString(),
-			WorkID: workID,
-			Image:  v.Image,
-		}
-		images = append(images, image)
+	imagesEntity := make([]entity.Image, 0, len(images))
+	for _, v := range images {
+		imagesEntity = append(imagesEntity, entity.NewImage(work.ID, v))
 	}
 
-	tags := make([]entity.Tag, 0, len(r.Tags))
-	for _, v := range r.Tags {
-		tag := entity.Tag{
-			ID:     uuid.NewString(),
-			WorkID: workID,
-			Tag:    v.Tag,
-		}
-		tags = append(tags, tag)
+	tagsEntity := make([]entity.Tag, 0, len(tags))
+	for _, v := range tags {
+		tagsEntity = append(tagsEntity, entity.NewTag(work.ID, v))
 	}
 
-	err = w.workRepository.UpdateWork(work, &images, &tags)
+	err := w.workRepository.UpdateWork(&work, &imagesEntity, &tagsEntity)
 	if err != nil {
 		return err
 	}
