@@ -1,5 +1,7 @@
 package entity
 
+import "github.com/google/uuid"
+
 type (
 	Tag struct {
 		ID     string `db:"id"`
@@ -53,3 +55,44 @@ type (
 		Security    int    `db:"security"`
 	}
 )
+
+func NewInsertWork(
+	title string,
+	description string,
+	thumbnail string,
+	workUrl string,
+	movieUrl string,
+	groupID string,
+	security int) *InsertWork {
+	return &InsertWork{
+		ID:          uuid.NewString(),
+		Title:       title,
+		Description: description,
+		Thumbnail:   thumbnail,
+		WorkUrl:     workUrl,
+		MovieUrl:    movieUrl,
+		GroupID:     groupID,
+		Security:    security,
+	}
+}
+
+func NewUpdateWork(
+	id string,
+	title string,
+	description string,
+	thumbnail string,
+	workUrl string,
+	movieUrl string,
+	groupID string,
+	security int) *UpdateWork {
+	return &UpdateWork{
+		ID:          id,
+		Title:       title,
+		Description: description,
+		Thumbnail:   thumbnail,
+		WorkUrl:     workUrl,
+		MovieUrl:    movieUrl,
+		GroupID:     groupID,
+		Security:    security,
+	}
+}
