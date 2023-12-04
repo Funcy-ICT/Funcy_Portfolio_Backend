@@ -63,6 +63,10 @@ func (s *Server) Route() {
 	userinfoUseCase := usecase.NewUserinfoUsecace(userinfoRepository, workRepository)
 	userinfoHandler := handler.NewUserinfoHandler(userinfoUseCase)
 
+	groupRepository := infrastructure.NewGroupRepository(s.db)
+	groupUseCase := usecase.NewGroupUseCase(groupRepository)
+	groupHandler := handler.NewGroupHandler(groupUseCase)
+
 	s.Router.Use(middleware.Logger)
 	//接続確認
 	s.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -85,6 +89,7 @@ func (s *Server) Route() {
 		mux.Delete("/work/{workID}", workHandler.DeleteWork)
 		mux.Put("/work/{workID}", workHandler.UpdateWork)
 		mux.Get("/userinfo/{userID}", userinfoHandler.GetUserinfo)
+		mux.Post("/group", groupHandler.CreateGroup)
 	})
 
 	// no auth

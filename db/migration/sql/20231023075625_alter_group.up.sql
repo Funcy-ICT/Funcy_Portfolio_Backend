@@ -1,0 +1,3 @@
+ALTER TABLE `groups` ADD description VARCHAR(256) NOT NULL;
+ALTER TABLE `groups` ADD leader_email VARCHAR(256) NOT NULL;
+ALTER TABLE `groups` ADD icon VARCHAR(256) NOT NULL;
