@@ -21,6 +21,7 @@ type (
 		WorkUrl     string  `json:"work_url"`
 		MovieUrl    string  `json:"movie_url"`
 		Tags        []Tag   `json:"tags"`
+		GroupID     string  `json:"group_id"`
 		Security    int     `json:"security"`
 	}
 	ReadWorks struct {

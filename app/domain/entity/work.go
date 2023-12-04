@@ -1,15 +1,6 @@
 package entity
 
 type (
-	WorkTable struct {
-		ID          string `db:"id"`
-		Title       string `db:"title"`
-		Description string `db:"description"`
-		Thumbnail   string `db:"thumbnail"`
-		WorkUrl     string `db:"work_url"`
-		MovieUrl    string `db:"movie_url"`
-		Security    int    `db:"security"`
-	}
 	Tag struct {
 		ID     string `db:"id"`
 		WorkID string `db:"work_id"`
@@ -29,6 +20,7 @@ type (
 		Tags        []string `db:"tag"`
 		WorkUrl     string   `db:"url"`
 		MovieUrl    string   `db:"movie_url"`
+		GroupID     string   `db:"group_id"`
 		Security    int      `db:"security"`
 	}
 	ReadWorksList struct {
@@ -40,14 +32,24 @@ type (
 		Description string `db:"description"`
 		Icon        string `db:"icon"`
 	}
+	InsertWork struct {
+		ID          string `db:"id"`
+		Title       string `db:"title"`
+		Description string `db:"description"`
+		Thumbnail   string `db:"thumbnail"`
+		WorkUrl     string `db:"work_url"`
+		MovieUrl    string `db:"movie_url"`
+		GroupID     string `db:"group_id"`
+		Security    int    `db:"security"`
+	}
 	UpdateWork struct {
-		Title       string   `db:"title"`
-		Description string   `db:"description"`
-		Thumbnail   string   `db:"thumbnail"`
-		ImageURLs   []string `db:"image_url"`
-		Tags        []string `db:"tag"`
-		WorkUrl     string   `db:"work_url"`
-		MovieUrl    string   `db:"movie_url"`
-		Security    int      `db:"security"`
+		ID          string `db:"id"`
+		Title       string `db:"title"`
+		Description string `db:"description"`
+		Thumbnail   string `db:"thumbnail"`
+		WorkUrl     string `db:"work_url"`
+		MovieUrl    string `db:"movie_url"`
+		GroupID     string `db:"group_id"`
+		Security    int    `db:"security"`
 	}
 )
