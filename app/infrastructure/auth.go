@@ -4,10 +4,12 @@ import (
 	"backend/app/domain/entity"
 	"backend/app/domain/repository"
 
+	"context"
+	"database/sql"
+	"log"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
-
-	"log"
 )
 
 type userRepositoryImpl struct {
@@ -25,6 +27,13 @@ func (ur *userRepositoryImpl) InsertAccount(user *entity.User) error {
 		user.UserID, user.DisplayName, user.Icon, user.FamilyName, user.FirstName, user.Mail, user.Password, user.Grade, user.Course, user.Token, user.AuthCode, user.Status)
 	if err != nil {
 		log.Println(err)
+		return errors.Wrap(err, "failed to insert")
+	}
+
+	_, err = func() (sql.Result, error) {
+		return ur.db.DB.ExecContext(context.Background(), `INSERT INTO user_profile (user_id,header_image,bio) VALUES(?,?,?)`, user.UserID, "", "")
+	}()
+	if err != nil {
 		return errors.Wrap(err, "failed to insert")
 	}
 	return nil
