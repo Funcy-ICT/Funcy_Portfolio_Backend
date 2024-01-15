@@ -85,6 +85,7 @@ func (s *Server) Route() {
 		mux.Delete("/work/{workID}", workHandler.DeleteWork)
 		mux.Put("/work/{workID}", workHandler.UpdateWork)
 		mux.Get("/userinfo/{userID}", userinfoHandler.GetUserinfo)
+		mux.Put("/userinfo/{userID}", userinfoHandler.PutUserinfo)
 	})
 
 	// no auth

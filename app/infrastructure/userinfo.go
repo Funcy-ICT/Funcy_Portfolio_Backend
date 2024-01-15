@@ -136,3 +136,93 @@ func (ur *userinfoRepositoryImpl) CreateNewUserinfo(userinfo *entity.Userinfo) e
 
 	return tx.Commit()
 }
+
+func (ur *userinfoRepositoryImpl) UpdateUserinfo(userinfo *entity.UpdateUserinfo) error {
+	tx, err := ur.db.Beginx()
+	if err != nil {
+		return err
+	}
+
+	// Update
+	{
+		// user profile
+		{
+			_, err := tx.NamedExec(
+				"UPDATE user_profile SET user_id=:user_id, header_image=:header_image, bio=:bio;",
+				userinfo.Profile,
+			)
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+
+		// user icon
+		{
+			_, err := tx.NamedExec(
+				"UPDATE users SET icon=:icon;",
+				userinfo.Profile,
+			)
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+	}
+
+	// Delete
+	{
+		// sns
+		{
+			_, err := tx.Exec(
+				"DELETE FROM sns WHERE user_id = ?",
+				userinfo.Profile.UserID,
+			)
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+
+		// skills
+		{
+			_, err := tx.Exec(
+				"DELETE FROM skills WHERE user_id = ?",
+				userinfo.Profile.UserID,
+			)
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+	}
+
+	// Re-Create
+	{
+		// skills
+		for _, skill := range *userinfo.Skills {
+			_, err := tx.NamedExec(
+				"INSERT INTO skills (skill_name, user_id) VALUES (:skill_name, :user_id);",
+				skill,
+			)
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+
+		// sns
+		for _, sns := range *userinfo.SNS {
+			_, err := tx.NamedExec(
+				"INSERT INTO sns (user_id, sns) VALUES (:user_id, :sns);",
+				sns,
+			)
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+	}
+
+	return tx.Commit()
+}
