@@ -39,7 +39,27 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userID := r.Context().Value("user_id")
-	workID, err := h.workUseCase.CreateWork(req, userID.(string))
+	images := make([]string, len(req.Images))
+	for i, img := range req.Images {
+		images[i] = img.Image
+	}
+	tags := make([]string, len(req.Tags))
+	for i, tag := range req.Tags {
+		tags[i] = tag.Tag
+	}
+
+	workID, err := h.workUseCase.CreateWork(
+		userID.(string),
+		req.Title,
+		req.Description,
+		req.Thumbnail,
+		req.WorkUrl,
+		req.MovieUrl,
+		req.GroupID,
+		req.Security,
+		images,
+		tags,
+	)
 
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
@@ -197,7 +217,27 @@ func (h *WorkHandler) UpdateWork(w http.ResponseWriter, r *http.Request) {
 
 	workID := chi.URLParam(r, "workID")
 
-	err = h.workUseCase.UpdateWork(req, workID)
+	images := make([]string, len(req.Images))
+	for i, img := range req.Images {
+		images[i] = img.Image
+	}
+	tags := make([]string, len(req.Tags))
+	for i, tag := range req.Tags {
+		tags[i] = tag.Tag
+	}
+
+	err = h.workUseCase.UpdateWork(
+		workID,
+		req.Title,
+		req.Description,
+		req.Thumbnail,
+		req.WorkUrl,
+		req.MovieUrl,
+		req.GroupID,
+		req.Security,
+		images,
+		tags,
+	)
 	if err != nil {
 		e := response.UnwrapError(err)
 		_ = response.ReturnErrorResponse(w, e.Code, e.Message)
