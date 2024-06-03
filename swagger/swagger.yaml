@@ -187,6 +187,15 @@ paths:
       description: マイページを更新する
       security:
         - Bearer: []
+      parameters:
+        - $ref: '#/components/parameters/userID'
+      requestBody:
+        description: ユーザー情報の更新リクエストボディ
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserInfoRequest'
       responses:
         '200':
           description: OK
@@ -551,6 +560,36 @@ components:
       required:
         - userID
         - password
+    UpdateUserInfoRequest:
+      type: object
+      properties:
+        icon:
+          type: string
+          description: アイコン画像URL
+        header:
+          type: string
+          description: ヘッダー画像URL
+        user_description:
+          type: string
+          description: ユーザーの自己紹介文
+        sns:
+          type: array
+          items:
+            type: string
+          description: SNSのURLリスト
+        skills:
+          type: array
+          items:
+            type: string
+          description: スキルリスト
+        displayName:
+          type: string
+          description: 表示名
+      required:
+        - icon
+        - header
+        - user_description
+        - displayName
     CreateWorkRequest:
       type: object
       properties:
