@@ -39,7 +39,27 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userID := r.Context().Value("user_id")
-	workID, err := h.workUseCase.CreateWork(req, userID.(string))
+	images := make([]string, len(req.Images))
+	for i, img := range req.Images {
+		images[i] = img.Image
+	}
+	tags := make([]string, len(req.Tags))
+	for i, tag := range req.Tags {
+		tags[i] = tag.Tag
+	}
+
+	workID, err := h.workUseCase.CreateWork(
+		userID.(string),
+		req.Title,
+		req.Description,
+		req.Thumbnail,
+		req.WorkUrl,
+		req.MovieUrl,
+		req.GroupID,
+		req.Security,
+		images,
+		tags,
+	)
 
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
@@ -96,9 +116,11 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 		Thumbnail:   raw.Thumbnail,
 		UserIcon:    user.Icon,
 		UserName:    user.DisplayName,
+		WorkUserID:  raw.UserId,
 		Images:      images,
 		WorkUrl:     raw.WorkUrl,
 		MovieUrl:    raw.MovieUrl,
+		GroupID:     raw.GroupID,
 		Tags:        tags,
 		Security:    raw.Security,
 	}
@@ -135,7 +157,7 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 
 	worksRes := []response.ReadWorks{}
 	for _, work := range *works {
-		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon}
+		newWorkRes := response.ReadWorks{WorkID: work.WorkID, WorkUserID: work.UserId, UserName: work.DisplayName, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon}
 		worksRes = append(worksRes, newWorkRes)
 	}
 
@@ -195,7 +217,27 @@ func (h *WorkHandler) UpdateWork(w http.ResponseWriter, r *http.Request) {
 
 	workID := chi.URLParam(r, "workID")
 
-	err = h.workUseCase.UpdateWork(req, workID)
+	images := make([]string, len(req.Images))
+	for i, img := range req.Images {
+		images[i] = img.Image
+	}
+	tags := make([]string, len(req.Tags))
+	for i, tag := range req.Tags {
+		tags[i] = tag.Tag
+	}
+
+	err = h.workUseCase.UpdateWork(
+		workID,
+		req.Title,
+		req.Description,
+		req.Thumbnail,
+		req.WorkUrl,
+		req.MovieUrl,
+		req.GroupID,
+		req.Security,
+		images,
+		tags,
+	)
 	if err != nil {
 		e := response.UnwrapError(err)
 		_ = response.ReturnErrorResponse(w, e.Code, e.Message)

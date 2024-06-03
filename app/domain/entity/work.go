@@ -1,15 +1,8 @@
 package entity
 
+import "github.com/google/uuid"
+
 type (
-	WorkTable struct {
-		ID          string `db:"id"`
-		Title       string `db:"title"`
-		Description string `db:"description"`
-		Thumbnail   string `db:"thumbnail"`
-		WorkUrl     string `db:"work_url"`
-		MovieUrl    string `db:"movie_url"`
-		Security    int    `db:"security"`
-	}
 	Tag struct {
 		ID     string `db:"id"`
 		WorkID string `db:"work_id"`
@@ -29,23 +22,93 @@ type (
 		Tags        []string `db:"tag"`
 		WorkUrl     string   `db:"url"`
 		MovieUrl    string   `db:"movie_url"`
+		GroupID     string   `db:"group_id"`
 		Security    int      `db:"security"`
 	}
 	ReadWorksList struct {
 		WorkID      string `db:"id"`
+		UserId      string `db:"user_id"`
+		DisplayName string `db:"display_name"`
 		Title       string `db:"title"`
 		Thumbnail   string `db:"thumbnail"`
 		Description string `db:"description"`
 		Icon        string `db:"icon"`
 	}
+	InsertWork struct {
+		ID          string `db:"id"`
+		Title       string `db:"title"`
+		Description string `db:"description"`
+		Thumbnail   string `db:"thumbnail"`
+		WorkUrl     string `db:"work_url"`
+		MovieUrl    string `db:"movie_url"`
+		GroupID     string `db:"group_id"`
+		Security    int    `db:"security"`
+	}
 	UpdateWork struct {
-		Title       string   `db:"title"`
-		Description string   `db:"description"`
-		Thumbnail   string   `db:"thumbnail"`
-		ImageURLs   []string `db:"image_url"`
-		Tags        []string `db:"tag"`
-		WorkUrl     string   `db:"work_url"`
-		MovieUrl    string   `db:"movie_url"`
-		Security    int      `db:"security"`
+		ID          string `db:"id"`
+		Title       string `db:"title"`
+		Description string `db:"description"`
+		Thumbnail   string `db:"thumbnail"`
+		WorkUrl     string `db:"work_url"`
+		MovieUrl    string `db:"movie_url"`
+		GroupID     string `db:"group_id"`
+		Security    int    `db:"security"`
 	}
 )
+
+func NewInsertWork(
+	title string,
+	description string,
+	thumbnail string,
+	workUrl string,
+	movieUrl string,
+	groupID string,
+	security int) InsertWork {
+	return InsertWork{
+		ID:          uuid.NewString(),
+		Title:       title,
+		Description: description,
+		Thumbnail:   thumbnail,
+		WorkUrl:     workUrl,
+		MovieUrl:    movieUrl,
+		GroupID:     groupID,
+		Security:    security,
+	}
+}
+
+func NewUpdateWork(
+	id string,
+	title string,
+	description string,
+	thumbnail string,
+	workUrl string,
+	movieUrl string,
+	groupID string,
+	security int) UpdateWork {
+	return UpdateWork{
+		ID:          id,
+		Title:       title,
+		Description: description,
+		Thumbnail:   thumbnail,
+		WorkUrl:     workUrl,
+		MovieUrl:    movieUrl,
+		GroupID:     groupID,
+		Security:    security,
+	}
+}
+
+func NewImage(workID string, image string) Image {
+	return Image{
+		ID:     uuid.NewString(),
+		WorkID: workID,
+		Image:  image,
+	}
+}
+
+func NewTag(workID string, tag string) Tag {
+	return Tag{
+		ID:     uuid.NewString(),
+		WorkID: workID,
+		Tag:    tag,
+	}
+}

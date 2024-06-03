@@ -7,3 +7,8 @@ type Token struct {
 type UserID struct {
 	UserID string `json:"userID"`
 }
+
+type SignInResponse struct {
+	UserID string `json:"userID"`
+	Token  string `json:"token"`
+}
