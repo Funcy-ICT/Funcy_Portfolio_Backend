@@ -160,8 +160,11 @@ func (ur *userinfoRepositoryImpl) UpdateUserinfo(userinfo *entity.UpdateUserinfo
 		// user icon
 		{
 			_, err := tx.NamedExec(
-				"UPDATE users SET icon=:icon;",
-				userinfo.Profile,
+				"UPDATE users SET icon=:icon WHERE id=:user_id;",
+				map[string]interface{}{
+					"icon":    userinfo.Profile.Icon,
+					"user_id": userinfo.Profile.UserID,
+				},
 			)
 			if err != nil {
 				tx.Rollback()
