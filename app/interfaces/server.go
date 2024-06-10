@@ -85,10 +85,21 @@ func (s *Server) Route() {
 		mux.Get("/health/jwt", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("ok"))
 		})
-		mux.Post("/work", workHandler.CreateWork)
-		mux.Delete("/work/{workID}", workHandler.DeleteWork)
-		mux.Put("/work/{workID}", workHandler.UpdateWork)
-		mux.Get("/userinfo/{userID}", userinfoHandler.GetUserinfo)
+
+		// Work関連のエンドポイント
+		mux.Route("/work", func(r chi.Router) {
+			r.Post("/", workHandler.CreateWork)
+			r.Delete("/{workID}", workHandler.DeleteWork)
+			r.Put("/{workID}", workHandler.UpdateWork)
+		})
+
+		// ユーザー情報関連のエンドポイント
+		mux.Route("/userinfo", func(r chi.Router) {
+			r.Get("/{userID}", userinfoHandler.GetUserinfo)
+			r.Put("/{userID}", userinfoHandler.PutUserinfo)
+		})
+
+		// グループ関連のエンドポイント
 		mux.Post("/group", groupHandler.CreateGroup)
 	})
 

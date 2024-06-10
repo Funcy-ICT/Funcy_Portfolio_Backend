@@ -17,10 +17,12 @@ func NewWorkRepository(db *sqlx.DB) repository.WorkRepository {
 }
 
 func (ur *workRepositoryImpl) InsertWork(userID string, work *entity.InsertWork, images *[]entity.Image, tags *[]entity.Tag) error {
-	log.Println("nannde")
-	tx, _ := ur.db.Beginx()
+	tx, err := ur.db.Beginx()
+	if err != nil {
+		return err
+	}
 
-	_, err := tx.Exec(`INSERT INTO works (id, user_id, title, description, thumbnail, url, movie_url, security, group_id) 
+	_, err = tx.Exec(`INSERT INTO works (id, user_id, title, description, thumbnail, url, movie_url, security, group_id) 
 VALUES (?,?,?,?,?,?,?,?,?)`,
 		work.ID, userID, work.Title, work.Description, work.Thumbnail, work.WorkUrl, work.MovieUrl, work.Security, work.GroupID)
 	if err != nil {
@@ -107,9 +109,12 @@ func (ur *workRepositoryImpl) SelectWork(workID string) (*entity.ReadWork, error
 }
 
 func (ur *workRepositoryImpl) DeleteWork(workID string) error {
-	tx, _ := ur.db.Beginx()
+	tx, err := ur.db.Beginx()
+	if err != nil {
+		return err
+	}
 
-	_, err := tx.Exec("DELETE FROM funcy.works WHERE id=?", workID)
+	_, err = tx.Exec("DELETE FROM funcy.works WHERE id=?", workID)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -135,9 +140,12 @@ func (ur *workRepositoryImpl) DeleteWork(workID string) error {
 }
 
 func (ur *workRepositoryImpl) UpdateWork(work *entity.UpdateWork, images *[]entity.Image, tags *[]entity.Tag) error {
-	tx, _ := ur.db.Beginx()
+	tx, err := ur.db.Beginx()
+	if err != nil {
+		return err
+	}
 
-	_, err := tx.Exec("UPDATE funcy.works SET title=?, description=?, thumbnail=?, url=?, movie_url=?, security=?, group_id=? WHERE id=?", work.Title, work.Description, work.Thumbnail, work.WorkUrl, work.MovieUrl, work.Security, work.GroupID, work.ID)
+	_, err = tx.Exec("UPDATE funcy.works SET title=?, description=?, thumbnail=?, url=?, movie_url=?, security=?, group_id=? WHERE id=?", work.Title, work.Description, work.Thumbnail, work.WorkUrl, work.MovieUrl, work.Security, work.GroupID, work.ID)
 	if err != nil {
 		tx.Rollback()
 		return err

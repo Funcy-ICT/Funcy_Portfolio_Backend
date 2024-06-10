@@ -187,6 +187,15 @@ paths:
       description: マイページを更新する
       security:
         - Bearer: []
+      parameters:
+        - $ref: '#/components/parameters/userID'
+      requestBody:
+        description: ユーザー情報の更新リクエストボディ
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserInfoRequest'
       responses:
         '200':
           description: OK
@@ -585,8 +594,85 @@ components:
       required:
         - userID
         - password
+    UpdateUserInfoRequest:
+      type: object
+      properties:
+        icon:
+          type: string
+          description: アイコン画像URL
+        header:
+          type: string
+          description: ヘッダー画像URL
+        user_description:
+          type: string
+          description: ユーザーの自己紹介文
+        sns:
+          type: array
+          items:
+            type: string
+          description: SNSのURLリスト
+        skills:
+          type: array
+          items:
+            type: string
+          description: スキルリスト
+        displayName:
+          type: string
+          description: 表示名
+      required:
+        - icon
+        - header
+        - user_description
+        - displayName
     CreateWorkRequest:
-      $ref: '#/components/schemas/work'
+      type: object
+      properties:
+        title:
+          type: string
+          description: タイトル
+          example: 【実録】FUNcyの闇
+        description:
+          type: string
+          description: 説明文
+          example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+        thumbnail:
+          type: string
+          description: サムネイル
+          example: https://pbs.twimg.com/hoge/fuga
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              image:
+                type: string
+                description: 画像
+                example: ijaigjjasopdfjgoiwergio
+        work_url:
+          type: string
+          description: 作品のURL
+          example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+        movie_url:
+          type: string
+          description: 動画のURL
+          example: https://youtube.com/hoge/fuga
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              tag:
+                type: string
+                description: タグ
+                example: ほげ
+        group_id:
+          type: string
+          description: どのグループに投稿するか
+          example: FUNcy
+        security:
+          type: integer
+          description: 公開設定（0:非公開，1:公開，2:下書き保存）
+          example: 1
     CreateWorkResponse:
       properties:
         workID:
@@ -595,7 +681,54 @@ components:
     ReadWorkResponse:
       $ref: '#/components/schemas/work'
     UpdateWorkRequest:
-      $ref: '#/components/schemas/work'
+      type: object
+      properties:
+        title:
+          type: string
+          description: タイトル
+          example: 【実録】FUNcyの闇
+        description:
+          type: string
+          description: 説明文
+          example: 我々取材班はFUNcyチームのメンバーがタイムカードを切って残業している姿を激写してしまった．
+        thumbnail:
+          type: string
+          description: サムネイル
+          example: https://pbs.twimg.com/hoge/fuga
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              image:
+                type: string
+                description: 画像
+                example: ijaigjjasopdfjgoiwergio
+        work_url:
+          type: string
+          description: 作品のURL
+          example: https://pbs.twimg.com/profile_images/1380218148649984001/27Mwc0-G_400x400.jpg
+        movie_url:
+          type: string
+          description: 動画のURL
+          example: https://youtube.com/hoge/fuga
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              tag:
+                type: string
+                description: タグ
+                example: ほげ
+        group_id:
+          type: string
+          description: どのグループに投稿するか
+          example: FUNcy
+        security:
+          type: integer
+          description: 公開設定（0:非公開，1:公開，2:下書き保存）
+          example: 1
     ReadWorksResponse:
       properties:
         works:
