@@ -3,6 +3,7 @@ package usecase
 import (
 	"backend/app/domain/entity"
 	"backend/app/domain/repository"
+	"fmt"
 )
 
 type GroupUseCase struct {
@@ -17,13 +18,15 @@ func NewGroupUseCase(groupRepository repository.GroupRepository) *GroupUseCase {
 
 func (u *GroupUseCase) CreateGroup(name string, description string, leaderEmail string, icon string, groupSkills []string) (groupId string, err error) {
 	group := entity.NewGroup(name, description, leaderEmail, icon)
-	groupSkillsEntity := []entity.GroupSkill{}
-	for _, skill := range groupSkills {
-		groupSkillsEntity = append(groupSkillsEntity, *entity.NewGroupSkill(group.GroupID, skill))
+
+	groupSkillsEntity := make([]entity.GroupSkill, len(groupSkills))
+	for i, skill := range groupSkills {
+		groupSkillsEntity[i] = *entity.NewGroupSkill(group.GroupID, skill)
 	}
+
 	err = u.groupRepository.InsertGroup(group, &groupSkillsEntity)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to insert group: %w", err)
 	}
 	return group.GroupID, nil
 }
