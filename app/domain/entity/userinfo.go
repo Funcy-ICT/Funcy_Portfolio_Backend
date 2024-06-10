@@ -6,3 +6,9 @@ type Userinfo struct {
 	Skills       *[]*Skill
 	SNS          *[]*SNS
 }
+
+type UpdateUserinfo struct {
+	Profile *Profile
+	Skills  *[]*Skill
+	SNS     *[]*SNS
+}
