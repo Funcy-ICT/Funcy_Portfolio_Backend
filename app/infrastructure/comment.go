@@ -46,7 +46,7 @@ func (ur *commentRepositoryImpl) SelectCommentsByWorksID(worksID string) ([]*ent
 
 		err := rows.Scan(
 			&comment.ID, &comment.UserID, &comment.WorksID, &comment.Content, &createdAt, &updatedAt,
-			&comment.UserDisplayName, &comment.UserIcon,
+			&comment.CommentUserProfile.DisplayName, &comment.CommentUserProfile.Icon,
 		)
 		if err != nil {
 			return nil, err
