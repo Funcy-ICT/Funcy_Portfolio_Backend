@@ -21,20 +21,34 @@ func NewCommentRepository(db *sqlx.DB) CommentRepository {
 }
 
 func (ur *commentRepositoryImpl) SelectCommentsByWorksID(worksID string) ([]*entity.Comment, error) {
-	var rows *sqlx.Rows
-	var err error
-	rows, err = ur.db.Queryx("SELECT id, user_id, works_id, content, created_at, updated_at FROM comment WHERE works_id = ?", worksID)
+	query := `
+		SELECT 
+			c.id, c.user_id, c.works_id, c.content, c.created_at, c.updated_at,
+			u.display_name, u.icon
+		FROM 
+			comment c
+		JOIN 
+			users u ON c.user_id = u.id
+		WHERE 
+			c.works_id = ?
+	`
+
+	rows, err := ur.db.Queryx(query, worksID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	// time.time型への変換
 	var comments []*entity.Comment
 	for rows.Next() {
 		var comment entity.Comment
 		var createdAt, updatedAt []byte
-		if err := rows.Scan(&comment.ID, &comment.UserID, &comment.WorksID, &comment.Content, &createdAt, &updatedAt); err != nil {
+
+		err := rows.Scan(
+			&comment.ID, &comment.UserID, &comment.WorksID, &comment.Content, &createdAt, &updatedAt,
+			&comment.UserDisplayName, &comment.UserIcon,
+		)
+		if err != nil {
 			return nil, err
 		}
 		comment.CreatedAt, err = time.Parse("2006-01-02 15:04:05", string(createdAt))
@@ -45,8 +59,10 @@ func (ur *commentRepositoryImpl) SelectCommentsByWorksID(worksID string) ([]*ent
 		if err != nil {
 			return nil, err
 		}
+
 		comments = append(comments, &comment)
 	}
+
 	return comments, nil
 }
 
