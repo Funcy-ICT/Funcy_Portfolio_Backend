@@ -3,6 +3,9 @@ package usecase
 import (
 	"backend/app/domain/entity"
 	"backend/app/domain/repository"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 type CommentUseCase struct {
@@ -19,4 +22,20 @@ func NewCommentUsecace(
 
 func (u *CommentUseCase) GetComment(workID string) ([]*entity.Comment, error) {
 	return u.commentRepository.SelectCommentsByWorksID(workID)
+}
+
+func (u *CommentUseCase) CreateComment(userID, worksID, text string) (string, error) {
+	comment := &entity.Comment{
+		ID:        uuid.NewString(),
+		UserID:    userID,
+		WorksID:   worksID,
+		Text:      text,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	err := u.commentRepository.InsertComment(comment)
+	if err != nil {
+		return "", err
+	}
+	return comment.ID, nil
 }

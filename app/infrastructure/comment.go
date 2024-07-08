@@ -9,6 +9,7 @@ import (
 
 type CommentRepository interface {
 	SelectCommentsByWorksID(worksID string) ([]*entity.Comment, error)
+	InsertComment(comment *entity.Comment) error
 }
 
 type commentRepositoryImpl struct {
@@ -47,4 +48,10 @@ func (ur *commentRepositoryImpl) SelectCommentsByWorksID(worksID string) ([]*ent
 		comments = append(comments, &comment)
 	}
 	return comments, nil
+}
+
+func (ur *commentRepositoryImpl) InsertComment(comment *entity.Comment) error {
+	_, err := ur.db.Exec(`INSERT INTO comment (id, user_id, works_id, text, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
+		comment.ID, comment.UserID, comment.WorksID, comment.Text, comment.CreatedAt, comment.UpdatedAt)
+	return err
 }
