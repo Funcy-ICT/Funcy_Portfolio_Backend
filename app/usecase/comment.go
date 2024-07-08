@@ -24,12 +24,12 @@ func (u *CommentUseCase) GetComment(workID string) ([]*entity.Comment, error) {
 	return u.commentRepository.SelectCommentsByWorksID(workID)
 }
 
-func (u *CommentUseCase) CreateComment(userID, worksID, text string) (string, error) {
+func (u *CommentUseCase) CreateComment(userID, worksID, content string) (string, error) {
 	comment := &entity.Comment{
 		ID:        uuid.NewString(),
 		UserID:    userID,
 		WorksID:   worksID,
-		Text:      text,
+		Content:   content,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}

@@ -23,7 +23,7 @@ func NewCommentRepository(db *sqlx.DB) CommentRepository {
 func (ur *commentRepositoryImpl) SelectCommentsByWorksID(worksID string) ([]*entity.Comment, error) {
 	var rows *sqlx.Rows
 	var err error
-	rows, err = ur.db.Queryx("SELECT id, user_id, works_id, text, created_at, updated_at FROM comment WHERE works_id = ?", worksID)
+	rows, err = ur.db.Queryx("SELECT id, user_id, works_id, content, created_at, updated_at FROM comment WHERE works_id = ?", worksID)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (ur *commentRepositoryImpl) SelectCommentsByWorksID(worksID string) ([]*ent
 	for rows.Next() {
 		var comment entity.Comment
 		var createdAt, updatedAt []byte
-		if err := rows.Scan(&comment.ID, &comment.UserID, &comment.WorksID, &comment.Text, &createdAt, &updatedAt); err != nil {
+		if err := rows.Scan(&comment.ID, &comment.UserID, &comment.WorksID, &comment.Content, &createdAt, &updatedAt); err != nil {
 			return nil, err
 		}
 		comment.CreatedAt, err = time.Parse("2006-01-02 15:04:05", string(createdAt))
@@ -51,7 +51,7 @@ func (ur *commentRepositoryImpl) SelectCommentsByWorksID(worksID string) ([]*ent
 }
 
 func (ur *commentRepositoryImpl) InsertComment(comment *entity.Comment) error {
-	_, err := ur.db.Exec(`INSERT INTO comment (id, user_id, works_id, text, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
-		comment.ID, comment.UserID, comment.WorksID, comment.Text, comment.CreatedAt, comment.UpdatedAt)
+	_, err := ur.db.Exec(`INSERT INTO comment (id, user_id, works_id, content, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
+		comment.ID, comment.UserID, comment.WorksID, comment.Content, comment.CreatedAt, comment.UpdatedAt)
 	return err
 }

@@ -60,12 +60,7 @@ func (h *CommentHandler) CreateComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID := req.UserID // ユーザーIDの取得方法は環境に合わせて調整
-	// userID := r.Context().Value("user_id").(string) // ユーザーIDの取得方法は環境に合わせて調整
-	worksID := req.WorksID
-	text := req.Text
-
-	commentID, err := h.commentUseCase.CreateComment(userID, worksID, text)
+	commentID, err := h.commentUseCase.CreateComment(req.UserID, req.WorksID, req.Content)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
