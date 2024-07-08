@@ -107,7 +107,7 @@ func (s *Server) Route() {
 		mux.Post("/group", groupHandler.CreateGroup)
 
 		// コメント関連のエンドポイント
-		mux.Post("/comment/{worksID}", commentHandler.CreateComment)
+		mux.Post("/comment", commentHandler.CreateComment)
 	})
 
 	// コメント関連のエンドポイント
