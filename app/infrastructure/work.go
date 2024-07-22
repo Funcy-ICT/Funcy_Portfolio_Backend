@@ -16,13 +16,15 @@ func NewWorkRepository(db *sqlx.DB) repository.WorkRepository {
 	return &workRepositoryImpl{db: db}
 }
 
-func (ur *workRepositoryImpl) InsertWork(userID string, work *entity.WorkTable, images *[]entity.Image, tags *[]entity.Tag) error {
-	log.Println("nannde")
-	tx, _ := ur.db.Beginx()
+func (ur *workRepositoryImpl) InsertWork(userID string, work *entity.InsertWork, images *[]entity.Image, tags *[]entity.Tag) error {
+	tx, err := ur.db.Beginx()
+	if err != nil {
+		return err
+	}
 
-	_, err := tx.Exec(`INSERT INTO works (id,user_id,title,description,thumbnail,url,movie_url,security) 
-VALUES (?,?,?,?,?,?,?,?)`,
-		work.ID, userID, work.Title, work.Description, work.Thumbnail, work.WorkUrl, work.MovieUrl, work.Security)
+	_, err = tx.Exec(`INSERT INTO works (id, user_id, title, description, thumbnail, url, movie_url, security, group_id) 
+VALUES (?,?,?,?,?,?,?,?,?)`,
+		work.ID, userID, work.Title, work.Description, work.Thumbnail, work.WorkUrl, work.MovieUrl, work.Security, work.GroupID)
 	if err != nil {
 		return err
 	}
@@ -49,7 +51,7 @@ func (ur *workRepositoryImpl) SelectWorks(numberOfWorks uint) (*[]*entity.ReadWo
 	works := new([]*entity.ReadWorksList)
 	err := ur.db.Select(
 		works,
-		"SELECT works.id, works.title, works.description, works.thumbnail, users.icon FROM works INNER JOIN work_images ON works.id = work_images.work_id INNER JOIN users ON works.user_id = users.id ORDER BY works.created_at DESC LIMIT ?",
+		"SELECT works.id, works.user_id, users.display_name, works.title, works.description, works.thumbnail, users.icon FROM works INNER JOIN users ON works.user_id = users.id ORDER BY works.created_at DESC LIMIT ?",
 		numberOfWorks)
 	if err != nil {
 		return nil, err
@@ -101,7 +103,7 @@ func (ur *workRepositoryImpl) SelectWork(workID string) (*entity.ReadWork, error
 	work := new(entity.ReadWork)
 
 	if err := ur.db.Get(work,
-		"SELECT works.title, works.description, works.user_id, works.thumbnail, works.url, works.movie_url, works.security from works where works.id = ?", workID); err != nil {
+		"SELECT works.title, works.description, works.user_id, works.thumbnail, works.url, works.movie_url, works.security, works.group_id from works where works.id = ?", workID); err != nil {
 		return nil, err
 	}
 
@@ -121,9 +123,12 @@ func (ur *workRepositoryImpl) SelectWork(workID string) (*entity.ReadWork, error
 }
 
 func (ur *workRepositoryImpl) DeleteWork(workID string) error {
-	tx, _ := ur.db.Beginx()
+	tx, err := ur.db.Beginx()
+	if err != nil {
+		return err
+	}
 
-	_, err := tx.Exec("DELETE FROM funcy.works WHERE id=?", workID)
+	_, err = tx.Exec("DELETE FROM funcy.works WHERE id=?", workID)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -148,10 +153,13 @@ func (ur *workRepositoryImpl) DeleteWork(workID string) error {
 	return nil
 }
 
-func (ur *workRepositoryImpl) UpdateWork(work *entity.WorkTable, images *[]entity.Image, tags *[]entity.Tag) error {
-	tx, _ := ur.db.Beginx()
+func (ur *workRepositoryImpl) UpdateWork(work *entity.UpdateWork, images *[]entity.Image, tags *[]entity.Tag) error {
+	tx, err := ur.db.Beginx()
+	if err != nil {
+		return err
+	}
 
-	_, err := tx.Exec("UPDATE funcy.works SET title=?, description=?, thumbnail=?, url=?, movie_url=?, security=? WHERE id=?", work.Title, work.Description, work.Thumbnail, work.WorkUrl, work.MovieUrl, work.Security, work.ID)
+	_, err = tx.Exec("UPDATE funcy.works SET title=?, description=?, thumbnail=?, url=?, movie_url=?, security=?, group_id=? WHERE id=?", work.Title, work.Description, work.Thumbnail, work.WorkUrl, work.MovieUrl, work.Security, work.GroupID, work.ID)
 	if err != nil {
 		tx.Rollback()
 		return err

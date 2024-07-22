@@ -11,7 +11,8 @@ services:
       - ./:/app
     working_dir: /app
     ports:
-      - 9000:9000
+      - "9000:9000"
+      - "3004:3004"
     networks:
       - app
     depends_on:

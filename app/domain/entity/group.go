@@ -4,8 +4,16 @@ import "github.com/google/uuid"
 
 type (
 	Group struct {
-		GroupID string `db:"id"`
-		Name    string `db:"name"`
+		GroupID     string `db:"id"`
+		Name        string `db:"name"`
+		Description string `db:"description"`
+		LeaderEmail string `db:"leader_email"`
+		Icon        string `db:"icon"`
+	}
+
+	GroupSkill struct {
+		GroupID   string `db:"group_id"`
+		SkillName string `db:"skill_name"`
 	}
 
 	GroupMember struct {
@@ -17,9 +25,19 @@ type (
 	}
 )
 
-func NewGroup(name string) *Group {
+func NewGroup(name string, description string, leaderEmail string, icon string) *Group {
 	return &Group{
-		GroupID: uuid.NewString(),
-		Name:    name,
+		GroupID:     uuid.NewString(),
+		Name:        name,
+		Description: description,
+		LeaderEmail: leaderEmail,
+		Icon:        icon,
+	}
+}
+
+func NewGroupSkill(groupId string, skillName string) *GroupSkill {
+	return &GroupSkill{
+		GroupID:   groupId,
+		SkillName: skillName,
 	}
 }

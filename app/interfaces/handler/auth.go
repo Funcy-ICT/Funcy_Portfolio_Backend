@@ -8,6 +8,7 @@ import (
 	"backend/app/interfaces/request"
 	"backend/app/interfaces/response"
 	"backend/app/packages/utils"
+	"backend/app/packages/utils/auth"
 	"backend/app/usecase"
 )
 
@@ -68,7 +69,7 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.authUseCase.Login(req)
+	user, token, err := h.authUseCase.Login(req)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
@@ -82,8 +83,20 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, cookie)
 
+	res := response.UserID{
+		UserID: user.UserID,
+	}
+
+	resBody, err := json.Marshal(res)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
 	w.WriteHeader(http.StatusOK)
+	w.Write(resBody)
 }
 
 func (h *AuthHandler) SignInMobile(w http.ResponseWriter, r *http.Request) {
@@ -99,14 +112,15 @@ func (h *AuthHandler) SignInMobile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.authUseCase.LoginMobile(req)
+	user, token, err := h.authUseCase.LoginMobile(req)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	res := response.Token{
-		Token: token,
+	res := response.SignInResponse{
+		UserID: user.UserID,
+		Token:  token,
 	}
 	resBody, err := json.Marshal(res)
 	if err != nil {
@@ -133,14 +147,25 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.authUseCase.CheckMail(req)
+	err = h.authUseCase.CheckMail(req)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
+	jwt, _ := auth.IssueUserToken(req.UserID)
+
+	cookie := &http.Cookie{
+		Name:     "token",
+		Value:    jwt,
+		Path:     "/",
+		HttpOnly: true,
+		//Secure: true,
+	}
+	http.SetCookie(w, cookie)
+
 	res := response.Token{
-		Token: token,
+		Token: jwt,
 	}
 	resBody, err := json.Marshal(res)
 	if err != nil {
