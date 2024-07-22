@@ -26,8 +26,6 @@ type (
 	}
 	ReadWorks struct {
 		WorkID      string `json:"workID"`
-		WorkUserID  string `json:"userID"`
-		UserName    string `json:"user_name"`
 		Title       string `json:"title"`
 		Thumbnail   string `json:"thumbnail"`
 		Description string `json:"description"`
