@@ -17,6 +17,10 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+type processor interface {
+	doSth() (error, string)
+}
+
 type Server struct {
 	Router *chi.Mux
 	db     *sqlx.DB
@@ -40,9 +44,10 @@ func (s *Server) Init() error {
 
 func (s *Server) Route() {
 	s.Router.Use(cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"},
-		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		AllowedOrigins:   []string{"http://*", "https://*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		AllowCredentials: true,
 	}).Handler)
 
 	//DI
@@ -54,6 +59,14 @@ func (s *Server) Route() {
 	workUseCase := usecase.NewWorkUseCase(workRepository)
 	workHandler := handler.NewWorkHandler(workUseCase)
 
+	userinfoRepository := infrastructure.NewUserInfoRepository(s.db)
+	userinfoUseCase := usecase.NewUserinfoUsecace(userinfoRepository, workRepository)
+	userinfoHandler := handler.NewUserinfoHandler(userinfoUseCase)
+
+	groupRepository := infrastructure.NewGroupRepository(s.db)
+	groupUseCase := usecase.NewGroupUseCase(groupRepository)
+	groupHandler := handler.NewGroupHandler(groupUseCase)
+
 	s.Router.Use(middleware.Logger)
 	//接続確認
 	s.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -64,7 +77,7 @@ func (s *Server) Route() {
 	//応急処置
 	s.Router.Post("/mlogin", authHandler.SignInMobile)
 	//アカウント認証
-	s.Router.Post("/auth/code", authHandler.AuthCode)
+	s.Router.Post("/authcode", authHandler.AuthCode)
 
 	// auth
 	s.Router.Group(func(mux chi.Router) {
@@ -72,8 +85,22 @@ func (s *Server) Route() {
 		mux.Get("/health/jwt", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("ok"))
 		})
-		mux.Post("/work", workHandler.CreateWork)
-		mux.Delete("/work/{workID}", workHandler.DeleteWork)
+
+		// Work関連のエンドポイント
+		mux.Route("/work", func(r chi.Router) {
+			r.Post("/", workHandler.CreateWork)
+			r.Delete("/{workID}", workHandler.DeleteWork)
+			r.Put("/{workID}", workHandler.UpdateWork)
+		})
+
+		// ユーザー情報関連のエンドポイント
+		mux.Route("/userinfo", func(r chi.Router) {
+			r.Get("/{userID}", userinfoHandler.GetUserinfo)
+			r.Put("/{userID}", userinfoHandler.PutUserinfo)
+		})
+
+		// グループ関連のエンドポイント
+		mux.Post("/group", groupHandler.CreateGroup)
 	})
 
 	// no auth

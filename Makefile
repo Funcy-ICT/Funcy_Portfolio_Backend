@@ -13,6 +13,11 @@ up:   ## local実行
 down:  ## docker compose down
 	$(DOCKER) down
 
+
+.PHONY: file-server
+file-server:  ## file-server up
+	docker exec funcy_portfolio_backend-api-1 ./file-server/file
+
 .PHONY: demo
 demo:  ## demo
 	$(DOCKER) up --build

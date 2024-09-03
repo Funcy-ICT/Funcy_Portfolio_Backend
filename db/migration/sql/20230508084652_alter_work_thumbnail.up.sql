@@ -1,0 +1,1 @@
+ALTER TABLE `works` ADD thumbnail VARCHAR(128);

@@ -31,6 +31,7 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
 		return
 	}
+
 	me, _ := utils.Validate(req)
 	if me != nil {
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
@@ -38,7 +39,27 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userID := r.Context().Value("user_id")
-	workID, err := h.workUseCase.CreateWork(req, userID.(string))
+	images := make([]string, len(req.Images))
+	for i, img := range req.Images {
+		images[i] = img.Image
+	}
+	tags := make([]string, len(req.Tags))
+	for i, tag := range req.Tags {
+		tags[i] = tag.Tag
+	}
+
+	workID, err := h.workUseCase.CreateWork(
+		userID.(string),
+		req.Title,
+		req.Description,
+		req.Thumbnail,
+		req.WorkUrl,
+		req.MovieUrl,
+		req.GroupID,
+		req.Security,
+		images,
+		tags,
+	)
 
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
@@ -69,7 +90,7 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	raw, err := h.workUseCase.ReadWork(workID)
+	raw, user, err := h.workUseCase.ReadWork(workID)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
@@ -92,9 +113,14 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 	res := &response.ReadWork{
 		Title:       raw.Title,
 		Description: raw.Description,
+		Thumbnail:   raw.Thumbnail,
+		UserIcon:    user.Icon,
+		UserName:    user.DisplayName,
+		WorkUserID:  raw.UserId,
 		Images:      images,
-		WorkURL:     raw.WorkURL,
+		WorkUrl:     raw.WorkUrl,
 		MovieUrl:    raw.MovieUrl,
+		GroupID:     raw.GroupID,
 		Tags:        tags,
 		Security:    raw.Security,
 	}
@@ -124,20 +150,21 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 		numberOfWorks = uint(n)
 	}
 
-	works, err := h.workUseCase.ReadWorks(numberOfWorks)
+	tag := r.URL.Query().Get("tag")
+
+	works, err := h.workUseCase.ReadWorks(numberOfWorks, tag)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
 	}
 
-	worksRes := new([]response.ReadWorks)
-	for i := range *works {
-		n := (*works)[i]
-		newWorkRes := response.ReadWorks{WorkID: n.WorkID, Title: n.Title, Image: n.Images, Description: n.Description, Icon: n.Icon}
-		*worksRes = append(*worksRes, newWorkRes)
+	worksRes := []response.ReadWorks{}
+	for _, work := range *works {
+		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon}
+		worksRes = append(worksRes, newWorkRes)
 	}
 
 	res := response.ReadWorksList{
-		Works: *worksRes,
+		Works: worksRes,
 	}
 
 	resBody, err := json.Marshal(res)
@@ -155,6 +182,64 @@ func (h *WorkHandler) DeleteWork(w http.ResponseWriter, r *http.Request) {
 	workID := chi.URLParam(r, "workID")
 
 	err := h.workUseCase.DeleteWork(workID)
+	if err != nil {
+		e := response.UnwrapError(err)
+		_ = response.ReturnErrorResponse(w, e.Code, e.Message)
+		return
+	}
+
+	res := response.WorkID{
+		WorkID: workID,
+	}
+
+	resBody, err := json.Marshal(res)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
+	w.WriteHeader(http.StatusOK)
+	w.Write(resBody)
+}
+
+func (h *WorkHandler) UpdateWork(w http.ResponseWriter, r *http.Request) {
+	var req request.UpdateWorkRequest
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
+		return
+	}
+	me, _ := utils.Validate(req)
+	if me != nil {
+		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
+		return
+	}
+
+	workID := chi.URLParam(r, "workID")
+
+	images := make([]string, len(req.Images))
+	for i, img := range req.Images {
+		images[i] = img.Image
+	}
+	tags := make([]string, len(req.Tags))
+	for i, tag := range req.Tags {
+		tags[i] = tag.Tag
+	}
+
+	err = h.workUseCase.UpdateWork(
+		workID,
+		req.Title,
+		req.Description,
+		req.Thumbnail,
+		req.WorkUrl,
+		req.MovieUrl,
+		req.GroupID,
+		req.Security,
+		images,
+		tags,
+	)
 	if err != nil {
 		e := response.UnwrapError(err)
 		_ = response.ReturnErrorResponse(w, e.Code, e.Message)

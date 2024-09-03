@@ -13,16 +13,21 @@ type (
 	ReadWork struct {
 		Title       string  `json:"title"`
 		Description string  `json:"description"`
+		Thumbnail   string  `json:"thumbnail"`
+		UserIcon    string  `json:"user_icon"`
+		UserName    string  `json:"user_name"`
+		WorkUserID  string  `json:"userID"`
 		Images      []Image `json:"images"`
-		WorkURL     string  `json:"work_url"`
+		WorkUrl     string  `json:"work_url"`
 		MovieUrl    string  `json:"movie_url"`
 		Tags        []Tag   `json:"tags"`
+		GroupID     string  `json:"group_id"`
 		Security    int     `json:"security"`
 	}
 	ReadWorks struct {
 		WorkID      string `json:"workID"`
 		Title       string `json:"title"`
-		Image       string `json:"image"`
+		Thumbnail   string `json:"thumbnail"`
 		Description string `json:"description"`
 		Icon        string `json:"icon"`
 	}

@@ -7,10 +7,11 @@ import (
 	"backend/app/packages/utils"
 	"backend/app/packages/utils/auth"
 	"backend/app/packages/utils/mail"
-	"github.com/google/uuid"
 	"math/rand"
 	"strconv"
 	"time"
+
+	"github.com/google/uuid"
 
 	"errors"
 )
@@ -74,49 +75,47 @@ func (a *AuthUseCase) CreateAccount(r request.SignUpRequest) (string, error) {
 	return userID.String(), nil
 }
 
-func (a *AuthUseCase) Login(r request.SignInRequest) (string, error) {
+func (a *AuthUseCase) Login(r request.SignInRequest) (*entity.User, string, error) {
 	user, err := a.authRepository.GetPassword(r.Mail)
 	if err != nil {
-		return "", err
+		return nil, "", err
 	}
 	err = utils.CompareHashAndPassword(user.Password, r.Password)
 	if err != nil {
-		return "", errors.New("not match password")
+		return nil, "", errors.New("not match password")
 	}
 
 	jwt, _ := auth.IssueUserToken(user.UserID)
-	return jwt, nil
+	return &user, jwt, nil
 }
 
-func (a *AuthUseCase) LoginMobile(r request.SignInRequest) (string, error) {
+func (a *AuthUseCase) LoginMobile(r request.SignInRequest) (*entity.User, string, error) {
 	user, err := a.authRepository.GetPassword(r.Mail)
 	if err != nil {
-		return "", err
+		return nil, "", err
 	}
 	err = utils.CompareHashAndPassword(user.Password, r.Password)
 	if err != nil {
-		return "", errors.New("not match password")
+		return nil, "", errors.New("not match password")
 	}
 
 	jwt, _ := auth.IssueMobileUserToken(user.UserID)
-	return jwt, nil
+	return &user, jwt, nil
 }
 
-func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) (string, error) {
+func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) error {
 
 	code, err := a.authRepository.CheckMailAddr(r.UserID)
 	if err != nil {
-		return "", err
+		return err
 	}
 	if code != r.Code {
-		return "", errors.New("not match code")
+		return errors.New("not match code")
 	}
 	err = a.authRepository.UpdateStatus(r.UserID)
 	if code != r.Code {
-		return "", err
+		return err
 	}
 
-	token, err := a.authRepository.GetToken(r.UserID)
-
-	return token, nil
+	return nil
 }

@@ -7,5 +7,4 @@ type AuthRepository interface {
 	GetPassword(mail string) (entity.User, error)
 	CheckMailAddr(userID string) (string, error)
 	UpdateStatus(userID string) error
-	GetToken(userID string) (string, error)
 }
