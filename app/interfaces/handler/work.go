@@ -150,14 +150,16 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 		numberOfWorks = uint(n)
 	}
 
-	works, err := h.workUseCase.ReadWorks(numberOfWorks)
+	tag := r.URL.Query().Get("tag")
+
+	works, err := h.workUseCase.ReadWorks(numberOfWorks, tag)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
 	}
 
 	worksRes := []response.ReadWorks{}
 	for _, work := range *works {
-		newWorkRes := response.ReadWorks{WorkID: work.WorkID, WorkUserID: work.UserId, UserName: work.DisplayName, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon}
+		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon}
 		worksRes = append(worksRes, newWorkRes)
 	}
 
