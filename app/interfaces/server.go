@@ -63,6 +63,10 @@ func (s *Server) Route() {
 	userinfoUseCase := usecase.NewUserinfoUsecace(userinfoRepository, workRepository)
 	userinfoHandler := handler.NewUserinfoHandler(userinfoUseCase)
 
+	commentRepository := infrastructure.NewCommentRepository(s.db)
+	commentUseCase := usecase.NewCommentUsecace(commentRepository)
+	commentHandler := handler.NewCommentHandler(commentUseCase)
+
 	groupRepository := infrastructure.NewGroupRepository(s.db)
 	groupUseCase := usecase.NewGroupUseCase(groupRepository)
 	groupHandler := handler.NewGroupHandler(groupUseCase)
@@ -101,7 +105,13 @@ func (s *Server) Route() {
 
 		// グループ関連のエンドポイント
 		mux.Post("/group", groupHandler.CreateGroup)
+
+		// コメント関連のエンドポイント
+		mux.Post("/comment", commentHandler.CreateComment)
 	})
+
+	// コメント関連のエンドポイント
+	s.Router.Get("/comment/{worksID}", commentHandler.GetComment)
 
 	// no auth
 	s.Router.Get("/work/{workID}", workHandler.ReadWork)

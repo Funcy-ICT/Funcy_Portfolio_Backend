@@ -17,6 +17,8 @@ tags:
     description: グループ関連API
   - name: search
     description: 検索関連API
+  - name: comment
+    description: コメント関連API
 paths:
   /sign/up:
     post:
@@ -469,6 +471,79 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /comment/{workID}:
+    get:
+      tags:
+        - comment
+      summary: ワークに紐づくコメント情報取得API
+      description: URIのクエリパラメーターに記述されたwork_idをもとに作品の検索を行います.一致したコメント情報を返却します．
+      parameters:
+        - $ref: '#/components/parameters/workID'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCommentsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /comment:
+    post:
+      tags:
+        - comment
+      summary: ワークにコメント投稿API
+      description: bodyに記述された情報をもとにコメント投稿を行います.
+      security:
+        - Bearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  description: userID
+                  example: user_1
+                works_id:
+                  type: string
+                  description: 作品ID
+                  example: work_1
+                content:
+                  type: string
+                  description: 本文
+                  example: comment
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCommentsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /:
     get:
       tags:
@@ -741,6 +816,63 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/simpleWorkInformation'
+    GetCommentsResponse:
+      properties:
+        works:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommentInformation'
+    CommentInformation:
+      properties:
+        works:
+          type: string
+          description: コメントID
+          example: comment_1
+        UserID:
+          type: string
+          description: ユーザーID
+          example: user_1
+        worksID:
+          type: string
+          description: 作品ID
+          example: work_1
+        Content:
+          type: string
+          description: 本文
+          example: Great work!
+        CreatedAt:
+          type: string
+          format: date-time
+          description: タイムスタンプ(作成時)
+        UpdatedAt:
+          type: string
+          format: date-time
+          description: タイムスタンプ(更新時)
+        CommentUserProfile:
+          type: object
+          properties:
+            DisplayName:
+              type: string
+              description: ユーザーの表示名
+              example: John Doe
+            Icon:
+              type: string
+              description: ユーザーのアイコン
+              example: icon1.png
+    PostCommentsResponse:
+      properties:
+        status:
+          name:
+            type: string
+            description: ステータス
+          message:
+            type: string
+            description: メッセージ
+            example: Comment added successfully
+          comment_id:
+            type: string
+            description: コメントID
+            example: comment765
     CreateGroupRequest:
       properties:
         name:
@@ -957,6 +1089,13 @@ components:
       in: path
       description: 作品ID
       required: true
+      schema:
+        type: string
+    content:
+      name: content
+      in: path
+      required: true
+      description: 本文
       schema:
         type: string
     number:
