@@ -36,18 +36,24 @@ echo "Copying files to remote server..."
 scp -i ~/Desktop/funcy_gcp \
     ./build/main \
     ./build/file-server \
-    $GOPATH/bin/migrate \
     $USER@$APIDOMAIN:~/scp/app/
 
-# deployment and authorisation of binary files
+# transfer db directory recursively
+echo "Copying db directory to remote server..."
+scp -r -i ~/Desktop/funcy_gcp \
+    ./db/migration \
+    $USER@$APIDOMAIN:~/scp/app/
+
+# deployment and setup of files
 echo "Setting up files on remote server..."
 ssh $USER@$APIDOMAIN -i ~/Desktop/funcy_gcp '
     sudo mkdir -p /go/src/app
-    sudo rm -f /go/src/app/main /go/src/app/file-server /go/src/app/migrate
+    sudo rm -rf /go/src/app/*
 
     sudo cp -r ~/scp/app/* /go/src/app/
 
-    for file in main file-server migrate; do
+    # Set execute permissions only for binary files
+    for file in main file-server; do
         if [ -f "/go/src/app/$file" ]; then
             sudo chmod +x "/go/src/app/$file"
         fi
