@@ -1,5 +1,8 @@
 #!/bin/bash
 # env
+
+# Specify the SSH key path with the -i option (adjust the funcy-gcp part as needed)
+
 if [ ! -f .env.deploy ]; then
     echo "Error: .env.deploy file not found"
     exit 1
@@ -47,15 +50,15 @@ scp -r -i ~/Desktop/funcy_gcp \
 # deployment and setup of files
 echo "Setting up files on remote server..."
 ssh $USER@$APIDOMAIN -i ~/Desktop/funcy_gcp '
-    sudo mkdir -p /go/src/app
-    sudo rm -rf /go/src/app/*
+    sudo mkdir -p /var/www/funcy-backend/app
+    sudo rm -rf /var/www/funcy-backend/app/*
 
-    sudo cp -r ~/scp/app/* /go/src/app/
+    sudo cp -r ~/scp/app/* /var/www/funcy-backend/app
 
     # Set execute permissions only for binary files
     for file in main file-server; do
-        if [ -f "/go/src/app/$file" ]; then
-            sudo chmod +x "/go/src/app/$file"
+        if [ -f "/var/www/funcy-backend/$file" ]; then
+            sudo chmod +x "/var/www/funcy-backend/$file"
         fi
     done
 
