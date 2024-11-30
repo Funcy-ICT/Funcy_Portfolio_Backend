@@ -31,7 +31,7 @@ func (h *UserinfoHandler) GetUserinfo(w http.ResponseWriter, r *http.Request) {
 	userinfo, works, err := h.userinfoUseCase.GetUserinfo(userID)
 	if err != nil {
 		log.Println(err)
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		http.Error(w, "Failed to fetch user information", http.StatusInternalServerError)
 		return
 	}
 

@@ -5,6 +5,7 @@ import (
 	"backend/app/domain/repository"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
 )
 
 type userinfoRepositoryImpl struct {
@@ -28,7 +29,7 @@ func (ur *userinfoRepositoryImpl) SelectUserinfoByUserID(userID string) (*entity
 				"WHERE UP.user_id = ? LIMIT 1;",
 			userID)
 		if err != nil {
-			return nil, err
+			return nil, errors.New("failed to retrieve user profile")
 		}
 	}
 
