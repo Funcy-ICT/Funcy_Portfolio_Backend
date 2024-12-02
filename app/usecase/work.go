@@ -3,6 +3,7 @@ package usecase
 import (
 	"backend/app/domain/entity"
 	"backend/app/domain/repository"
+	"errors"
 )
 
 type WorkUseCase struct {
@@ -75,12 +76,12 @@ func (w *WorkUseCase) ReadWorks(numberOfWorks uint, tag string) (*[]*entity.Read
 func (w *WorkUseCase) ReadWork(workID string) (*entity.ReadWork, *entity.User, error) {
 	work, err := w.workRepository.SelectWork(workID)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, errors.New("failed to retrieve work")
 	}
 
 	user, err := w.workRepository.SelectWorkUser(work.UserId)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, errors.New("failed to retrieve work user")
 	}
 
 	return work, user, nil
