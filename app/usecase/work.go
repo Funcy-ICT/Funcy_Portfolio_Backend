@@ -59,14 +59,14 @@ func (w *WorkUseCase) ReadWorks(numberOfWorks uint, tag string) (*[]*entity.Read
 	if len(tag) == 0 {
 		works, err := w.workRepository.SelectWorks(numberOfWorks)
 		if err != nil {
-			return &[]*entity.ReadWorksList{}, err
+			return &[]*entity.ReadWorksList{}, errors.New("failed to retrieve works")
 		}
 
 		return works, nil
 	} else {
 		works, err := w.workRepository.SelectWorksByTag(numberOfWorks, tag)
 		if err != nil {
-			return &[]*entity.ReadWorksList{}, err
+			return &[]*entity.ReadWorksList{}, errors.New("failed to retrieve works by tag")
 		}
 
 		return works, nil
