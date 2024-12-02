@@ -45,7 +45,7 @@ func (ur *userinfoRepositoryImpl) SelectUserinfoByUserID(userID string) (*entity
 				"WHERE user_id = ?;",
 			userID)
 		if err != nil {
-			return nil, err
+			return nil, errors.New("failed to retrieve joined groups")
 		}
 	}
 
@@ -57,7 +57,7 @@ func (ur *userinfoRepositoryImpl) SelectUserinfoByUserID(userID string) (*entity
 			"SELECT skill_name, user_id FROM skills WHERE user_id = ?;",
 			userID)
 		if err != nil {
-			return nil, err
+			return nil, errors.New("failed to retrieve skills")
 		}
 	}
 
@@ -69,7 +69,7 @@ func (ur *userinfoRepositoryImpl) SelectUserinfoByUserID(userID string) (*entity
 			"SELECT user_id, sns FROM sns WHERE user_id = ?;",
 			userID)
 		if err != nil {
-			return nil, err
+			return nil, errors.New("failed to retrieve sns")
 		}
 	}
 
