@@ -4,6 +4,7 @@ import (
 	"backend/app/domain/entity"
 	"backend/app/domain/repository"
 	"errors"
+	"fmt"
 )
 
 type WorkUseCase struct {
@@ -126,7 +127,7 @@ func (w *WorkUseCase) UpdateWork(
 
 	err := w.workRepository.UpdateWork(&work, &imagesEntity, &tagsEntity)
 	if err != nil {
-		return errors.New("failed to update work")
+		return fmt.Errorf("failed to update work: %w", err)
 	}
 
 	return nil

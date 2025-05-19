@@ -3,7 +3,7 @@ package usecase
 import (
 	"backend/app/domain/entity"
 	"backend/app/domain/repository"
-	"errors"
+	"fmt"
 )
 
 type GroupUseCase struct {
@@ -26,7 +26,7 @@ func (u *GroupUseCase) CreateGroup(name string, description string, leaderEmail 
 
 	err = u.groupRepository.InsertGroup(group, &groupSkillsEntity)
 	if err != nil {
-		return "", errors.New("failed to insert group")
+		return "", fmt.Errorf("failed to insert group: %w", err)
 	}
 	return group.GroupID, nil
 }
