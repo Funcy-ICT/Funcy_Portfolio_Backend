@@ -78,7 +78,7 @@ func (a *AuthUseCase) CreateAccount(r request.SignUpRequest) (string, error) {
 func (a *AuthUseCase) Login(r request.SignInRequest) (*entity.User, string, error) {
 	user, err := a.authRepository.GetPassword(r.Mail)
 	if err != nil {
-		return nil, "", err
+		return nil, "", errors.New("not match email")
 	}
 	err = utils.CompareHashAndPassword(user.Password, r.Password)
 	if err != nil {
@@ -92,7 +92,7 @@ func (a *AuthUseCase) Login(r request.SignInRequest) (*entity.User, string, erro
 func (a *AuthUseCase) LoginMobile(r request.SignInRequest) (*entity.User, string, error) {
 	user, err := a.authRepository.GetPassword(r.Mail)
 	if err != nil {
-		return nil, "", err
+		return nil, "", errors.New("not match email")
 	}
 	err = utils.CompareHashAndPassword(user.Password, r.Password)
 	if err != nil {
@@ -107,14 +107,14 @@ func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) error {
 
 	code, err := a.authRepository.CheckMailAddr(r.UserID)
 	if err != nil {
-		return err
+		return errors.New("not match email")
 	}
 	if code != r.Code {
 		return errors.New("not match code")
 	}
 	err = a.authRepository.UpdateStatus(r.UserID)
 	if code != r.Code {
-		return err
+		return errors.New("not match code")
 	}
 
 	return nil

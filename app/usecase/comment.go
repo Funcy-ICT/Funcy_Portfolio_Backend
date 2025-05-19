@@ -3,6 +3,7 @@ package usecase
 import (
 	"backend/app/domain/entity"
 	"backend/app/domain/repository"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -35,7 +36,7 @@ func (u *CommentUseCase) CreateComment(userID, worksID, content string) (string,
 	}
 	err := u.commentRepository.InsertComment(comment)
 	if err != nil {
-		return "", err
+		return "", errors.New("failed to insert comment")
 	}
 	return comment.ID, nil
 }
