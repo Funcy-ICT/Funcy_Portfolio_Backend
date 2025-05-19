@@ -6,6 +6,7 @@ import (
 	"backend/app/packages/utils"
 	"backend/app/usecase"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -62,7 +63,8 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 	)
 
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		log.Printf("CreateWork failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -72,7 +74,8 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 
 	resBody, err := json.Marshal(res)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		log.Printf("CreateWork failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -83,16 +86,17 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
-
 	workID := strings.TrimPrefix(r.URL.Path, "/work/")
 	if workID == "" {
+		log.Printf("ReadWork failed: workID is empty")
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
 		return
 	}
 
 	raw, user, err := h.workUseCase.ReadWork(workID)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		log.Printf("ReadWork failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -127,7 +131,8 @@ func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 
 	resBody, err := json.Marshal(res)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		log.Printf("ReadWork failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -154,7 +159,9 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 
 	works, err := h.workUseCase.ReadWorks(numberOfWorks, tag)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		log.Printf("ReadWorks failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
+		return
 	}
 
 	worksRes := []response.ReadWorks{}
@@ -169,7 +176,9 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 
 	resBody, err := json.Marshal(res)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		log.Printf("ReadWorks failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -183,8 +192,8 @@ func (h *WorkHandler) DeleteWork(w http.ResponseWriter, r *http.Request) {
 
 	err := h.workUseCase.DeleteWork(workID)
 	if err != nil {
-		e := response.UnwrapError(err)
-		_ = response.ReturnErrorResponse(w, e.Code, e.Message)
+		log.Printf("DeleteWork failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -194,7 +203,8 @@ func (h *WorkHandler) DeleteWork(w http.ResponseWriter, r *http.Request) {
 
 	resBody, err := json.Marshal(res)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		log.Printf("DeleteWork failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -208,11 +218,13 @@ func (h *WorkHandler) UpdateWork(w http.ResponseWriter, r *http.Request) {
 	var req request.UpdateWorkRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
+		log.Printf("UpdateWork failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 	me, _ := utils.Validate(req)
 	if me != nil {
+		log.Printf("UpdateWork failed: validation error: %v", me)
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
 		return
 	}
@@ -241,8 +253,8 @@ func (h *WorkHandler) UpdateWork(w http.ResponseWriter, r *http.Request) {
 		tags,
 	)
 	if err != nil {
-		e := response.UnwrapError(err)
-		_ = response.ReturnErrorResponse(w, e.Code, e.Message)
+		log.Printf("UpdateWork failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -252,7 +264,8 @@ func (h *WorkHandler) UpdateWork(w http.ResponseWriter, r *http.Request) {
 
 	resBody, err := json.Marshal(res)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		log.Printf("UpdateWork failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
 		return
 	}
 

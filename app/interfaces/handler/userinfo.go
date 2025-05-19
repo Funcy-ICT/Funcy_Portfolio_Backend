@@ -30,8 +30,8 @@ func (h *UserinfoHandler) GetUserinfo(w http.ResponseWriter, r *http.Request) {
 	// do
 	userinfo, works, err := h.userinfoUseCase.GetUserinfo(userID)
 	if err != nil {
-		log.Println(err)
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		log.Printf("GetUserinfo failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -71,7 +71,9 @@ func (h *UserinfoHandler) GetUserinfo(w http.ResponseWriter, r *http.Request) {
 
 	resBody, err := json.Marshal(res)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		log.Printf("GetUserinfo failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -86,24 +88,28 @@ func (h *UserinfoHandler) PutUserinfo(w http.ResponseWriter, r *http.Request) {
 	var req request.UpdateUserInfo
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
+		log.Printf("PutUserinfo failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
 	ve, _ := utils.Validate(req)
 	if ve != nil {
+		log.Printf("PutUserinfo failed: validation error: %v", ve)
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), ve)
 		return
 	}
 
 	if err := h.userinfoUseCase.UpdateUserinfo(userID, &req); err != nil {
-		response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		log.Printf("PutUserinfo failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
+		return
 	}
 
 	userinfo, works, err := h.userinfoUseCase.GetUserinfo(userID)
 	if err != nil {
-		log.Println(err)
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		log.Printf("PutUserinfo failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -143,7 +149,9 @@ func (h *UserinfoHandler) PutUserinfo(w http.ResponseWriter, r *http.Request) {
 
 	resBody, err := json.Marshal(res)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		log.Printf("PutUserinfo failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
