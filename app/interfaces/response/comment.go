@@ -5,3 +5,7 @@ type CreateCommentResponse struct {
 	Message    string `json:"message"`
 	ID         string `json:"id,omitempty"`
 }
+
+type CommentID struct {
+	CommentID string `json:"id"`
+}

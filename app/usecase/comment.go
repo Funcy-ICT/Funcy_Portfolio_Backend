@@ -39,3 +39,7 @@ func (u *CommentUseCase) CreateComment(userID, worksID, content string) (string,
 	}
 	return comment.ID, nil
 }
+
+func (u *CommentUseCase) DeleteComment(commentID string) error {
+	return u.commentRepository.DeleteComment(commentID)
+}

@@ -83,3 +83,29 @@ func (h *CommentHandler) CreateComment(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(resBody)
 }
+
+func (h *CommentHandler) DeleteComment(w http.ResponseWriter, r *http.Request) {
+	commentID := chi.URLParam(r, "commentID")
+
+	err := h.commentUseCase.DeleteComment(commentID)
+	if err != nil {
+		e := response.UnwrapError(err)
+		_ = response.ReturnErrorResponse(w, e.Code, e.Message)
+		return
+	}
+
+	res := response.CommentID{
+		CommentID: commentID,
+	}
+
+	resBody, err := json.Marshal(res)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
+	w.WriteHeader(http.StatusOK)
+	w.Write(resBody)
+}

@@ -10,6 +10,7 @@ import (
 type CommentRepository interface {
 	SelectCommentsByWorksID(worksID string) ([]*entity.Comment, error)
 	InsertComment(comment *entity.Comment) error
+	DeleteComment(commentID string) error
 }
 
 type commentRepositoryImpl struct {
@@ -70,4 +71,23 @@ func (ur *commentRepositoryImpl) InsertComment(comment *entity.Comment) error {
 	_, err := ur.db.Exec(`INSERT INTO comment (id, user_id, works_id, content, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
 		comment.ID, comment.UserID, comment.WorksID, comment.Content, comment.CreatedAt, comment.UpdatedAt)
 	return err
+}
+
+func (ur *commentRepositoryImpl) DeleteComment(commentID string) error {
+	tx, err := ur.db.Beginx()
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec("DELETE FROM funcy.comment WHERE id=?", commentID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+
+	return nil
 }
