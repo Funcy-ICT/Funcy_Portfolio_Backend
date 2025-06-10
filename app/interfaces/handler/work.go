@@ -9,8 +9,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"strings"
-
 	"github.com/go-chi/chi"
 )
 
@@ -84,7 +82,7 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 
 func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
 
-	workID := strings.TrimPrefix(r.URL.Path, "/work/")
+	workID := chi.URLParam(r, "workID")
 	if workID == "" {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
 		return
@@ -155,6 +153,7 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 	works, err := h.workUseCase.ReadWorks(numberOfWorks, tag)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	worksRes := []response.ReadWorks{}
@@ -170,6 +169,7 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 	resBody, err := json.Marshal(res)
 	if err != nil {
 		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
