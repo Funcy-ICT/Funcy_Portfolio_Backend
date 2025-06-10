@@ -60,7 +60,7 @@ func (s *Server) Route() {
 	workHandler := handler.NewWorkHandler(workUseCase)
 
 	userinfoRepository := infrastructure.NewUserInfoRepository(s.db)
-	userinfoUseCase := usecase.NewUserinfoUsecace(userinfoRepository, workRepository)
+	userinfoUseCase := usecase.NewUserinfoUseCase(userinfoRepository, workRepository)
 	userinfoHandler := handler.NewUserinfoHandler(userinfoUseCase)
 
 	commentRepository := infrastructure.NewCommentRepository(s.db)

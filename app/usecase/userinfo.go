@@ -11,7 +11,7 @@ type UserinfoUseCase struct {
 	workRepository     repository.WorkRepository
 }
 
-func NewUserinfoUsecace(
+func NewUserinfoUseCase(
 	userinfoRepository repository.UserinfoRepository,
 	workRepository repository.WorkRepository,
 ) *UserinfoUseCase {
