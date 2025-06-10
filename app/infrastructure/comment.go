@@ -2,21 +2,17 @@ package infrastructure
 
 import (
 	"backend/app/domain/entity"
+	"backend/app/domain/repository"
 	"time"
 
 	"github.com/jmoiron/sqlx"
 )
 
-type CommentRepository interface {
-	SelectCommentsByWorksID(worksID string) ([]*entity.Comment, error)
-	InsertComment(comment *entity.Comment) error
-}
-
 type commentRepositoryImpl struct {
 	db *sqlx.DB
 }
 
-func NewCommentRepository(db *sqlx.DB) CommentRepository {
+func NewCommentRepository(db *sqlx.DB) repository.CommentRepository {
 	return &commentRepositoryImpl{db: db}
 }
 
