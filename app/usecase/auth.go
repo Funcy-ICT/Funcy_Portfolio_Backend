@@ -85,7 +85,10 @@ func (a *AuthUseCase) Login(r request.SignInRequest) (*entity.User, string, erro
 		return nil, "", errors.New("not match password")
 	}
 
-	jwt, _ := auth.IssueUserToken(user.UserID)
+	jwt, err := auth.IssueUserToken(user.UserID)
+	if err != nil {
+		return nil, "", errors.New("failed to generate JWT token")
+	}
 	return &user, jwt, nil
 }
 
@@ -99,7 +102,10 @@ func (a *AuthUseCase) LoginMobile(r request.SignInRequest) (*entity.User, string
 		return nil, "", errors.New("not match password")
 	}
 
-	jwt, _ := auth.IssueMobileUserToken(user.UserID)
+	jwt, err := auth.IssueMobileUserToken(user.UserID)
+	if err != nil {
+		return nil, "", errors.New("failed to generate JWT token")
+	}
 	return &user, jwt, nil
 }
 
