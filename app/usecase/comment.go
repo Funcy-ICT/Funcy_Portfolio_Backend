@@ -25,15 +25,20 @@ func (u *CommentUseCase) GetComment(workID string) ([]*entity.Comment, error) {
 }
 
 func (u *CommentUseCase) CreateComment(userID, worksID, content string) (string, error) {
+	commentID, err := uuid.NewRandom()
+	if err != nil {
+		return "", err
+	}
+
 	comment := &entity.Comment{
-		ID:        uuid.NewString(),
+		ID:        commentID.String(),
 		UserID:    userID,
 		WorksID:   worksID,
 		Content:   content,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	err := u.commentRepository.InsertComment(comment)
+	err = u.commentRepository.InsertComment(comment)
 	if err != nil {
 		return "", err
 	}
