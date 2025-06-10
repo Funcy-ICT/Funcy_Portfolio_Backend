@@ -44,7 +44,7 @@ func UploadImage() gin.HandlerFunc {
 
 			err = c.SaveUploadedFile(file, fileName)
 			if err != nil {
-				log.Println("[ERROR] Faild Bind JSON　\n ", err)
+				log.Println("[ERROR] Failed to bind JSON　\n ", err)
 				c.JSON(http.StatusBadRequest, "Request is error")
 				view.ReturnErrorResponse(
 					c,
