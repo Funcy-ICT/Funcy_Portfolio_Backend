@@ -113,7 +113,7 @@ func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) error {
 		return errors.New("not match code")
 	}
 	err = a.authRepository.UpdateStatus(r.UserID)
-	if code != r.Code {
+	if err != nil {
 		return err
 	}
 

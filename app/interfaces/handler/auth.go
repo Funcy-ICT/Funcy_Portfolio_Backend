@@ -153,7 +153,11 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jwt, _ := auth.IssueUserToken(req.UserID)
+	jwt, err := auth.IssueUserToken(req.UserID)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "bad request")
+		return
+	}
 
 	cookie := &http.Cookie{
 		Name:     "token",
