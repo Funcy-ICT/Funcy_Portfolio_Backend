@@ -29,7 +29,11 @@ func (h *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
 		return
 	}
-	me, _ := utils.Validate(req)
+	me, err := utils.Validate(req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "bad request")
+		return
+	}
 	if me != nil {
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
 		return
@@ -63,7 +67,11 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
 		return
 	}
-	me, _ := utils.Validate(req)
+	me, err := utils.Validate(req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "bad request")
+		return
+	}
 	if me != nil {
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
 		return
@@ -106,7 +114,11 @@ func (h *AuthHandler) SignInMobile(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
 		return
 	}
-	me, _ := utils.Validate(req)
+	me, err := utils.Validate(req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "bad request")
+		return
+	}
 	if me != nil {
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
 		return
@@ -141,7 +153,11 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
 		return
 	}
-	me, _ := utils.Validate(req)
+	me, err := utils.Validate(req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "bad request")
+		return
+	}
 	if me != nil {
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
 		return

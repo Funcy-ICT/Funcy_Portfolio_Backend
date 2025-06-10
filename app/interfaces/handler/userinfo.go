@@ -90,7 +90,11 @@ func (h *UserinfoHandler) PutUserinfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ve, _ := utils.Validate(req)
+	ve, err := utils.Validate(req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "bad request")
+		return
+	}
 	if ve != nil {
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), ve)
 		return
