@@ -148,7 +148,7 @@ func (ur *userinfoRepositoryImpl) UpdateUserinfo(userinfo *entity.UpdateUserinfo
 		// user profile
 		{
 			_, err := tx.NamedExec(
-				"UPDATE user_profile SET user_id=:user_id, header_image=:header_image, bio=:bio;",
+				"UPDATE user_profile SET header_image=:header_image, bio=:bio WHERE user_id=:user_id;",
 				userinfo.Profile,
 			)
 			if err != nil {
@@ -157,13 +157,14 @@ func (ur *userinfoRepositoryImpl) UpdateUserinfo(userinfo *entity.UpdateUserinfo
 			}
 		}
 
-		// user icon
+		// user icon and display_name
 		{
 			_, err := tx.NamedExec(
-				"UPDATE users SET icon=:icon WHERE id=:user_id;",
+				"UPDATE users SET icon=:icon, display_name=:display_name WHERE id=:user_id;",
 				map[string]interface{}{
-					"icon":    userinfo.Profile.Icon,
-					"user_id": userinfo.Profile.UserID,
+					"icon":         userinfo.Profile.Icon,
+					"display_name": userinfo.Profile.DisplayName,
+					"user_id":      userinfo.Profile.UserID,
 				},
 			)
 			if err != nil {
