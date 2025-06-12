@@ -66,6 +66,7 @@ func (h *UserinfoHandler) GetUserinfo(w http.ResponseWriter, r *http.Request) {
 		Group:           *group,
 		Skills:          *skills,
 		DisplayName:     userinfo.Profile.DisplayName,
+		Course:          userinfo.Course,
 		Works:           *worksRes,
 	}
 
@@ -138,6 +139,7 @@ func (h *UserinfoHandler) PutUserinfo(w http.ResponseWriter, r *http.Request) {
 		Group:           *group,
 		Skills:          *skills,
 		DisplayName:     userinfo.Profile.DisplayName,
+		Course:          userinfo.Course,
 		Works:           *worksRes,
 	}
 

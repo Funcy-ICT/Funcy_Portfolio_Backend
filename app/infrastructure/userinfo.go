@@ -16,12 +16,15 @@ func NewUserInfoRepository(db *sqlx.DB) repository.UserinfoRepository {
 }
 
 func (ur *userinfoRepositoryImpl) SelectUserinfoByUserID(userID string) (*entity.Userinfo, error) {
-	// select Profile
-	profile := new(entity.Profile)
+	// select Profile and Course
+	var profileWithCourse struct {
+		entity.Profile
+		Course string `db:"course"`
+	}
 	{
 		err := ur.db.Get(
-			profile,
-			"SELECT UP.user_id, UP.header_image, UP.bio, U.display_name, U.icon "+
+			&profileWithCourse,
+			"SELECT UP.user_id, UP.header_image, UP.bio, U.display_name, U.icon, U.course "+
 				"FROM user_profile AS UP "+
 				"INNER JOIN users AS U "+
 				"ON UP.user_id = U.id "+
@@ -31,6 +34,8 @@ func (ur *userinfoRepositoryImpl) SelectUserinfoByUserID(userID string) (*entity
 			return nil, err
 		}
 	}
+
+	profile := &profileWithCourse.Profile
 
 	// select Groups
 	groups := new([]*entity.GroupMember)
@@ -77,6 +82,7 @@ func (ur *userinfoRepositoryImpl) SelectUserinfoByUserID(userID string) (*entity
 		JoinedGroups: groups,
 		Skills:       skills,
 		SNS:          sns,
+		Course:       profileWithCourse.Course,
 	}, nil
 }
 
@@ -157,7 +163,7 @@ func (ur *userinfoRepositoryImpl) UpdateUserinfo(userinfo *entity.UpdateUserinfo
 			}
 		}
 
-		// user icon and display_name
+		// user icon
 		{
 			_, err := tx.NamedExec(
 				"UPDATE users SET icon=:icon, display_name=:display_name WHERE id=:user_id;",
