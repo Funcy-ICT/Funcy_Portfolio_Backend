@@ -130,3 +130,12 @@ func (w *WorkUseCase) UpdateWork(
 
 	return nil
 }
+
+func (w *WorkUseCase) ReadWorksByUserID(userID string) (*[]*entity.ReadWorksList, error) {
+	works, err := w.workRepository.SelectWorksByUserID(userID)
+	if err != nil {
+		return &[]*entity.ReadWorksList{}, err
+	}
+
+	return works, nil
+}
