@@ -20,4 +20,5 @@ func init() {
 
 	Server.Use(static.Serve("/", static.LocalFile("./uploadimages", true)))
 	Server.POST("/upload/file", controller.UploadImage())
+	Server.DELETE("/delete/:filename", controller.DeleteImage())
 }
