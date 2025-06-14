@@ -40,7 +40,13 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID := r.Context().Value("user_id")
+	userIDValue := r.Context().Value("user_id")
+	userID, ok := userIDValue.(string)
+	if !ok {
+		_ = response.ReturnErrorResponse(w, http.StatusUnauthorized, "authentication required")
+		return
+	}
+
 	images := make([]string, len(req.Images))
 	for i, img := range req.Images {
 		images[i] = img.Image
@@ -51,7 +57,7 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 	}
 
 	workID, err := h.workUseCase.CreateWork(
-		userID.(string),
+		userID,
 		req.Title,
 		req.Description,
 		req.Thumbnail,
