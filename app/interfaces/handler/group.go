@@ -6,6 +6,7 @@ import (
 	"backend/app/packages/utils"
 	"backend/app/usecase"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -26,19 +27,22 @@ func (h *GroupHandler) CreateGroup(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&req)
 
 	if err != nil {
+		log.Printf("CreateGroup failed: %v", err)
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
 		return
 	}
 
 	me, _ := utils.Validate(req)
 	if me != nil {
+		log.Printf("CreateGroup failed: validation error: %v", me)
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
 		return
 	}
 
 	groupID, err := h.groupUseCase.CreateGroup(req.Name, req.Description, req.LeaderEmail, req.Icon, req.GroupSkills)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		log.Printf("CreateGroup failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -48,7 +52,8 @@ func (h *GroupHandler) CreateGroup(w http.ResponseWriter, r *http.Request) {
 
 	resBody, err := json.Marshal(res)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		log.Printf("CreateGroup failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
