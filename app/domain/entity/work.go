@@ -31,6 +31,7 @@ type (
 		Thumbnail   string `db:"thumbnail"`
 		Description string `db:"description"`
 		Icon        string `db:"icon"`
+		Security    int    `db:"security"`
 	}
 	InsertWork struct {
 		ID          string `db:"id"`

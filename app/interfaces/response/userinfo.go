@@ -8,5 +8,6 @@ type UserInfo struct {
 	Group           []string    `json:"group"`
 	Skills          []string    `json:"skills"`
 	DisplayName     string      `json:"displayName"`
+	Course          string      `json:"course"`
 	Works           []ReadWorks `json:"works"`
 }

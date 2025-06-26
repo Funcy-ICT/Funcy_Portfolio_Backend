@@ -166,7 +166,7 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 
 	worksRes := []response.ReadWorks{}
 	for _, work := range *works {
-		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon}
+		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon, Security: work.Security}
 		worksRes = append(worksRes, newWorkRes)
 	}
 
@@ -274,3 +274,74 @@ func (h *WorkHandler) UpdateWork(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(resBody)
 }
+
+func (h *WorkHandler) ReadWorksByUser(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value("user_id")
+	if userID == nil {
+		_ = response.ReturnErrorResponse(w, http.StatusUnauthorized, "unauthorized")
+		return
+	}
+
+	works, err := h.workUseCase.ReadWorksByUserID(userID.(string))
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	worksRes := []response.ReadWorks{}
+	for _, work := range *works {
+		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon, Security: work.Security}
+		worksRes = append(worksRes, newWorkRes)
+	}
+
+	res := response.ReadWorksList{
+		Works: worksRes,
+	}
+
+	resBody, err := json.Marshal(res)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
+	w.WriteHeader(http.StatusOK)
+	w.Write(resBody)
+}
+
+func (h *WorkHandler) ReadWorksByUserID(w http.ResponseWriter, r *http.Request) {
+	userID := chi.URLParam(r, "userID")
+	if userID == "" {
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "user ID is required")
+		return
+	}
+
+	works, err := h.workUseCase.ReadWorksByUserID(userID)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	worksRes := []response.ReadWorks{}
+	for _, work := range *works {
+		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon, Security: work.Security}
+		worksRes = append(worksRes, newWorkRes)
+	}
+
+	res := response.ReadWorksList{
+		Works: worksRes,
+	}
+
+	resBody, err := json.Marshal(res)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
+	w.WriteHeader(http.StatusOK)
+	w.Write(resBody)
+}
+
