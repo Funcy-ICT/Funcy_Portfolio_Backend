@@ -4,6 +4,7 @@ import (
 	"backend/app/domain/entity"
 	"backend/app/domain/repository"
 	"backend/app/interfaces/request"
+	"fmt"
 )
 
 type UserinfoUseCase struct {
@@ -24,15 +25,15 @@ func NewUserinfoUseCase(
 func (u *UserinfoUseCase) GetUserinfo(userID string) (*entity.Userinfo, *[]*entity.ReadWorksList, error) {
 	userinfo, err := u.userinfoRepository.SelectUserinfoByUserID(userID)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, fmt.Errorf("failed to get userinfo: %w", err)
 	}
 
 	works, err := u.workRepository.SelectWorksByUserID(userID)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, fmt.Errorf("failed to get works: %w", err)
 	}
 
-	return userinfo, works, err
+	return userinfo, works, nil
 }
 
 func (u *UserinfoUseCase) UpdateUserinfo(userID string, userinfo *request.UpdateUserInfo) error {

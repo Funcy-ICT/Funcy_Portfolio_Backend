@@ -27,7 +27,8 @@ func (h *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 	var req request.SignUpRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
+		log.Printf("SignUp failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 	me, err := utils.Validate(req)
@@ -36,13 +37,15 @@ func (h *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if me != nil {
-		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
+		log.Printf("SignUp failed: %v", me)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
 	userID, err := h.authUseCase.CreateAccount(req)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		log.Printf("SignUp failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -51,7 +54,8 @@ func (h *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 	}
 	resBody, err := json.Marshal(res)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		log.Printf("SignUp failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -65,7 +69,8 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 	var req request.SignInRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
+		log.Printf("SignIn failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 	me, err := utils.Validate(req)
@@ -74,13 +79,15 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if me != nil {
-		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
+		log.Printf("SignIn failed: %v", me)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
 	user, token, err := h.authUseCase.Login(req)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		log.Printf("SignIn failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -98,7 +105,8 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 
 	resBody, err := json.Marshal(res)
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		log.Printf("SignIn failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -112,7 +120,8 @@ func (h *AuthHandler) SignInMobile(w http.ResponseWriter, r *http.Request) {
 	var req request.SignInRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
+		log.Printf("SignInMobile failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 	me, err := utils.Validate(req)
@@ -121,13 +130,15 @@ func (h *AuthHandler) SignInMobile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if me != nil {
-		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
+		log.Printf("SignInMobile failed: %v", me)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
 	user, token, err := h.authUseCase.LoginMobile(req)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		log.Printf("SignInMobile failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -137,7 +148,8 @@ func (h *AuthHandler) SignInMobile(w http.ResponseWriter, r *http.Request) {
 	}
 	resBody, err := json.Marshal(res)
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		log.Printf("SignInMobile failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -151,7 +163,8 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 	var req request.AuthCodeRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
+		log.Printf("AuthCode failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 	me, err := utils.Validate(req)
@@ -160,13 +173,15 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if me != nil {
-		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
+		log.Printf("AuthCode failed: %v", me)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
 	err = h.authUseCase.CheckMail(req)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		log.Printf("AuthCode failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -190,7 +205,8 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 	}
 	resBody, err := json.Marshal(res)
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		log.Printf("AuthCode failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 

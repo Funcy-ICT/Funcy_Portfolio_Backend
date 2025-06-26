@@ -29,15 +29,16 @@ func (h *CommentHandler) GetComment(w http.ResponseWriter, r *http.Request) {
 
 	comments, err := h.commentUseCase.GetComment(workID)
 	if err != nil {
-		log.Println(err)
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		log.Printf("GetComment failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
 	// create response
 	resBody, err := json.Marshal(comments)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		log.Printf("GetComment failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -50,7 +51,8 @@ func (h *CommentHandler) CreateComment(w http.ResponseWriter, r *http.Request) {
 	var req request.CreateCommentRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
+		log.Printf("CreateComment failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -60,13 +62,15 @@ func (h *CommentHandler) CreateComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if me != nil {
+		log.Printf("CreateComment failed: validation error: %v", me)
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
 		return
 	}
 
 	commentID, err := h.commentUseCase.CreateComment(req.UserID, req.WorksID, req.Content)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, err.Error())
+		log.Printf("CreateComment failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
@@ -78,7 +82,8 @@ func (h *CommentHandler) CreateComment(w http.ResponseWriter, r *http.Request) {
 
 	resBody, err := json.Marshal(res)
 	if err != nil {
-		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, err.Error())
+		log.Printf("CreateComment failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
 		return
 	}
 

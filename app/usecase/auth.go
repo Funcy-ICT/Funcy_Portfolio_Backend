@@ -7,6 +7,7 @@ import (
 	"backend/app/packages/utils"
 	"backend/app/packages/utils/auth"
 	"backend/app/packages/utils/mail"
+	"fmt"
 	"math/rand"
 	"strconv"
 	"time"
@@ -78,11 +79,11 @@ func (a *AuthUseCase) CreateAccount(r request.SignUpRequest) (string, error) {
 func (a *AuthUseCase) Login(r request.SignInRequest) (*entity.User, string, error) {
 	user, err := a.authRepository.GetPassword(r.Mail)
 	if err != nil {
-		return nil, "", err
+		return nil, "", fmt.Errorf("not match email: %w", err)
 	}
 	err = utils.CompareHashAndPassword(user.Password, r.Password)
 	if err != nil {
-		return nil, "", errors.New("not match password")
+		return nil, "", fmt.Errorf("not match password: %w", err)
 	}
 
 	jwt, err := auth.IssueUserToken(user.UserID)
@@ -95,11 +96,11 @@ func (a *AuthUseCase) Login(r request.SignInRequest) (*entity.User, string, erro
 func (a *AuthUseCase) LoginMobile(r request.SignInRequest) (*entity.User, string, error) {
 	user, err := a.authRepository.GetPassword(r.Mail)
 	if err != nil {
-		return nil, "", err
+		return nil, "", fmt.Errorf("not match email: %w", err)
 	}
 	err = utils.CompareHashAndPassword(user.Password, r.Password)
 	if err != nil {
-		return nil, "", errors.New("not match password")
+		return nil, "", fmt.Errorf("not match password: %w", err)
 	}
 
 	jwt, err := auth.IssueMobileUserToken(user.UserID)
@@ -113,10 +114,10 @@ func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) error {
 
 	code, err := a.authRepository.CheckMailAddr(r.UserID)
 	if err != nil {
-		return err
+		return fmt.Errorf("not match email: %w", err)
 	}
 	if code != r.Code {
-		return errors.New("not match code")
+		return fmt.Errorf("not match code: %w", err)
 	}
 	err = a.authRepository.UpdateStatus(r.UserID)
 	if err != nil {

@@ -3,6 +3,8 @@ package usecase
 import (
 	"backend/app/domain/entity"
 	"backend/app/domain/repository"
+	"errors"
+	"fmt"
 )
 
 type WorkUseCase struct {
@@ -48,7 +50,7 @@ func (w *WorkUseCase) CreateWork(
 
 	err := w.workRepository.InsertWork(userId, &work, &imagesEntity, &tagsEntity)
 	if err != nil {
-		return "", err
+		return "", errors.New("failed to insert work")
 	}
 
 	return work.ID, nil
@@ -58,14 +60,14 @@ func (w *WorkUseCase) ReadWorks(numberOfWorks uint, tag string) (*[]*entity.Read
 	if len(tag) == 0 {
 		works, err := w.workRepository.SelectWorks(numberOfWorks)
 		if err != nil {
-			return &[]*entity.ReadWorksList{}, err
+			return &[]*entity.ReadWorksList{}, errors.New("failed to get works")
 		}
 
 		return works, nil
 	} else {
 		works, err := w.workRepository.SelectWorksByTag(numberOfWorks, tag)
 		if err != nil {
-			return &[]*entity.ReadWorksList{}, err
+			return &[]*entity.ReadWorksList{}, errors.New("failed to get works by tag")
 		}
 
 		return works, nil
@@ -75,12 +77,12 @@ func (w *WorkUseCase) ReadWorks(numberOfWorks uint, tag string) (*[]*entity.Read
 func (w *WorkUseCase) ReadWork(workID string) (*entity.ReadWork, *entity.User, error) {
 	work, err := w.workRepository.SelectWork(workID)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, errors.New("failed to get work")
 	}
 
 	user, err := w.workRepository.SelectWorkUser(work.UserId)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, errors.New("failed to get work by user")
 	}
 
 	return work, user, nil
@@ -125,8 +127,18 @@ func (w *WorkUseCase) UpdateWork(
 
 	err := w.workRepository.UpdateWork(&work, &imagesEntity, &tagsEntity)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to update work: %w", err)
 	}
 
 	return nil
 }
+
+func (w *WorkUseCase) ReadWorksByUserID(userID string) (*[]*entity.ReadWorksList, error) {
+	works, err := w.workRepository.SelectWorksByUserID(userID)
+	if err != nil {
+		return &[]*entity.ReadWorksList{}, err
+	}
+
+	return works, nil
+}
+

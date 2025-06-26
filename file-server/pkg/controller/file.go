@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -85,5 +86,39 @@ func UploadImage() gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, UploadResponse{URLs: urls})
+	}
+}
+
+func DeleteImage() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		fileName := c.Param("filename")
+
+		if fileName == "" {
+			view.ReturnErrorResponse(
+				c,
+				http.StatusBadRequest,
+				"Bad Request",
+				"filename is required",
+			)
+			return
+		}
+
+		// uploadimagesディレクトリから削除
+		filePath := fmt.Sprintf("uploadimages/%s", fileName)
+
+		err := os.Remove(filePath)
+		if err != nil {
+			log.Printf("[ERROR] Failed to delete file: %s, error: %v\n", filePath, err)
+			view.ReturnErrorResponse(
+				c,
+				http.StatusInternalServerError,
+				"Internal Server Error",
+				"Failed to delete file",
+			)
+			return
+		}
+
+		log.Printf("[INFO] Successfully deleted file: %s\n", filePath)
+		c.JSON(http.StatusOK, gin.H{"message": "File deleted successfully"})
 	}
 }
