@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 
+	"backend/file-server/pkg/view"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
