@@ -51,7 +51,7 @@ func (ur *workRepositoryImpl) SelectWorks(numberOfWorks uint) (*[]*entity.ReadWo
 	works := new([]*entity.ReadWorksList)
 	err := ur.db.Select(
 		works,
-		"SELECT works.id, works.title, works.description, works.thumbnail, users.icon FROM works INNER JOIN users ON works.user_id = users.id WHERE works.security = 1 ORDER BY works.created_at DESC LIMIT ?",
+		"SELECT works.id, works.title, works.description, works.thumbnail, works.security, users.icon, works.user_id FROM works INNER JOIN users ON works.user_id = users.id WHERE works.security = 1 ORDER BY works.created_at DESC LIMIT ?",
 		numberOfWorks)
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func (ur *workRepositoryImpl) SelectWorksByTag(numberOfWorks uint, tag string) (
 	works := new([]*entity.ReadWorksList)
 	err := ur.db.Select(
 		works,
-		"SELECT works.id, works.title, works.description, works.thumbnail, users.icon FROM works INNER JOIN work_images ON works.id = work_images.work_id INNER JOIN work_tags ON works.id = work_tags.work_id INNER JOIN users ON works.user_id = users.id WHERE work_tags.tag=? ORDER BY works.created_at DESC LIMIT ?",
+		"SELECT works.id, works.title, works.description, works.thumbnail, works.security, users.icon, works.user_id FROM works INNER JOIN work_images ON works.id = work_images.work_id INNER JOIN work_tags ON works.id = work_tags.work_id INNER JOIN users ON works.user_id = users.id WHERE work_tags.tag=? ORDER BY works.created_at DESC LIMIT ?",
 		tag,
 		numberOfWorks)
 	if err != nil {
@@ -90,7 +90,7 @@ func (ur *workRepositoryImpl) SelectWorksByUserID(userID string) (*[]*entity.Rea
 	works := new([]*entity.ReadWorksList)
 	err := ur.db.Select(
 		works,
-		"SELECT works.id, works.title, works.thumbnail, works.description, users.icon FROM works INNER JOIN users ON works.user_id = users.id WHERE works.user_id = ?;",
+		"SELECT works.id, works.title, works.thumbnail, works.description, works.security, users.icon, works.user_id FROM works INNER JOIN users ON works.user_id = users.id WHERE works.user_id = ? ORDER BY works.created_at DESC;",
 		userID)
 	if err != nil {
 		return nil, err
