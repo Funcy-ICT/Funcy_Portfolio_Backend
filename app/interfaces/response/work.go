@@ -30,6 +30,8 @@ type (
 		Thumbnail   string `json:"thumbnail"`
 		Description string `json:"description"`
 		Icon        string `json:"icon"`
+		Security    int    `json:"security"`
+		UserID      string `json:"userID"`
 	}
 	ReadWorksList struct {
 		Works []ReadWorks `json:"works"`
