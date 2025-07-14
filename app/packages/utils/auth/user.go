@@ -20,6 +20,20 @@ type userClaims struct {
 	Exp      int64  `json:"exp"`
 }
 
+type refreshTokenClaims struct {
+	Subject   string `json:"user_id"`
+	IssuedAt  int64  `json:"iat"`
+	Exp       int64  `json:"exp"`
+	TokenType string `json:"token_type"`
+}
+
+var refreshTokenJwt = &hs256jwt{
+	sigKey: []byte("SKNGIonriongINIOnfiar394rjOJGg"),
+	createClaims: func() jwt.Claims {
+		return &refreshTokenClaims{}
+	},
+}
+
 var mobileUserTokenJwt = &hs256jwtMobile{
 	sigKey: []byte("SKNGIonriongINIOnfiar394rjOJGg"),
 	createClaims: func() jwt.Claims {
@@ -37,6 +51,24 @@ func (c *userClaims) Valid() error {
 	if c.IssuedAt > now.Unix() {
 		return fmt.Errorf("issued on future time: %d (now:%d)", c.IssuedAt, now.Unix())
 	}
+	if c.Exp < now.Unix() {
+		return fmt.Errorf("token expired: %d (now:%d)", c.Exp, now.Unix())
+	}
+
+	return nil
+}
+
+func (c *refreshTokenClaims) Valid() error {
+	now := time.Now()
+	if c.IssuedAt > now.Unix() {
+		return fmt.Errorf("issued on future time: %d (now:%d)", c.IssuedAt, now.Unix())
+	}
+	if c.Exp < now.Unix() {
+		return fmt.Errorf("token expired: %d (now:%d)", c.Exp, now.Unix())
+	}
+	if c.TokenType != "refresh" {
+		return fmt.Errorf("invalid token type: %s", c.TokenType)
+	}
 
 	return nil
 }
@@ -48,10 +80,23 @@ func IssueUserToken(userID string) (string, error) {
 	claims := &userClaims{
 		Subject:  userID,
 		IssuedAt: now.Unix(),
-		Exp:      now.Add(30 * time.Minute).Unix(),
+		Exp:      now.Add(2 * time.Hour).Unix(), // 2時間に短縮（リフレッシュトークンと併用）
 	}
 
 	return userTokenJwt.issueToken(claims)
+}
+
+func IssueRefreshToken(userID string) (string, error) {
+	now := time.Now()
+
+	claims := &refreshTokenClaims{
+		Subject:   userID,
+		IssuedAt:  now.Unix(),
+		Exp:       now.Add(7 * 24 * time.Hour).Unix(), // 7日間
+		TokenType: "refresh",
+	}
+
+	return refreshTokenJwt.issueToken(claims)
 }
 
 func VerifyUserToken(tokenStr string) (string, error) {
@@ -60,6 +105,14 @@ func VerifyUserToken(tokenStr string) (string, error) {
 		return "", err
 	}
 	return claims.(*userClaims).Subject, nil
+}
+
+func VerifyRefreshToken(tokenStr string) (string, error) {
+	claims, err := refreshTokenJwt.verifyToken(tokenStr)
+	if err != nil {
+		return "", err
+	}
+	return claims.(*refreshTokenClaims).Subject, nil
 }
 
 func (c *mobileUserClaims) Valid() error {
