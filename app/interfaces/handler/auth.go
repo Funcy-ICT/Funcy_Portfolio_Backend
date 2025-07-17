@@ -13,6 +13,11 @@ import (
 	"backend/app/usecase"
 )
 
+const (
+	CookieAccessToken  = "token"
+	CookieRefreshToken = "refresh_token"
+)
+
 type AuthHandler struct {
 	authUseCase *usecase.AuthUseCase
 }
@@ -85,20 +90,23 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 
 	// アクセストークンをクッキーに設定
 	cookie := &http.Cookie{
-		Name:     "token",
+		Name:     CookieAccessToken,
 		Value:    token,
+		Path:     "/",
 		HttpOnly: true,
-		//Secure: true,
+		SameSite: http.SameSiteStrictMode,
+		//Secure: true, // HTTPS環境で有効化
 	}
 	http.SetCookie(w, cookie)
 
 	// リフレッシュトークンを別のクッキーに設定
 	refreshCookie := &http.Cookie{
-		Name:     "refresh_token",
+		Name:     CookieRefreshToken,
 		Value:    refreshToken,
+		Path:     "/",
 		HttpOnly: true,
-		//Secure: true,
-		Path: "/",
+		SameSite: http.SameSiteStrictMode,
+		//Secure: true, // HTTPS環境で有効化
 	}
 	http.SetCookie(w, refreshCookie)
 
@@ -184,11 +192,12 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 	jwt, _ := auth.IssueUserToken(req.UserID)
 
 	cookie := &http.Cookie{
-		Name:     "token",
+		Name:     CookieAccessToken,
 		Value:    jwt,
 		Path:     "/",
 		HttpOnly: true,
-		//Secure: true,
+		SameSite: http.SameSiteStrictMode,
+		//Secure: true, // HTTPS環境で有効化
 	}
 	http.SetCookie(w, cookie)
 
@@ -211,23 +220,25 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	// アクセストークンクッキーを削除
 	cookie := &http.Cookie{
-		Name:     "token",
+		Name:     CookieAccessToken,
 		Value:    "",
 		Path:     "/",
 		HttpOnly: true,
-		//Secure: true,
-		MaxAge: -1,
+		SameSite: http.SameSiteStrictMode,
+		//Secure: true, // HTTPS環境で有効化
+		MaxAge:   -1,
 	}
 	http.SetCookie(w, cookie)
 
 	// リフレッシュトークンクッキーを削除
 	refreshCookie := &http.Cookie{
-		Name:     "refresh_token",
+		Name:     CookieRefreshToken,
 		Value:    "",
 		Path:     "/",
 		HttpOnly: true,
-		//Secure: true,
-		MaxAge: -1,
+		SameSite: http.SameSiteStrictMode,
+		//Secure: true, // HTTPS環境で有効化
+		MaxAge:   -1,
 	}
 	http.SetCookie(w, refreshCookie)
 
@@ -260,7 +271,7 @@ func (h *AuthHandler) CheckAuth(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	refreshCookie, err := r.Cookie("refresh_token")
+	refreshCookie, err := r.Cookie(CookieRefreshToken)
 	if err != nil {
 		log.Printf("RefreshToken failed: %v", err)
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "refresh token not found")
@@ -276,10 +287,12 @@ func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 
 	// 新しいアクセストークンをクッキーに設定
 	cookie := &http.Cookie{
-		Name:     "token",
+		Name:     CookieAccessToken,
 		Value:    newAccessToken,
+		Path:     "/",
 		HttpOnly: true,
-		//Secure: true,
+		SameSite: http.SameSiteStrictMode,
+		//Secure: true, // HTTPS環境で有効化
 	}
 	http.SetCookie(w, cookie)
 

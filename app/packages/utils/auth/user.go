@@ -7,6 +7,10 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
+const (
+	RefreshTokenType = "refresh"
+)
+
 var userTokenJwt = &hs256jwt{
 	sigKey: []byte("SKNGIonriongINIOnfiar394rjOJGg"),
 	createClaims: func() jwt.Claims {
@@ -66,7 +70,7 @@ func (c *refreshTokenClaims) Valid() error {
 	if c.Exp < now.Unix() {
 		return fmt.Errorf("token expired: %d (now:%d)", c.Exp, now.Unix())
 	}
-	if c.TokenType != "refresh" {
+	if c.TokenType != RefreshTokenType {
 		return fmt.Errorf("invalid token type: %s", c.TokenType)
 	}
 
@@ -93,7 +97,7 @@ func IssueRefreshToken(userID string) (string, error) {
 		Subject:   userID,
 		IssuedAt:  now.Unix(),
 		Exp:       now.Add(7 * 24 * time.Hour).Unix(), // 7日間
-		TokenType: "refresh",
+		TokenType: RefreshTokenType,
 	}
 
 	return refreshTokenJwt.issueToken(claims)

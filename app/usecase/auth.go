@@ -88,12 +88,12 @@ func (a *AuthUseCase) Login(r request.SignInRequest) (*entity.User, string, stri
 
 	jwt, err := auth.IssueUserToken(user.UserID)
 	if err != nil {
-		return nil, "", "", errors.New("failed to generate JWT token")
+		return nil, "", "", fmt.Errorf("failed to generate JWT token: %w", err)
 	}
 	
 	refreshToken, err := auth.IssueRefreshToken(user.UserID)
 	if err != nil {
-		return nil, "", "", errors.New("failed to generate refresh token")
+		return nil, "", "", fmt.Errorf("failed to generate refresh token: %w", err)
 	}
 	
 	return &user, jwt, refreshToken, nil
@@ -108,7 +108,7 @@ func (a *AuthUseCase) RefreshToken(refreshToken string) (string, error) {
 	// 新しいアクセストークンを生成
 	newAccessToken, err := auth.IssueUserToken(userID)
 	if err != nil {
-		return "", errors.New("failed to generate new access token")
+		return "", fmt.Errorf("failed to generate new access token: %w", err)
 	}
 	
 	return newAccessToken, nil
