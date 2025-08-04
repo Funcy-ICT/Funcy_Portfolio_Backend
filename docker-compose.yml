@@ -7,6 +7,10 @@ services:
     command: reflex -r '\.go$$' -s -- sh -c 'go run cmd/main.go'
     tty: true
     stdin_open: true
+    environment:
+      - MODE=local
+    env_file:
+      - .env
     volumes:
       - ./:/app
     working_dir: /app

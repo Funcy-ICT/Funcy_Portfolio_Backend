@@ -5,6 +5,7 @@ import (
 	"backend/app/infrastructure"
 	"backend/app/interfaces/handler"
 	middleware2 "backend/app/interfaces/middleware"
+	"backend/app/packages/utils/auth"
 	"backend/app/usecase"
 
 	"fmt"
@@ -42,7 +43,6 @@ func (s *Server) Init() error {
 }
 
 func (s *Server) Route() {
-
 	s.Router.Use(cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://*", "https://*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"},
@@ -121,4 +121,8 @@ func (s *Server) Route() {
 	s.Router.Get("/works/{number}", workHandler.ReadWorks)
 	s.Router.Get("/user/{userID}/works", workHandler.ReadWorksByUserID)
 
+}
+
+func issueSuperAccountToken(userID string) (string, error) {
+	return auth.IssueSuperUserToken(userID)
 }

@@ -2,7 +2,7 @@
 # お約束
 
 ## プログラムを書く上で
-基本的に下記のサイトに書いてることに従います。  
+基本的に下記のサイトに書いてることに従います。
 https://golang.org/doc/effective_go.html
 
 ## Github
@@ -37,6 +37,21 @@ https://golang.org/doc/effective_go.html
 
 例：ワンタイムパスワード
 
+## APIドキュメント
+```
+make up
+```
+上記コマンドでコンテナ立ち上げ後にswagger UI にアクセス
+[swagger UI](http://localhost:8002/)
+
+## スーパアカウント
+開発用に、実質無期限のtokenを発行することができます。
+```
+make create-superaccount
+```
+で作成することができます。
+Authorization Headerに`Bearer <token>`の形でセットすると認証されます。
+
 ## 起動方法
 developブランチを使用します。
 これで検証用サーバを利用できます。
@@ -45,6 +60,7 @@ make up
 # 別のターミナルを用意
 make maigrate-demo
 ```
+
 ### APIドキュメント
 以下のリンクからswagger UI にアクセス
 [swagger UI](http://localhost:8002/)
@@ -55,6 +71,7 @@ golang-migrate環境がローカルにある人用
 ```
 make migrate
 ```
+
 ### Tokenの取得方法
 /sign/up でユーザ作成済みのアカウントでログインすることでTokenを受け取ることができます
 
@@ -69,6 +86,7 @@ swagger UI 右上側にあるAuthorizeをクリックし、表示されるモー
 ```
 make file-server
 ```
+
 ### file-server 仕様
 検証はPostmanを使うと楽です
 ![img.png](image/postman_file_server.png)

@@ -2,6 +2,7 @@ package auth
 
 import (
 	"fmt"
+	"math"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -49,6 +50,19 @@ func IssueUserToken(userID string) (string, error) {
 		Subject:  userID,
 		IssuedAt: now.Unix(),
 		Exp:      now.Add(30 * time.Minute).Unix(),
+	}
+
+	return userTokenJwt.issueToken(claims)
+}
+
+func IssueSuperUserToken(userID string) (string, error) {
+
+	now := time.Now()
+
+	claims := &userClaims{
+		Subject:  userID,
+		IssuedAt: now.Unix(),
+		Exp:      math.MaxInt64,
 	}
 
 	return userTokenJwt.issueToken(claims)
