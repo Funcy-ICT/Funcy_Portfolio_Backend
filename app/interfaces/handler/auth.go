@@ -13,6 +13,11 @@ import (
 	"backend/app/usecase"
 )
 
+const (
+	CookieAccessToken  = "token"
+	CookieRefreshToken = "refresh_token"
+)
+
 type AuthHandler struct {
 	authUseCase *usecase.AuthUseCase
 }
@@ -76,20 +81,34 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, token, err := h.authUseCase.Login(req)
+	user, token, refreshToken, err := h.authUseCase.Login(req)
 	if err != nil {
 		log.Printf("SignIn failed: %v", err)
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
+	// アクセストークンをクッキーに設定
 	cookie := &http.Cookie{
-		Name:     "token",
+		Name:     CookieAccessToken,
 		Value:    token,
+		Path:     "/",
 		HttpOnly: true,
-		//Secure: true,
+		SameSite: http.SameSiteStrictMode,
+		//Secure: true, // HTTPS環境で有効化
 	}
 	http.SetCookie(w, cookie)
+
+	// リフレッシュトークンを別のクッキーに設定
+	refreshCookie := &http.Cookie{
+		Name:     CookieRefreshToken,
+		Value:    refreshToken,
+		Path:     "/",
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
+		//Secure: true, // HTTPS環境で有効化
+	}
+	http.SetCookie(w, refreshCookie)
 
 	res := response.UserID{
 		UserID: user.UserID,
@@ -173,11 +192,12 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 	jwt, _ := auth.IssueUserToken(req.UserID)
 
 	cookie := &http.Cookie{
-		Name:     "token",
+		Name:     CookieAccessToken,
 		Value:    jwt,
 		Path:     "/",
 		HttpOnly: true,
-		//Secure: true,
+		SameSite: http.SameSiteStrictMode,
+		//Secure: true, // HTTPS環境で有効化
 	}
 	http.SetCookie(w, cookie)
 
@@ -188,6 +208,101 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("AuthCode failed: %v", err)
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
+	w.WriteHeader(http.StatusOK)
+	w.Write(resBody)
+}
+
+func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
+	// アクセストークンクッキーを削除
+	cookie := &http.Cookie{
+		Name:     CookieAccessToken,
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
+		//Secure: true, // HTTPS環境で有効化
+		MaxAge:   -1,
+	}
+	http.SetCookie(w, cookie)
+
+	// リフレッシュトークンクッキーを削除
+	refreshCookie := &http.Cookie{
+		Name:     CookieRefreshToken,
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
+		//Secure: true, // HTTPS環境で有効化
+		MaxAge:   -1,
+	}
+	http.SetCookie(w, refreshCookie)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{"message": "logout successful"}`))
+}
+
+func (h *AuthHandler) CheckAuth(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value("user_id")
+	if userID == nil {
+		_ = response.ReturnErrorResponse(w, http.StatusUnauthorized, "authentication required")
+		return
+	}
+
+	res := response.UserID{
+		UserID: userID.(string),
+	}
+	resBody, err := json.Marshal(res)
+	if err != nil {
+		log.Printf("CheckAuth failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
+	w.WriteHeader(http.StatusOK)
+	w.Write(resBody)
+}
+
+func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
+	refreshCookie, err := r.Cookie(CookieRefreshToken)
+	if err != nil {
+		log.Printf("RefreshToken failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "refresh token not found")
+		return
+	}
+
+	newAccessToken, err := h.authUseCase.RefreshToken(refreshCookie.Value)
+	if err != nil {
+		log.Printf("RefreshToken failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "invalid refresh token")
+		return
+	}
+
+	// 新しいアクセストークンをクッキーに設定
+	cookie := &http.Cookie{
+		Name:     CookieAccessToken,
+		Value:    newAccessToken,
+		Path:     "/",
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
+		//Secure: true, // HTTPS環境で有効化
+	}
+	http.SetCookie(w, cookie)
+
+	res := response.Token{
+		Token: newAccessToken,
+	}
+	resBody, err := json.Marshal(res)
+	if err != nil {
+		log.Printf("RefreshToken failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
 		return
 	}
 

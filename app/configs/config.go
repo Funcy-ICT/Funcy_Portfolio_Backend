@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/kelseyhightower/envconfig"
 )
@@ -39,4 +40,9 @@ func GetDBConnectionInfo() string {
 	}
 	log.Println("Starting db")
 	return fmt.Sprintf(accessTokenTemplate, config.User, config.Pass, config.IP, config.Name)
+}
+
+func IsProduction() bool {
+	env := strings.ToLower(os.Getenv("ENVIRONMENT"))
+	return env == "production" || env == "prod"
 }

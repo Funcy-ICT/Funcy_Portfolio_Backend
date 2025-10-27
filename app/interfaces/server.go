@@ -82,6 +82,10 @@ func (s *Server) Route() {
 	s.Router.Post("/mlogin", authHandler.SignInMobile)
 	//アカウント認証
 	s.Router.Post("/authcode", authHandler.AuthCode)
+	//ログアウト
+	s.Router.Post("/logout", authHandler.Logout)
+	//トークンリフレッシュ
+	s.Router.Post("/refresh", authHandler.RefreshToken)
 
 	// auth
 	s.Router.Group(func(mux chi.Router) {
