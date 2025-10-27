@@ -60,11 +60,11 @@ func (s *Server) Route() {
 	workHandler := handler.NewWorkHandler(workUseCase)
 
 	userinfoRepository := infrastructure.NewUserInfoRepository(s.db)
-	userinfoUseCase := usecase.NewUserinfoUsecace(userinfoRepository, workRepository)
+	userinfoUseCase := usecase.NewUserinfoUseCase(userinfoRepository, workRepository)
 	userinfoHandler := handler.NewUserinfoHandler(userinfoUseCase)
 
 	commentRepository := infrastructure.NewCommentRepository(s.db)
-	commentUseCase := usecase.NewCommentUsecace(commentRepository)
+	commentUseCase := usecase.NewCommentUseCase(commentRepository)
 	commentHandler := handler.NewCommentHandler(commentUseCase)
 
 	groupRepository := infrastructure.NewGroupRepository(s.db)
@@ -82,6 +82,8 @@ func (s *Server) Route() {
 	s.Router.Post("/mlogin", authHandler.SignInMobile)
 	//アカウント認証
 	s.Router.Post("/authcode", authHandler.AuthCode)
+	//ログアウト
+	s.Router.Post("/logout", authHandler.Logout)
 
 	// auth
 	s.Router.Group(func(mux chi.Router) {
@@ -89,6 +91,8 @@ func (s *Server) Route() {
 		mux.Get("/health/jwt", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("ok"))
 		})
+		//認証確認
+		mux.Get("/auth/check", authHandler.CheckAuth)
 
 		// Work関連のエンドポイント
 		mux.Route("/work", func(r chi.Router) {
@@ -114,7 +118,7 @@ func (s *Server) Route() {
 	})
 
 	// コメント関連のエンドポイント
-	s.Router.Get("/comment/{worksID}", commentHandler.GetComment)
+	s.Router.Get("/comment/{workID}", commentHandler.GetComment)
 
 	// no auth
 	s.Router.Get("/work/{workID}", workHandler.ReadWork)

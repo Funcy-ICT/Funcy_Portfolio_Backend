@@ -13,7 +13,7 @@ type CommentUseCase struct {
 	commentRepository repository.CommentRepository
 }
 
-func NewCommentUsecace(
+func NewCommentUseCase(
 	commentRepository repository.CommentRepository,
 ) *CommentUseCase {
 	return &CommentUseCase{
@@ -26,15 +26,20 @@ func (u *CommentUseCase) GetComment(workID string) ([]*entity.Comment, error) {
 }
 
 func (u *CommentUseCase) CreateComment(userID, worksID, content string) (string, error) {
+	commentID, err := uuid.NewRandom()
+	if err != nil {
+		return "", err
+	}
+
 	comment := &entity.Comment{
-		ID:        uuid.NewString(),
+		ID:        commentID.String(),
 		UserID:    userID,
 		WorksID:   worksID,
 		Content:   content,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	err := u.commentRepository.InsertComment(comment)
+	err = u.commentRepository.InsertComment(comment)
 	if err != nil {
 		return "", fmt.Errorf("failed to insert comment: %w", err)
 	}

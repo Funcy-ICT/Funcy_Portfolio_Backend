@@ -2,13 +2,23 @@ package auth
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 )
 
+func getJWTSigningKey() []byte {
+	key := os.Getenv("JWT_SIGNING_KEY")
+	if key == "" {
+		// 開発環境用のデフォルトキー（本番では必ず環境変数を設定）
+		key = "SKNGIonriongINIOnfiar394rjOJGg"
+	}
+	return []byte(key)
+}
+
 var userTokenJwt = &hs256jwt{
-	sigKey: []byte("SKNGIonriongINIOnfiar394rjOJGg"),
+	sigKey: getJWTSigningKey(),
 	createClaims: func() jwt.Claims {
 		return &userClaims{}
 	},
@@ -21,7 +31,7 @@ type userClaims struct {
 }
 
 var mobileUserTokenJwt = &hs256jwtMobile{
-	sigKey: []byte("SKNGIonriongINIOnfiar394rjOJGg"),
+	sigKey: getJWTSigningKey(),
 	createClaims: func() jwt.Claims {
 		return &mobileUserClaims{}
 	},

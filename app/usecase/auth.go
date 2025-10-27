@@ -86,7 +86,10 @@ func (a *AuthUseCase) Login(r request.SignInRequest) (*entity.User, string, erro
 		return nil, "", fmt.Errorf("not match password: %w", err)
 	}
 
-	jwt, _ := auth.IssueUserToken(user.UserID)
+	jwt, err := auth.IssueUserToken(user.UserID)
+	if err != nil {
+		return nil, "", errors.New("failed to generate JWT token")
+	}
 	return &user, jwt, nil
 }
 
@@ -100,7 +103,10 @@ func (a *AuthUseCase) LoginMobile(r request.SignInRequest) (*entity.User, string
 		return nil, "", fmt.Errorf("not match password: %w", err)
 	}
 
-	jwt, _ := auth.IssueMobileUserToken(user.UserID)
+	jwt, err := auth.IssueMobileUserToken(user.UserID)
+	if err != nil {
+		return nil, "", errors.New("failed to generate JWT token")
+	}
 	return &user, jwt, nil
 }
 
@@ -114,8 +120,8 @@ func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) error {
 		return fmt.Errorf("not match code: %w", err)
 	}
 	err = a.authRepository.UpdateStatus(r.UserID)
-	if code != r.Code {
-		return fmt.Errorf("not match code: %w", err)
+	if err != nil {
+		return err
 	}
 
 	return nil

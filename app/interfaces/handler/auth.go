@@ -31,7 +31,11 @@ func (h *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
-	me, _ := utils.Validate(req)
+	me, err := utils.Validate(req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "bad request")
+		return
+	}
 	if me != nil {
 		log.Printf("SignUp failed: %v", me)
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
@@ -69,7 +73,11 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
-	me, _ := utils.Validate(req)
+	me, err := utils.Validate(req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "bad request")
+		return
+	}
 	if me != nil {
 		log.Printf("SignIn failed: %v", me)
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
@@ -87,7 +95,7 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 		Name:     "token",
 		Value:    token,
 		HttpOnly: true,
-		//Secure: true,
+		Secure:   true,
 	}
 	http.SetCookie(w, cookie)
 
@@ -116,7 +124,11 @@ func (h *AuthHandler) SignInMobile(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
-	me, _ := utils.Validate(req)
+	me, err := utils.Validate(req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "bad request")
+		return
+	}
 	if me != nil {
 		log.Printf("SignInMobile failed: %v", me)
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
@@ -155,8 +167,11 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
-
-	me, _ := utils.Validate(req)
+	me, err := utils.Validate(req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "bad request")
+		return
+	}
 	if me != nil {
 		log.Printf("AuthCode failed: %v", me)
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
@@ -170,14 +185,18 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jwt, _ := auth.IssueUserToken(req.UserID)
+	jwt, err := auth.IssueUserToken(req.UserID)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "bad request")
+		return
+	}
 
 	cookie := &http.Cookie{
 		Name:     "token",
 		Value:    jwt,
 		Path:     "/",
 		HttpOnly: true,
-		//Secure: true,
+		Secure:   true,
 	}
 	http.SetCookie(w, cookie)
 
@@ -188,6 +207,46 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("AuthCode failed: %v", err)
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Length", strconv.Itoa(len(resBody)))
+	w.WriteHeader(http.StatusOK)
+	w.Write(resBody)
+}
+
+func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
+	// Cookieを削除
+	cookie := &http.Cookie{
+		Name:     "token",
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		MaxAge:   -1,
+	}
+	http.SetCookie(w, cookie)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{"message": "logout successful"}`))
+}
+
+func (h *AuthHandler) CheckAuth(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value("user_id")
+	if userID == nil {
+		_ = response.ReturnErrorResponse(w, http.StatusUnauthorized, "authentication required")
+		return
+	}
+
+	res := response.UserID{
+		UserID: userID.(string),
+	}
+	resBody, err := json.Marshal(res)
+	if err != nil {
+		log.Printf("CheckAuth failed: %v", err)
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
