@@ -97,6 +97,9 @@ func (s *Server) Route() {
 			r.Put("/{workID}", workHandler.UpdateWork)
 		})
 
+		// ユーザー別作品取得エンドポイント
+		mux.Get("/user/works", workHandler.ReadWorksByUser)
+
 		// ユーザー情報関連のエンドポイント
 		mux.Route("/userinfo", func(r chi.Router) {
 			r.Get("/{userID}", userinfoHandler.GetUserinfo)
@@ -116,5 +119,6 @@ func (s *Server) Route() {
 	// no auth
 	s.Router.Get("/work/{workID}", workHandler.ReadWork)
 	s.Router.Get("/works/{number}", workHandler.ReadWorks)
+	s.Router.Get("/user/{userID}/works", workHandler.ReadWorksByUserID)
 
 }

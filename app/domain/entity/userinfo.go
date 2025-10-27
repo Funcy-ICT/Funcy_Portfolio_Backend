@@ -5,6 +5,7 @@ type Userinfo struct {
 	JoinedGroups *[]*GroupMember
 	Skills       *[]*Skill
 	SNS          *[]*SNS
+	Course       string
 }
 
 type UpdateUserinfo struct {
