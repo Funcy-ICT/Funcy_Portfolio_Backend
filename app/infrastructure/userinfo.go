@@ -24,7 +24,7 @@ func (ur *userinfoRepositoryImpl) SelectUserinfoByUserID(userID string) (*entity
 	{
 		err := ur.db.Get(
 			&profileWithCourse,
-			"SELECT UP.user_id, UP.header_image, UP.bio, U.display_name, U.icon, U.course "+
+			"SELECT UP.user_id, UP.header_image, UP.bio, U.display_name, U.icon, U.course, U.mail "+
 				"FROM user_profile AS UP "+
 				"INNER JOIN users AS U "+
 				"ON UP.user_id = U.id "+
