@@ -71,6 +71,9 @@ func (s *Server) Route() {
 	groupUseCase := usecase.NewGroupUseCase(groupRepository)
 	groupHandler := handler.NewGroupHandler(groupUseCase)
 
+	searchUseCase := usecase.NewSearchUseCase(workRepository, userinfoRepository)
+	searchHandler := handler.NewSearchHandler(searchUseCase)
+
 	s.Router.Use(middleware.Logger)
 	//接続確認
 	s.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -120,5 +123,9 @@ func (s *Server) Route() {
 	s.Router.Get("/work/{workID}", workHandler.ReadWork)
 	s.Router.Get("/works/{number}", workHandler.ReadWorks)
 	s.Router.Get("/user/{userID}/works", workHandler.ReadWorksByUserID)
+
+	// 検索エンドポイント
+	s.Router.Get("/search/works", searchHandler.SearchWorks)
+	s.Router.Get("/search/users", searchHandler.SearchUsers)
 
 }

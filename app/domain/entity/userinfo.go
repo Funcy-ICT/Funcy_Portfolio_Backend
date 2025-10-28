@@ -13,3 +13,11 @@ type UpdateUserinfo struct {
 	Skills  *[]*Skill
 	SNS     *[]*SNS
 }
+
+type UserSearchResult struct {
+	UserID      string   `db:"user_id" json:"userID"`
+	DisplayName string   `db:"display_name" json:"displayName"`
+	Icon        string   `db:"icon" json:"icon"`
+	Course      string   `db:"course" json:"course"`
+	Skills      []string `json:"skills"`
+}
