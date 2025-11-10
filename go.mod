@@ -3,6 +3,7 @@ module backend
 go 1.20
 
 require (
+	cloud.google.com/go/storage v1.27.0
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/contrib v0.0.0-20221130124618-7e01895a63f2
