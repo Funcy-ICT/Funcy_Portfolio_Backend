@@ -98,7 +98,7 @@ func (s *Server) Route() {
 	//アカウント認証
 	s.Router.Post("/authcode", authHandler.AuthCode)
 
-	// Image upload/delete endpoints (統合)
+	// Image upload/delete endpoints
 	s.Router.Post("/upload/file", imageHandler.UploadImage)
 	s.Router.Delete("/delete/{filename}", imageHandler.DeleteImage)
 

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"time"
 
 	"cloud.google.com/go/storage"
 )
@@ -50,11 +49,12 @@ func (g *GCSClient) Upload(ctx context.Context, fileName string, file io.Reader)
 	}
 
 	// Return public URL
-	// For emulator: http://localhost:4443/{bucket}/{object}
+	// For emulator: http://localhost:4443/storage/v1/b/{bucket}/o/{object}?alt=media
 	// For production: https://storage.googleapis.com/{bucket}/{object}
 	emulatorHost := os.Getenv("GCS_EMULATOR_HOST")
 	if emulatorHost != "" {
-		return fmt.Sprintf("%s/%s/%s", emulatorHost, g.bucketName, fileName), nil
+		// Use localhost for external access with GCS API path
+		return fmt.Sprintf("http://localhost:4443/storage/v1/b/%s/o/%s?alt=media", g.bucketName, fileName), nil
 	}
 
 	return fmt.Sprintf("https://storage.googleapis.com/%s/%s", g.bucketName, fileName), nil
