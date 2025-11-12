@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"backend/app/interfaces/request"
@@ -12,6 +13,11 @@ import (
 	"backend/app/packages/utils/auth"
 	"backend/app/usecase"
 )
+
+func isProduction() bool {
+	env := os.Getenv("ENVIRONMENT")
+	return env == "production"
+}
 
 type AuthHandler struct {
 	authUseCase *usecase.AuthUseCase
@@ -86,8 +92,13 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 	cookie := &http.Cookie{
 		Name:     "token",
 		Value:    token,
+		Path:     "/",
 		HttpOnly: true,
-		//Secure: true,
+		Secure:   isProduction(),
+		SameSite: http.SameSiteLax,
+	}
+	if isProduction() {
+		cookie.SameSite = http.SameSiteNone
 	}
 	http.SetCookie(w, cookie)
 
@@ -177,7 +188,11 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 		Value:    jwt,
 		Path:     "/",
 		HttpOnly: true,
-		//Secure: true,
+		Secure:   isProduction(),
+		SameSite: http.SameSiteLax,
+	}
+	if isProduction() {
+		cookie.SameSite = http.SameSiteNone
 	}
 	http.SetCookie(w, cookie)
 
