@@ -95,10 +95,10 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 		Path:     "/",
 		HttpOnly: true,
 		Secure:   isProduction(),
-		SameSite: http.SameSiteLax,
+		SameSite: http.SameSiteLaxMode,
 	}
 	if isProduction() {
-		cookie.SameSite = http.SameSiteNone
+		cookie.SameSite = http.SameSiteNoneMode
 	}
 	http.SetCookie(w, cookie)
 
@@ -189,10 +189,10 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 		Path:     "/",
 		HttpOnly: true,
 		Secure:   isProduction(),
-		SameSite: http.SameSiteLax,
+		SameSite: http.SameSiteLaxMode,
 	}
 	if isProduction() {
-		cookie.SameSite = http.SameSiteNone
+		cookie.SameSite = http.SameSiteNoneMode
 	}
 	http.SetCookie(w, cookie)
 
