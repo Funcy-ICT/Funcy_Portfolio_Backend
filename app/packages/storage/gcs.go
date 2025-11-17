@@ -33,11 +33,13 @@ func NewGCSClient(ctx context.Context) (*GCSClient, error) {
 }
 
 // Upload uploads a file to GCS and returns the public URL
-func (g *GCSClient) Upload(ctx context.Context, fileName string, file io.Reader) (string, error) {
+func (g *GCSClient) Upload(ctx context.Context, fileName string, file io.Reader, contentType string) (string, error) {
 	bucket := g.client.Bucket(g.bucketName)
 	obj := bucket.Object(fileName)
 
 	writer := obj.NewWriter(ctx)
+	writer.ContentType = contentType
+	writer.CacheControl = "public, max-age=3600"
 	defer writer.Close()
 
 	if _, err := io.Copy(writer, file); err != nil {
