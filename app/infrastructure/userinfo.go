@@ -149,6 +149,13 @@ func (ur *userinfoRepositoryImpl) UpdateUserinfo(userinfo *entity.UpdateUserinfo
 		return err
 	}
 
+	//エラー時にロールバック
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		}
+	}()
+
 	// Update
 	{
 		// user profile
@@ -158,7 +165,6 @@ func (ur *userinfoRepositoryImpl) UpdateUserinfo(userinfo *entity.UpdateUserinfo
 				userinfo.Profile,
 			)
 			if err != nil {
-				tx.Rollback()
 				return err
 			}
 		}
@@ -174,7 +180,6 @@ func (ur *userinfoRepositoryImpl) UpdateUserinfo(userinfo *entity.UpdateUserinfo
 				},
 			)
 			if err != nil {
-				tx.Rollback()
 				return err
 			}
 		}
@@ -189,7 +194,6 @@ func (ur *userinfoRepositoryImpl) UpdateUserinfo(userinfo *entity.UpdateUserinfo
 				userinfo.Profile.UserID,
 			)
 			if err != nil {
-				tx.Rollback()
 				return err
 			}
 		}
@@ -201,7 +205,6 @@ func (ur *userinfoRepositoryImpl) UpdateUserinfo(userinfo *entity.UpdateUserinfo
 				userinfo.Profile.UserID,
 			)
 			if err != nil {
-				tx.Rollback()
 				return err
 			}
 		}
@@ -216,7 +219,6 @@ func (ur *userinfoRepositoryImpl) UpdateUserinfo(userinfo *entity.UpdateUserinfo
 				skill,
 			)
 			if err != nil {
-				tx.Rollback()
 				return err
 			}
 		}
@@ -228,7 +230,6 @@ func (ur *userinfoRepositoryImpl) UpdateUserinfo(userinfo *entity.UpdateUserinfo
 				sns,
 			)
 			if err != nil {
-				tx.Rollback()
 				return err
 			}
 		}

@@ -21,6 +21,12 @@ func (ur *workRepositoryImpl) InsertWork(userID string, work *entity.InsertWork,
 	if err != nil {
 		return err
 	}
+    //エラー時にロールバック
+	defer func() {
+        if err != nil {
+            tx.Rollback()
+        }
+    }()
 
 	_, err = tx.Exec(`INSERT INTO works (id, user_id, title, description, thumbnail, url, movie_url, security, group_id) 
 VALUES (?,?,?,?,?,?,?,?,?)`,
@@ -32,13 +38,11 @@ VALUES (?,?,?,?,?,?,?,?,?)`,
 	_, err = tx.NamedExec(`INSERT INTO work_images (id,work_id,image_url) VALUES (:id,:work_id,:image_url)`,
 		*images)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 	_, err = tx.NamedExec("INSERT INTO `work_tags` (id,work_id,tag) VALUES (:id,:work_id,:tag)",
 		*tags)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 	if err := tx.Commit(); err != nil {
@@ -128,21 +132,25 @@ func (ur *workRepositoryImpl) DeleteWork(workID string) error {
 		return err
 	}
 
+	//エラー時にロールバック
+	defer func() {
+        if err != nil {
+            tx.Rollback()
+        }
+    }()
+
 	_, err = tx.Exec("DELETE FROM funcy.works WHERE id=?", workID)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 
 	_, err = tx.Exec("DELETE FROM funcy.work_tags WHERE work_id=?", workID)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 
 	_, err = tx.Exec("DELETE FROM funcy.work_images WHERE work_id=?", workID)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 
@@ -158,36 +166,37 @@ func (ur *workRepositoryImpl) UpdateWork(work *entity.UpdateWork, images *[]enti
 	if err != nil {
 		return err
 	}
+	//エラー時にロールバック
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		}
+	}()
 
 	_, err = tx.Exec("UPDATE funcy.works SET title=?, description=?, thumbnail=?, url=?, movie_url=?, security=?, group_id=? WHERE id=?", work.Title, work.Description, work.Thumbnail, work.WorkUrl, work.MovieUrl, work.Security, work.GroupID, work.ID)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 
 	_, err = tx.Exec("DELETE FROM funcy.work_images WHERE work_id=?", work.ID)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 
 	_, err = tx.Exec("DELETE FROM funcy.work_tags WHERE work_id=?", work.ID)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 
 	_, err = tx.NamedExec(`INSERT INTO work_images (id,work_id,image_url) VALUES (:id,:work_id,:image_url)`,
 		*images)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 
 	_, err = tx.NamedExec("INSERT INTO work_tags (id,work_id,tag) VALUES (:id,:work_id,:tag)",
 		*tags)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 
