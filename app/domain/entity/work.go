@@ -33,6 +33,7 @@ type (
 		Icon        string `db:"icon"`
 		UserID      string `db:"user_id"`
 		Security    int    `db:"security"`
+		CreatedAt   string `db:"created_at"`
 	}
 	InsertWork struct {
 		ID          string `db:"id"`

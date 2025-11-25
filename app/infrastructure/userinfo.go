@@ -236,3 +236,53 @@ func (ur *userinfoRepositoryImpl) UpdateUserinfo(userinfo *entity.UpdateUserinfo
 
 	return tx.Commit()
 }
+
+func (ur *userinfoRepositoryImpl) SearchUsersByKeyword(keyword string, limit uint) (*[]entity.UserSearchResult, error) {
+	searchPattern := "%" + keyword + "%"
+
+	query := `
+		SELECT DISTINCT u.id as user_id, u.display_name, u.icon, u.course
+		FROM users u
+		LEFT JOIN user_profile up ON u.id = up.user_id
+		LEFT JOIN skills s ON u.id = s.user_id
+		WHERE u.display_name LIKE ?
+			OR u.course LIKE ?
+			OR up.bio LIKE ?
+			OR s.skill_name LIKE ?
+		LIMIT ?
+	`
+
+	type UserRow struct {
+		UserID      string `db:"user_id"`
+		DisplayName string `db:"display_name"`
+		Icon        string `db:"icon"`
+		Course      string `db:"course"`
+	}
+
+	var userRows []UserRow
+	err := ur.db.Select(&userRows, query, searchPattern, searchPattern, searchPattern, searchPattern, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	// 各ユーザーのスキルを取得
+	results := make([]entity.UserSearchResult, 0, len(userRows))
+	for _, row := range userRows {
+		skills := []string{}
+		err := ur.db.Select(&skills, "SELECT skill_name FROM skills WHERE user_id = ?", row.UserID)
+		if err != nil {
+			// スキルがない場合はエラーを無視
+			skills = []string{}
+		}
+
+		results = append(results, entity.UserSearchResult{
+			UserID:      row.UserID,
+			DisplayName: row.DisplayName,
+			Icon:        row.Icon,
+			Course:      row.Course,
+			Skills:      skills,
+		})
+	}
+
+	return &results, nil
+}

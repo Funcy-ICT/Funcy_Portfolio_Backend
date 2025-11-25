@@ -74,6 +74,9 @@ func (s *Server) Route() {
 	groupUseCase := usecase.NewGroupUseCase(groupRepository)
 	groupHandler := handler.NewGroupHandler(groupUseCase)
 
+	searchUseCase := usecase.NewSearchUseCase(workRepository, userinfoRepository)
+	searchHandler := handler.NewSearchHandler(searchUseCase)
+
 	// GCS Client
 	ctx := context.Background()
 	gcsClient, err := storage.NewGCSClient(ctx)
@@ -85,7 +88,6 @@ func (s *Server) Route() {
 		log.Printf("Warning: Failed to create bucket: %v", err)
 	}
 	imageHandler := handler.NewImageHandler(gcsClient)
-
 	s.Router.Use(middleware.Logger)
 	//接続確認
 	s.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -139,5 +141,9 @@ func (s *Server) Route() {
 	s.Router.Get("/work/{workID}", workHandler.ReadWork)
 	s.Router.Get("/works/{number}", workHandler.ReadWorks)
 	s.Router.Get("/user/{userID}/works", workHandler.ReadWorksByUserID)
+
+	// 検索エンドポイント
+	s.Router.Get("/search/works", searchHandler.SearchWorks)
+	s.Router.Get("/search/users", searchHandler.SearchUsers)
 
 }
