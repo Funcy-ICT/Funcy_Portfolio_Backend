@@ -30,7 +30,7 @@ services:
       - "4443:4443"
     volumes:
       - ./fake-gcs-data:/data
-    command: -scheme http -port 4443 -external-url http://localhost:4443
+    command: -scheme http -port 4443 -external-url http://localhost:4443 -data /data
     networks:
       - app
   mysql:
