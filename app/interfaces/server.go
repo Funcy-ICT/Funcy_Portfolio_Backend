@@ -5,9 +5,12 @@ import (
 	"backend/app/infrastructure"
 	"backend/app/interfaces/handler"
 	middleware2 "backend/app/interfaces/middleware"
+	"backend/app/packages/storage"
 	"backend/app/usecase"
 
+	"context"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -74,6 +77,17 @@ func (s *Server) Route() {
 	searchUseCase := usecase.NewSearchUseCase(workRepository, userinfoRepository)
 	searchHandler := handler.NewSearchHandler(searchUseCase)
 
+	// GCS Client
+	ctx := context.Background()
+	gcsClient, err := storage.NewGCSClient(ctx)
+	if err != nil {
+		log.Fatalf("Failed to create GCS client: %v", err)
+	}
+	// Create bucket if not exists (for emulator)
+	if err := gcsClient.CreateBucketIfNotExists(ctx); err != nil {
+		log.Printf("Warning: Failed to create bucket: %v", err)
+	}
+	imageHandler := handler.NewImageHandler(gcsClient)
 	s.Router.Use(middleware.Logger)
 	//接続確認
 	s.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -85,6 +99,10 @@ func (s *Server) Route() {
 	s.Router.Post("/mlogin", authHandler.SignInMobile)
 	//アカウント認証
 	s.Router.Post("/authcode", authHandler.AuthCode)
+
+	// Image upload/delete endpoints
+	s.Router.Post("/upload/file", imageHandler.UploadImage)
+	s.Router.Delete("/delete/{filename}", imageHandler.DeleteImage)
 
 	// auth
 	s.Router.Group(func(mux chi.Router) {
