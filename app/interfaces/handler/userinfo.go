@@ -17,12 +17,6 @@ type UserinfoHandler struct {
 	userinfoUseCase *usecase.UserinfoUseCase
 }
 
-func NewUserinfoHandler(userinfoUseCase *usecase.UserinfoUseCase) *UserinfoHandler {
-	return &UserinfoHandler{
-		userinfoUseCase: userinfoUseCase,
-	}
-}
-
 func (h *UserinfoHandler) GetUserinfo(w http.ResponseWriter, r *http.Request) {
 	// get params
 	userID := chi.URLParam(r, "userID")
@@ -69,6 +63,9 @@ func (h *UserinfoHandler) GetUserinfo(w http.ResponseWriter, r *http.Request) {
 		Course:          userinfo.Course,
 		Mail:            userinfo.Profile.Mail,
 		Works:           *worksRes,
+		FamilyName:      userinfo.FamilyName,
+		FirstName:       userinfo.FirstName,
+		Grade:           userinfo.Grade,
 	}
 
 	resBody, err := json.Marshal(res)
@@ -149,6 +146,9 @@ func (h *UserinfoHandler) PutUserinfo(w http.ResponseWriter, r *http.Request) {
 		Course:          userinfo.Course,
 		Mail:            userinfo.Profile.Mail,
 		Works:           *worksRes,
+		FamilyName:      userinfo.FamilyName,
+		FirstName:       userinfo.FirstName,
+		Grade:           userinfo.Grade,
 	}
 
 	resBody, err := json.Marshal(res)
