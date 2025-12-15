@@ -45,7 +45,7 @@ func dbConnectionBackoff() error {
 	b := backoff.WithMaxRetries(backoff.NewExponentialBackOff(), 7)
 	err := backoff.Retry(Conn.Ping, b)
 	if err != nil {
-		log.Println(fmt.Errorf("Faild create connection"))
+		log.Println(fmt.Errorf("Failed to create connection"))
 		return err
 	}
 	return err
