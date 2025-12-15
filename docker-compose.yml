@@ -15,8 +15,24 @@ services:
       - "3004:3004"
     networks:
       - app
+    environment:
+      - GCS_BUCKET_NAME=funcy-portfolio-images
+      - GCS_PROJECT_ID=funcy-dev
+      - GCS_EMULATOR_HOST=http://fake-gcs:4443
+      - STORAGE_EMULATOR_HOST=http://fake-gcs:4443
     depends_on:
       - mysql
+      - fake-gcs
+  fake-gcs:
+    image: fsouza/fake-gcs-server
+    container_name: fake-gcs
+    ports:
+      - "4443:4443"
+    volumes:
+      - ./fake-gcs-data:/data
+    command: -scheme http -port 4443 -external-url http://localhost:4443
+    networks:
+      - app
   mysql:
     container_name: mysql
     #    platform: linux/x86_64 # M1 macの場合必要

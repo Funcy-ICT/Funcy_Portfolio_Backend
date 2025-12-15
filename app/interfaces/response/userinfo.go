@@ -9,5 +9,6 @@ type UserInfo struct {
 	Skills          []string    `json:"skills"`
 	DisplayName     string      `json:"displayName"`
 	Course          string      `json:"course"`
+	Mail            string      `json:"mail"`
 	Works           []ReadWorks `json:"works"`
 }

@@ -175,7 +175,7 @@ func (h *WorkHandler) ReadWorks(w http.ResponseWriter, r *http.Request) {
 
 	worksRes := []response.ReadWorks{}
 	for _, work := range *works {
-		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon, Security: work.Security}
+		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon, UserID: work.UserID, Security: work.Security}
 		worksRes = append(worksRes, newWorkRes)
 	}
 
@@ -303,7 +303,7 @@ func (h *WorkHandler) ReadWorksByUser(w http.ResponseWriter, r *http.Request) {
 
 	worksRes := []response.ReadWorks{}
 	for _, work := range *works {
-		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon, Security: work.Security}
+		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon, UserID: work.UserID, Security: work.Security}
 		worksRes = append(worksRes, newWorkRes)
 	}
 
@@ -338,7 +338,7 @@ func (h *WorkHandler) ReadWorksByUserID(w http.ResponseWriter, r *http.Request) 
 
 	worksRes := []response.ReadWorks{}
 	for _, work := range *works {
-		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon, Security: work.Security}
+		newWorkRes := response.ReadWorks{WorkID: work.WorkID, Title: work.Title, Thumbnail: work.Thumbnail, Description: work.Description, Icon: work.Icon, UserID: work.UserID, Security: work.Security}
 		worksRes = append(worksRes, newWorkRes)
 	}
 
