@@ -5,9 +5,12 @@ import (
 	"backend/app/infrastructure"
 	"backend/app/interfaces/handler"
 	middleware2 "backend/app/interfaces/middleware"
+	"backend/app/packages/storage"
 	"backend/app/usecase"
 
+	"context"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -60,16 +63,28 @@ func (s *Server) Route() {
 	workHandler := handler.NewWorkHandler(workUseCase)
 
 	userinfoRepository := infrastructure.NewUserInfoRepository(s.db)
-	userinfoUseCase := usecase.NewUserinfoUsecace(userinfoRepository, workRepository)
+	userinfoUseCase := usecase.NewUserinfoUseCase(userinfoRepository, workRepository)
 	userinfoHandler := handler.NewUserinfoHandler(userinfoUseCase)
 
 	commentRepository := infrastructure.NewCommentRepository(s.db)
-	commentUseCase := usecase.NewCommentUsecace(commentRepository)
+	commentUseCase := usecase.NewCommentUseCase(commentRepository)
 	commentHandler := handler.NewCommentHandler(commentUseCase)
 
 	groupRepository := infrastructure.NewGroupRepository(s.db)
 	groupUseCase := usecase.NewGroupUseCase(groupRepository)
 	groupHandler := handler.NewGroupHandler(groupUseCase)
+
+	// GCS Client
+	ctx := context.Background()
+	gcsClient, err := storage.NewGCSClient(ctx)
+	if err != nil {
+		log.Fatalf("Failed to create GCS client: %v", err)
+	}
+	// Create bucket if not exists (for emulator)
+	if err := gcsClient.CreateBucketIfNotExists(ctx); err != nil {
+		log.Printf("Warning: Failed to create bucket: %v", err)
+	}
+	imageHandler := handler.NewImageHandler(gcsClient)
 
 	s.Router.Use(middleware.Logger)
 	//接続確認
@@ -84,8 +99,10 @@ func (s *Server) Route() {
 	s.Router.Post("/authcode", authHandler.AuthCode)
 	//ログアウト
 	s.Router.Post("/logout", authHandler.Logout)
-	//トークンリフレッシュ
-	s.Router.Post("/refresh", authHandler.RefreshToken)
+
+	// Image upload/delete endpoints
+	s.Router.Post("/upload/file", imageHandler.UploadImage)
+	s.Router.Delete("/delete/{filename}", imageHandler.DeleteImage)
 
 	// auth
 	s.Router.Group(func(mux chi.Router) {
@@ -93,6 +110,8 @@ func (s *Server) Route() {
 		mux.Get("/health/jwt", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("ok"))
 		})
+		//認証確認
+		mux.Get("/auth/check", authHandler.CheckAuth)
 
 		// Work関連のエンドポイント
 		mux.Route("/work", func(r chi.Router) {
@@ -118,7 +137,7 @@ func (s *Server) Route() {
 	})
 
 	// コメント関連のエンドポイント
-	s.Router.Get("/comment/{worksID}", commentHandler.GetComment)
+	s.Router.Get("/comment/{workID}", commentHandler.GetComment)
 
 	// no auth
 	s.Router.Get("/work/{workID}", workHandler.ReadWork)

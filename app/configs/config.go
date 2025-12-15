@@ -10,8 +10,6 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
-const accessTokenTemplate = "%s:%s@tcp(%s)/%s"
-
 type databaseConfig struct {
 	User string `envconfig:"DB_USER" default:"funcy"`
 	Pass string `envconfig:"DB_PASSWORD" default:"userpass"`
@@ -39,7 +37,14 @@ func GetDBConnectionInfo() string {
 		log.Fatal("Unable to connect to DB(Insufficient variables)")
 	}
 	log.Println("Starting db")
-	return fmt.Sprintf(accessTokenTemplate, config.User, config.Pass, config.IP, config.Name)
+
+	// Cloud SQL Unix socket or TCP connection
+	protocol := "tcp"
+	if strings.HasPrefix(config.IP, "/cloudsql/") {
+		protocol = "unix"
+	}
+
+	return fmt.Sprintf("%s:%s@%s(%s)/%s", config.User, config.Pass, protocol, config.IP, config.Name)
 }
 
 func IsProduction() bool {

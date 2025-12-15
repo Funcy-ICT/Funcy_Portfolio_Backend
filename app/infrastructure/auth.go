@@ -20,13 +20,32 @@ func NewUserRepository(db *sqlx.DB) repository.AuthRepository {
 
 // VALUES("5", $2, $3, $4, $5, $6, $7, $8, $9, $10)
 func (ur *userRepositoryImpl) InsertAccount(user *entity.User) error {
-	_, err := ur.db.Exec(`INSERT INTO users (id,display_name,icon,family_name,first_name,mail,password,grade,course,token,code,status)
+	tx, err := ur.db.Beginx()
+	if err != nil {
+		return errors.Wrap(err, "failed to begin transaction")
+	}
+
+	_, err = tx.Exec(`INSERT INTO users (id,display_name,icon,family_name,first_name,mail,password,grade,course,token,code,status)
 	VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		user.UserID, user.DisplayName, user.Icon, user.FamilyName, user.FirstName, user.Mail, user.Password, user.Grade, user.Course, user.Token, user.AuthCode, user.Status)
 	if err != nil {
+		tx.Rollback()
 		log.Println(err)
-		return errors.Wrap(err, "failed to insert")
+		return errors.Wrap(err, "failed to insert user")
 	}
+
+	_, err = tx.Exec(`INSERT INTO user_profile (user_id, header_image, bio) VALUES (?, ?, ?)`,
+		user.UserID, "", "")
+	if err != nil {
+		tx.Rollback()
+		log.Println(err)
+		return errors.Wrap(err, "failed to insert user_profile")
+	}
+
+	if err := tx.Commit(); err != nil {
+		return errors.Wrap(err, "failed to commit transaction")
+	}
+
 	return nil
 }
 

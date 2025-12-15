@@ -88,30 +88,9 @@ func (a *AuthUseCase) Login(r request.SignInRequest) (*entity.User, string, stri
 
 	jwt, err := auth.IssueUserToken(user.UserID)
 	if err != nil {
-		return nil, "", "", fmt.Errorf("failed to generate JWT token: %w", err)
+		return nil, "", errors.New("failed to generate JWT token")
 	}
-	
-	refreshToken, err := auth.IssueRefreshToken(user.UserID)
-	if err != nil {
-		return nil, "", "", fmt.Errorf("failed to generate refresh token: %w", err)
-	}
-	
-	return &user, jwt, refreshToken, nil
-}
-
-func (a *AuthUseCase) RefreshToken(refreshToken string) (string, error) {
-	userID, err := auth.VerifyRefreshToken(refreshToken)
-	if err != nil {
-		return "", fmt.Errorf("invalid refresh token: %w", err)
-	}
-	
-	// 新しいアクセストークンを生成
-	newAccessToken, err := auth.IssueUserToken(userID)
-	if err != nil {
-		return "", fmt.Errorf("failed to generate new access token: %w", err)
-	}
-	
-	return newAccessToken, nil
+	return &user, jwt, nil
 }
 
 func (a *AuthUseCase) LoginMobile(r request.SignInRequest) (*entity.User, string, error) {
@@ -124,7 +103,10 @@ func (a *AuthUseCase) LoginMobile(r request.SignInRequest) (*entity.User, string
 		return nil, "", fmt.Errorf("not match password: %w", err)
 	}
 
-	jwt, _ := auth.IssueMobileUserToken(user.UserID)
+	jwt, err := auth.IssueMobileUserToken(user.UserID)
+	if err != nil {
+		return nil, "", errors.New("failed to generate JWT token")
+	}
 	return &user, jwt, nil
 }
 
@@ -138,8 +120,8 @@ func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) error {
 		return fmt.Errorf("not match code: %w", err)
 	}
 	err = a.authRepository.UpdateStatus(r.UserID)
-	if code != r.Code {
-		return fmt.Errorf("not match code: %w", err)
+	if err != nil {
+		return err
 	}
 
 	return nil
