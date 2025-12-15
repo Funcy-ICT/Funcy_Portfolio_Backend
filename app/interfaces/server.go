@@ -109,12 +109,12 @@ func (s *Server) Route() {
 		// コメント関連のエンドポイント
 		mux.Route("/comment", func(r chi.Router) {
 			r.Post("/comment", commentHandler.CreateComment)
+			r.Delete("/{commentID}", commentHandler.DeleteComment)
 		})
 	})
 
 	// コメント関連のエンドポイント
 	s.Router.Get("/comment/{worksID}", commentHandler.GetComment)
-	s.Router.Delete("/comment/{commentID}", commentHandler.DeleteComment)
 
 	// no auth
 	s.Router.Get("/work/{workID}", workHandler.ReadWork)
