@@ -130,3 +130,12 @@ func (ur *userRepositoryImpl) UpdateUser(user *entity.User) error {
 	}
 	return nil
 }
+
+func (ur *userRepositoryImpl) GetByEmail(email string) (*entity.User, error) {
+	var user entity.User
+	err := ur.db.Get(&user, "SELECT * FROM users WHERE mail = ?", email)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get user by email")
+	}
+	return &user, nil
+}

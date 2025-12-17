@@ -40,7 +40,10 @@ func EnsureValidToken() func(next http.Handler) http.Handler {
 		provider.KeyFunc,
 		validator.RS256,
 		issuerURL.String(),
-		[]string{os.Getenv("AUTH0_AUDIENCE")},
+		[]string{
+			os.Getenv("AUTH0_AUDIENCE"),
+			issuerURL.String() + "userinfo",
+		},
 		validator.WithCustomClaims(func() validator.CustomClaims {
 			return &CustomClaims{}
 		}),

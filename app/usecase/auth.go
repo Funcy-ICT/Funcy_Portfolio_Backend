@@ -134,6 +134,7 @@ func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) error {
 
 func (a *AuthUseCase) SyncUser(auth0Sub, email, name, picture string) (string, error) {
 	user, err := a.authRepository.GetByAuth0Sub(auth0Sub)
+
 	if err == nil && user != nil {
 		needsUpdate := false
 		if user.Mail == "" && email != "" {
@@ -162,19 +163,17 @@ func (a *AuthUseCase) SyncUser(auth0Sub, email, name, picture string) (string, e
 	}
 
 	if email != "" {
-		existingUser, err := a.authRepository.GetPassword(email)
-		if err == nil {
-			if existingUser.Auth0Sub == "" {
-				existingUser.Auth0Sub = auth0Sub
-			} else if existingUser.Auth0Sub != auth0Sub {
-				return existingUser.UserID, nil
-			}
+		existingUser, err := a.authRepository.GetByEmail(email)
 
+		if err == nil && existingUser != nil {
 			needsUpdate := false
 			if existingUser.Auth0Sub == "" {
 				existingUser.Auth0Sub = auth0Sub
 				needsUpdate = true
+			} else if existingUser.Auth0Sub != auth0Sub {
+				return existingUser.UserID, nil
 			}
+
 			if existingUser.DisplayName == "" || existingUser.DisplayName == "New User" {
 				if name != "" {
 					existingUser.DisplayName = name
@@ -187,7 +186,7 @@ func (a *AuthUseCase) SyncUser(auth0Sub, email, name, picture string) (string, e
 			}
 
 			if needsUpdate {
-				err = a.authRepository.UpdateUser(&existingUser)
+				err = a.authRepository.UpdateUser(existingUser)
 				if err != nil {
 					return "", errors.Wrap(err, "failed to update existing user with auth0_sub")
 				}
