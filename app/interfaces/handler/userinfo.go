@@ -17,6 +17,12 @@ type UserinfoHandler struct {
 	userinfoUseCase *usecase.UserinfoUseCase
 }
 
+func NewUserinfoHandler(userinfoUseCase *usecase.UserinfoUseCase) *UserinfoHandler {
+	return &UserinfoHandler{
+		userinfoUseCase: userinfoUseCase,
+	}
+}
+
 func (h *UserinfoHandler) GetUserinfo(w http.ResponseWriter, r *http.Request) {
 	// get params
 	userID := chi.URLParam(r, "userID")

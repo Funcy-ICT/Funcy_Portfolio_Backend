@@ -151,4 +151,7 @@ func (s *Server) Route() {
 	s.Router.Get("/works/{number}", workHandler.ReadWorks)
 	s.Router.Get("/user/{userID}/works", workHandler.ReadWorksByUserID)
 
+	// ユーザー情報取得（公開エンドポイント）
+	s.Router.Get("/userinfo/{userID}", userinfoHandler.GetUserinfo)
+
 }
