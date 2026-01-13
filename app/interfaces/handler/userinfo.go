@@ -69,6 +69,9 @@ func (h *UserinfoHandler) GetUserinfo(w http.ResponseWriter, r *http.Request) {
 		Course:          userinfo.Course,
 		Mail:            userinfo.Profile.Mail,
 		Works:           *worksRes,
+		FamilyName:      userinfo.FamilyName,
+		FirstName:       userinfo.FirstName,
+		Grade:           userinfo.Grade,
 	}
 
 	resBody, err := json.Marshal(res)
@@ -153,6 +156,9 @@ func (h *UserinfoHandler) PutUserinfo(w http.ResponseWriter, r *http.Request) {
 		Course:          userinfo.Course,
 		Mail:            userinfo.Profile.Mail,
 		Works:           *worksRes,
+		FamilyName:      userinfo.FamilyName,
+		FirstName:       userinfo.FirstName,
+		Grade:           userinfo.Grade,
 	}
 
 	resBody, err := json.Marshal(res)

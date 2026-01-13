@@ -13,8 +13,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-
-	"errors"
+	"github.com/pkg/errors"
 )
 
 type AuthUseCase struct {
@@ -81,7 +80,10 @@ func (a *AuthUseCase) Login(r request.SignInRequest) (*entity.User, string, erro
 	if err != nil {
 		return nil, "", fmt.Errorf("not match email: %w", err)
 	}
-	err = utils.CompareHashAndPassword(user.Password, r.Password)
+	if user.Password == nil {
+		return nil, "", fmt.Errorf("password not set")
+	}
+	err = utils.CompareHashAndPassword(*user.Password, r.Password)
 	if err != nil {
 		return nil, "", fmt.Errorf("not match password: %w", err)
 	}
@@ -98,7 +100,10 @@ func (a *AuthUseCase) LoginMobile(r request.SignInRequest) (*entity.User, string
 	if err != nil {
 		return nil, "", fmt.Errorf("not match email: %w", err)
 	}
-	err = utils.CompareHashAndPassword(user.Password, r.Password)
+	if user.Password == nil {
+		return nil, "", fmt.Errorf("password not set")
+	}
+	err = utils.CompareHashAndPassword(*user.Password, r.Password)
 	if err != nil {
 		return nil, "", fmt.Errorf("not match password: %w", err)
 	}
@@ -125,4 +130,98 @@ func (a *AuthUseCase) CheckMail(r request.AuthCodeRequest) error {
 	}
 
 	return nil
+}
+
+func (a *AuthUseCase) SyncUser(auth0Sub, email, name, picture string) (string, error) {
+	user, err := a.authRepository.GetByAuth0Sub(auth0Sub)
+
+	if err == nil && user != nil {
+		needsUpdate := false
+		if user.Mail == "" && email != "" {
+			user.Mail = email
+			needsUpdate = true
+		}
+		if user.DisplayName == "" || user.DisplayName == "New User" {
+			if name != "" {
+				user.DisplayName = name
+				needsUpdate = true
+			}
+		}
+		if user.Icon == "" && picture != "" {
+			user.Icon = picture
+			needsUpdate = true
+		}
+
+		if needsUpdate {
+			err = a.authRepository.UpdateUser(user)
+			if err != nil {
+				return "", errors.Wrap(err, "failed to update user")
+			}
+		}
+
+		return user.UserID, nil
+	}
+
+	if email != "" {
+		existingUser, err := a.authRepository.GetByEmail(email)
+
+		if err == nil && existingUser != nil {
+			needsUpdate := false
+			if existingUser.Auth0Sub == "" {
+				existingUser.Auth0Sub = auth0Sub
+				needsUpdate = true
+			} else if existingUser.Auth0Sub != auth0Sub {
+				return existingUser.UserID, nil
+			}
+
+			if existingUser.DisplayName == "" || existingUser.DisplayName == "New User" {
+				if name != "" {
+					existingUser.DisplayName = name
+					needsUpdate = true
+				}
+			}
+			if existingUser.Icon == "" && picture != "" {
+				existingUser.Icon = picture
+				needsUpdate = true
+			}
+
+			if needsUpdate {
+				err = a.authRepository.UpdateUser(existingUser)
+				if err != nil {
+					return "", errors.Wrap(err, "failed to update existing user with auth0_sub")
+				}
+			}
+			return existingUser.UserID, nil
+		}
+	}
+
+	userID, err := uuid.NewRandom()
+	if err != nil {
+		return "", errors.New("userID generate is failed")
+	}
+
+	displayName := name
+	if displayName == "" {
+		displayName = "New User"
+	}
+
+	newUser := &entity.User{
+		UserID:      userID.String(),
+		Auth0Sub:    auth0Sub,
+		Mail:        email,
+		Status:      "active",
+		DisplayName: displayName,
+		Icon:        picture,
+		FamilyName:  "",
+		FirstName:   "",
+		Grade:       "",
+		Course:      "",
+	}
+
+	err = a.authRepository.CreateFromAuth0(newUser)
+	if err != nil {
+		return "", err
+	}
+
+	return userID.String(), nil
 }

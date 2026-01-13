@@ -7,4 +7,8 @@ type AuthRepository interface {
 	GetPassword(mail string) (entity.User, error)
 	CheckMailAddr(userID string) (string, error)
 	UpdateStatus(userID string) error
+	GetByAuth0Sub(auth0Sub string) (*entity.User, error)
+	GetByEmail(email string) (*entity.User, error)
+	CreateFromAuth0(user *entity.User) error
+	UpdateUser(user *entity.User) error
 }

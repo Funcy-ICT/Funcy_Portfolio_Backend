@@ -44,5 +44,5 @@ func GetDBConnectionInfo() string {
 		protocol = "unix"
 	}
 
-	return fmt.Sprintf("%s:%s@%s(%s)/%s", config.User, config.Pass, protocol, config.IP, config.Name)
+	return fmt.Sprintf("%s:%s@%s(%s)/%s?parseTime=true", config.User, config.Pass, protocol, config.IP, config.Name)
 }
