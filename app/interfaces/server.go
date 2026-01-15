@@ -108,7 +108,14 @@ func (s *Server) Route() {
 
 	// auth
 	s.Router.Group(func(mux chi.Router) {
-		mux.Use(middleware2.Authentication)
+		mux.Use(middleware2.EnsureValidToken())
+		mux.Post("/auth/sync", authHandler.SyncUser)
+	})
+
+	s.Router.Group(func(mux chi.Router) {
+		mux.Use(middleware2.EnsureValidToken())
+		mux.Use(middleware2.SetUserID(authRepository))
+
 		mux.Get("/health/jwt", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("ok"))
 		})

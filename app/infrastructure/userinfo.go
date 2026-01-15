@@ -19,12 +19,15 @@ func (ur *userinfoRepositoryImpl) SelectUserinfoByUserID(userID string) (*entity
 	// select Profile and Course
 	var profileWithCourse struct {
 		entity.Profile
-		Course string `db:"course"`
+		Course     string `db:"course"`
+		FamilyName string `db:"family_name"`
+		FirstName  string `db:"first_name"`
+		Grade      string `db:"grade"`
 	}
 	{
 		err := ur.db.Get(
 			&profileWithCourse,
-			"SELECT UP.user_id, UP.header_image, UP.bio, U.display_name, U.icon, U.course, U.mail "+
+			"SELECT UP.user_id, UP.header_image, UP.bio, U.display_name, U.icon, U.course, U.mail, U.family_name, U.first_name, U.grade "+
 				"FROM user_profile AS UP "+
 				"INNER JOIN users AS U "+
 				"ON UP.user_id = U.id "+
@@ -83,6 +86,9 @@ func (ur *userinfoRepositoryImpl) SelectUserinfoByUserID(userID string) (*entity
 		Skills:       skills,
 		SNS:          sns,
 		Course:       profileWithCourse.Course,
+		FamilyName:   profileWithCourse.FamilyName,
+		FirstName:    profileWithCourse.FirstName,
+		Grade:        profileWithCourse.Grade,
 	}, nil
 }
 
@@ -285,4 +291,12 @@ func (ur *userinfoRepositoryImpl) SearchUsersByKeyword(keyword string, limit uin
 	}
 
 	return &results, nil
+}
+
+func (ur *userinfoRepositoryImpl) UpdateUserBasicInfo(userID, familyName, firstName, grade, course, displayName, icon string) error {
+	_, err := ur.db.Exec(
+		"UPDATE users SET family_name = ?, first_name = ?, grade = ?, course = ?, display_name = ?, icon = ? WHERE id = ?",
+		familyName, firstName, grade, course, displayName, icon, userID,
+	)
+	return err
 }

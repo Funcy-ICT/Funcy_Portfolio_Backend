@@ -6,6 +6,9 @@ type Userinfo struct {
 	Skills       *[]*Skill
 	SNS          *[]*SNS
 	Course       string
+	FamilyName   string
+	FirstName    string
+	Grade        string
 }
 
 type UpdateUserinfo struct {

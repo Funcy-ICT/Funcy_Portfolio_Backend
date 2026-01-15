@@ -37,6 +37,15 @@ func (u *UserinfoUseCase) GetUserinfo(userID string) (*entity.Userinfo, *[]*enti
 }
 
 func (u *UserinfoUseCase) UpdateUserinfo(userID string, userinfo *request.UpdateUserInfo) error {
+	if userinfo.FamilyName != "" || userinfo.FirstName != "" || userinfo.Grade != "" || userinfo.Course != "" {
+		type UserBasicInfoUpdater interface {
+			UpdateUserBasicInfo(userID, familyName, firstName, grade, course, displayName, icon string) error
+		}
+		if updater, ok := u.userinfoRepository.(UserBasicInfoUpdater); ok {
+			return updater.UpdateUserBasicInfo(userID, userinfo.FamilyName, userinfo.FirstName, userinfo.Grade, userinfo.Course, userinfo.DisplayName, userinfo.Icon)
+		}
+	}
+
 	parsed := new(entity.UpdateUserinfo)
 	parsed.Profile = &entity.Profile{
 		UserID:          userID,
