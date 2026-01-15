@@ -18,9 +18,9 @@ type UpdateUserinfo struct {
 }
 
 type UserSearchResult struct {
-	UserID      string   `json:"user_id"`
-	DisplayName string   `json:"display_name"`
-	Icon        string   `json:"icon"`
-	Course      string   `json:"course"`
+	UserID      string   `db:"user_id" json:"userID"`
+	DisplayName string   `db:"display_name" json:"displayName"`
+	Icon        string   `db:"icon" json:"icon"`
+	Course      string   `db:"course" json:"course"`
 	Skills      []string `json:"skills"`
 }
