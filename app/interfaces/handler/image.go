@@ -56,9 +56,13 @@ func (h *ImageHandler) UploadImage(w http.ResponseWriter, r *http.Request) {
 		// Generate unique filename
 		ext := filepath.Ext(fileHeader.Filename)
 		fileName := fmt.Sprintf("%s%s", uuid.New().String(), ext)
+		contentType := fileHeader.Header.Get("Content-Type")
+		if contentType == "" {
+			contentType = getContentTypeFromExtension(ext)
+		}
 
 		// Upload to GCS
-		url, err := h.gcsClient.Upload(ctx, fileName, file)
+		url, err := h.gcsClient.Upload(ctx, fileName, file, contentType)
 		if err != nil {
 			log.Printf("Failed to upload to GCS: %v", err)
 			_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "Failed to upload file")
@@ -94,4 +98,23 @@ func (h *ImageHandler) DeleteImage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, `{"message":"File deleted successfully"}`)
+}
+
+// getContentTypeFromExtension returns the MIME type based on file extension
+func getContentTypeFromExtension(ext string) string {
+	contentTypes := map[string]string{
+		".jpg":  "image/jpeg",
+		".jpeg": "image/jpeg",
+		".png":  "image/png",
+		".gif":  "image/gif",
+		".svg":  "image/svg+xml",
+		".webp": "image/webp",
+		".bmp":  "image/bmp",
+		".ico":  "image/x-icon",
+	}
+
+	if contentType, ok := contentTypes[ext]; ok {
+		return contentType
+	}
+	return "application/octet-stream"
 }

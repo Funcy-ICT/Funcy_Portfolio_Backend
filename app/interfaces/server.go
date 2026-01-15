@@ -63,16 +63,19 @@ func (s *Server) Route() {
 	workHandler := handler.NewWorkHandler(workUseCase)
 
 	userinfoRepository := infrastructure.NewUserInfoRepository(s.db)
-	userinfoUseCase := usecase.NewUserinfoUsecace(userinfoRepository, workRepository)
+	userinfoUseCase := usecase.NewUserinfoUseCase(userinfoRepository, workRepository)
 	userinfoHandler := handler.NewUserinfoHandler(userinfoUseCase)
 
 	commentRepository := infrastructure.NewCommentRepository(s.db)
-	commentUseCase := usecase.NewCommentUsecace(commentRepository)
+	commentUseCase := usecase.NewCommentUseCase(commentRepository)
 	commentHandler := handler.NewCommentHandler(commentUseCase)
 
 	groupRepository := infrastructure.NewGroupRepository(s.db)
 	groupUseCase := usecase.NewGroupUseCase(groupRepository)
 	groupHandler := handler.NewGroupHandler(groupUseCase)
+
+	searchUseCase := usecase.NewSearchUseCase(workRepository, userinfoRepository)
+	searchHandler := handler.NewSearchHandler(searchUseCase)
 
 	// GCS Client
 	ctx := context.Background()
@@ -85,7 +88,6 @@ func (s *Server) Route() {
 		log.Printf("Warning: Failed to create bucket: %v", err)
 	}
 	imageHandler := handler.NewImageHandler(gcsClient)
-
 	s.Router.Use(middleware.Logger)
 	//接続確認
 	s.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -97,6 +99,8 @@ func (s *Server) Route() {
 	s.Router.Post("/mlogin", authHandler.SignInMobile)
 	//アカウント認証
 	s.Router.Post("/authcode", authHandler.AuthCode)
+	//ログアウト
+	s.Router.Post("/logout", authHandler.Logout)
 
 	// Image upload/delete endpoints
 	s.Router.Post("/upload/file", imageHandler.UploadImage)
@@ -104,10 +108,19 @@ func (s *Server) Route() {
 
 	// auth
 	s.Router.Group(func(mux chi.Router) {
-		mux.Use(middleware2.Authentication)
+		mux.Use(middleware2.EnsureValidToken())
+		mux.Post("/auth/sync", authHandler.SyncUser)
+	})
+
+	s.Router.Group(func(mux chi.Router) {
+		mux.Use(middleware2.EnsureValidToken())
+		mux.Use(middleware2.SetUserID(authRepository))
+
 		mux.Get("/health/jwt", func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("ok"))
 		})
+		//認証確認
+		mux.Get("/auth/check", authHandler.CheckAuth)
 
 		// Work関連のエンドポイント
 		mux.Route("/work", func(r chi.Router) {
@@ -133,11 +146,15 @@ func (s *Server) Route() {
 	})
 
 	// コメント関連のエンドポイント
-	s.Router.Get("/comment/{worksID}", commentHandler.GetComment)
+	s.Router.Get("/comment/{workID}", commentHandler.GetComment)
 
 	// no auth
 	s.Router.Get("/work/{workID}", workHandler.ReadWork)
 	s.Router.Get("/works/{number}", workHandler.ReadWorks)
 	s.Router.Get("/user/{userID}/works", workHandler.ReadWorksByUserID)
+
+	// 検索エンドポイント
+	s.Router.Get("/search/works", searchHandler.SearchWorks)
+	s.Router.Get("/search/users", searchHandler.SearchUsers)
 
 }

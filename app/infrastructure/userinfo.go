@@ -19,12 +19,15 @@ func (ur *userinfoRepositoryImpl) SelectUserinfoByUserID(userID string) (*entity
 	// select Profile and Course
 	var profileWithCourse struct {
 		entity.Profile
-		Course string `db:"course"`
+		Course     string `db:"course"`
+		FamilyName string `db:"family_name"`
+		FirstName  string `db:"first_name"`
+		Grade      string `db:"grade"`
 	}
 	{
 		err := ur.db.Get(
 			&profileWithCourse,
-			"SELECT UP.user_id, UP.header_image, UP.bio, U.display_name, U.icon, U.course, U.mail "+
+			"SELECT UP.user_id, UP.header_image, UP.bio, U.display_name, U.icon, U.course, U.mail, U.family_name, U.first_name, U.grade "+
 				"FROM user_profile AS UP "+
 				"INNER JOIN users AS U "+
 				"ON UP.user_id = U.id "+
@@ -83,6 +86,9 @@ func (ur *userinfoRepositoryImpl) SelectUserinfoByUserID(userID string) (*entity
 		Skills:       skills,
 		SNS:          sns,
 		Course:       profileWithCourse.Course,
+		FamilyName:   profileWithCourse.FamilyName,
+		FirstName:    profileWithCourse.FirstName,
+		Grade:        profileWithCourse.Grade,
 	}, nil
 }
 
@@ -235,4 +241,62 @@ func (ur *userinfoRepositoryImpl) UpdateUserinfo(userinfo *entity.UpdateUserinfo
 	}
 
 	return tx.Commit()
+}
+
+func (ur *userinfoRepositoryImpl) SearchUsersByKeyword(keyword string, limit uint) (*[]entity.UserSearchResult, error) {
+	searchPattern := "%" + keyword + "%"
+
+	query := `
+		SELECT DISTINCT u.id as user_id, u.display_name, u.icon, u.course
+		FROM users u
+		LEFT JOIN user_profile up ON u.id = up.user_id
+		LEFT JOIN skills s ON u.id = s.user_id
+		WHERE u.display_name LIKE ?
+			OR u.course LIKE ?
+			OR up.bio LIKE ?
+			OR s.skill_name LIKE ?
+		LIMIT ?
+	`
+
+	type UserRow struct {
+		UserID      string `db:"user_id"`
+		DisplayName string `db:"display_name"`
+		Icon        string `db:"icon"`
+		Course      string `db:"course"`
+	}
+
+	var userRows []UserRow
+	err := ur.db.Select(&userRows, query, searchPattern, searchPattern, searchPattern, searchPattern, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	// 各ユーザーのスキルを取得
+	results := make([]entity.UserSearchResult, 0, len(userRows))
+	for _, row := range userRows {
+		skills := []string{}
+		err := ur.db.Select(&skills, "SELECT skill_name FROM skills WHERE user_id = ?", row.UserID)
+		if err != nil {
+			// スキルがない場合はエラーを無視
+			skills = []string{}
+		}
+
+		results = append(results, entity.UserSearchResult{
+			UserID:      row.UserID,
+			DisplayName: row.DisplayName,
+			Icon:        row.Icon,
+			Course:      row.Course,
+			Skills:      skills,
+		})
+	}
+
+	return &results, nil
+}
+
+func (ur *userinfoRepositoryImpl) UpdateUserBasicInfo(userID, familyName, firstName, grade, course, displayName, icon string) error {
+	_, err := ur.db.Exec(
+		"UPDATE users SET family_name = ?, first_name = ?, grade = ?, course = ?, display_name = ?, icon = ? WHERE id = ?",
+		familyName, firstName, grade, course, displayName, icon, userID,
+	)
+	return err
 }

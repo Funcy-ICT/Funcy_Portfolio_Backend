@@ -69,6 +69,9 @@ func (h *UserinfoHandler) GetUserinfo(w http.ResponseWriter, r *http.Request) {
 		Course:          userinfo.Course,
 		Mail:            userinfo.Profile.Mail,
 		Works:           *worksRes,
+		FamilyName:      userinfo.FamilyName,
+		FirstName:       userinfo.FirstName,
+		Grade:           userinfo.Grade,
 	}
 
 	resBody, err := json.Marshal(res)
@@ -95,7 +98,11 @@ func (h *UserinfoHandler) PutUserinfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ve, _ := utils.Validate(req)
+	ve, err := utils.Validate(req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "bad request")
+		return
+	}
 	if ve != nil {
 		log.Printf("PutUserinfo failed: validation error: %v", ve)
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), ve)
@@ -149,6 +156,9 @@ func (h *UserinfoHandler) PutUserinfo(w http.ResponseWriter, r *http.Request) {
 		Course:          userinfo.Course,
 		Mail:            userinfo.Profile.Mail,
 		Works:           *worksRes,
+		FamilyName:      userinfo.FamilyName,
+		FirstName:       userinfo.FirstName,
+		Grade:           userinfo.Grade,
 	}
 
 	resBody, err := json.Marshal(res)

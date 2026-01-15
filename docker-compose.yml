@@ -16,10 +16,13 @@ services:
     networks:
       - app
     environment:
+      - ENVIRONMENT=${ENVIRONMENT:-development}
       - GCS_BUCKET_NAME=funcy-portfolio-images
       - GCS_PROJECT_ID=funcy-dev
       - GCS_EMULATOR_HOST=http://fake-gcs:4443
       - STORAGE_EMULATOR_HOST=http://fake-gcs:4443
+      - AUTH0_DOMAIN=${AUTH0_DOMAIN}
+      - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
     depends_on:
       - mysql
       - fake-gcs
@@ -30,7 +33,7 @@ services:
       - "4443:4443"
     volumes:
       - ./fake-gcs-data:/data
-    command: -scheme http -port 4443 -external-url http://localhost:4443
+    command: -scheme http -port 4443 -external-url http://localhost:4443 -data /data
     networks:
       - app
   mysql:
