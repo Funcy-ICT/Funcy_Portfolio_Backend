@@ -7,4 +7,5 @@ type UserinfoRepository interface {
 	SelectUserinfoByUserID(userID string) (*entity.Userinfo, error)
 	UpdateUserinfo(userinfo *entity.UpdateUserinfo) error
 	SearchUsersByKeyword(keyword string, limit uint) (*[]entity.UserSearchResult, error)
+	UpdateUserBasicInfo(userID, familyName, firstName, grade, course, displayName, icon string) error
 }
