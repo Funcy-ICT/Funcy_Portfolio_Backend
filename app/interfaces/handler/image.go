@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"encoding/json"
 
 	"github.com/go-chi/chi"
 	"github.com/google/uuid"
@@ -75,7 +76,8 @@ func (h *ImageHandler) UploadImage(w http.ResponseWriter, r *http.Request) {
 	// Return response in same format as file-server
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, `{"urls":%q}`, urls)
+	urlsJson, _ := json.Marshal(urls)
+	fmt.Fprintf(w, `{"urls":%s}`, string(urlsJson))
 }
 
 // DeleteImage handles image deletion from GCS
