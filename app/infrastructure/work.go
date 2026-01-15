@@ -99,6 +99,49 @@ func (ur *workRepositoryImpl) SelectWorksByUserID(userID string) (*[]*entity.Rea
 	return works, nil
 }
 
+func (ur *workRepositoryImpl) SearchWorksByKeyword(keyword string, limit uint, scope string) (*[]*entity.ReadWorksList, error) {
+	works := new([]*entity.ReadWorksList)
+	searchPattern := "%" + keyword + "%"
+
+	var query string
+	var args []interface{}
+
+	switch scope {
+	case "tag":
+		query = `SELECT DISTINCT works.id, works.title, works.description, works.thumbnail, works.security, users.icon, works.user_id, works.created_at
+				FROM works
+				INNER JOIN users ON works.user_id = users.id
+				LEFT JOIN work_tags ON works.id = work_tags.work_id
+				WHERE works.security = 1 AND work_tags.tag LIKE ?
+				ORDER BY works.created_at DESC LIMIT ?`
+		args = []interface{}{searchPattern, limit}
+	case "title":
+		query = `SELECT DISTINCT works.id, works.title, works.description, works.thumbnail, works.security, users.icon, works.user_id, works.created_at
+				FROM works
+				INNER JOIN users ON works.user_id = users.id
+				WHERE works.security = 1 AND works.title LIKE ?
+				ORDER BY works.created_at DESC LIMIT ?`
+		args = []interface{}{searchPattern, limit}
+	default: // "all"
+		query = `SELECT DISTINCT works.id, works.title, works.description, works.thumbnail, works.security, users.icon, works.user_id, works.created_at
+				FROM works
+				INNER JOIN users ON works.user_id = users.id
+				LEFT JOIN work_tags ON works.id = work_tags.work_id
+				WHERE works.security = 1 AND (works.title LIKE ? OR works.description LIKE ? OR (work_tags.tag IS NOT NULL AND work_tags.tag LIKE ?))
+				ORDER BY works.created_at DESC LIMIT ?`
+		args = []interface{}{searchPattern, searchPattern, searchPattern, limit}
+	}
+
+	err := ur.db.Select(works, query, args...)
+	if err != nil {
+		log.Printf("SearchWorksByKeyword SQL error: %v, query: %s, args: %v", err, query, args)
+		return nil, err
+	}
+
+	log.Printf("SearchWorksByKeyword found %d works", len(*works))
+	return works, nil
+}
+
 func (ur *workRepositoryImpl) SelectWork(workID string) (*entity.ReadWork, error) {
 	work := new(entity.ReadWork)
 
