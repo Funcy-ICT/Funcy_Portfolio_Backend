@@ -10,8 +10,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"strings"
-
 	"github.com/go-chi/chi"
 )
 
@@ -33,13 +31,23 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	me, _ := utils.Validate(req)
+	me, err := utils.Validate(req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "bad request")
+		return
+	}
 	if me != nil {
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
 		return
 	}
 
-	userID := r.Context().Value("user_id")
+	userIDValue := r.Context().Value("user_id")
+	userID, ok := userIDValue.(string)
+	if !ok {
+		_ = response.ReturnErrorResponse(w, http.StatusUnauthorized, "authentication required")
+		return
+	}
+
 	images := make([]string, len(req.Images))
 	for i, img := range req.Images {
 		images[i] = img.Image
@@ -50,7 +58,7 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 	}
 
 	workID, err := h.workUseCase.CreateWork(
-		userID.(string),
+		userID,
 		req.Title,
 		req.Description,
 		req.Thumbnail,
@@ -86,7 +94,8 @@ func (h *WorkHandler) CreateWork(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *WorkHandler) ReadWork(w http.ResponseWriter, r *http.Request) {
-	workID := strings.TrimPrefix(r.URL.Path, "/work/")
+
+	workID := chi.URLParam(r, "workID")
 	if workID == "" {
 		log.Printf("ReadWork failed: workID is empty")
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "bad request")
@@ -222,7 +231,11 @@ func (h *WorkHandler) UpdateWork(w http.ResponseWriter, r *http.Request) {
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
-	me, _ := utils.Validate(req)
+	me, err := utils.Validate(req)
+	if err != nil {
+		_ = response.ReturnErrorResponse(w, http.StatusInternalServerError, "bad request")
+		return
+	}
 	if me != nil {
 		log.Printf("UpdateWork failed: validation error: %v", me)
 		_ = response.ReturnValidationErrorResponse(w, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), me)
@@ -344,4 +357,3 @@ func (h *WorkHandler) ReadWorksByUserID(w http.ResponseWriter, r *http.Request) 
 	w.WriteHeader(http.StatusOK)
 	w.Write(resBody)
 }
-
