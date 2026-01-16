@@ -46,3 +46,8 @@ func GetDBConnectionInfo() string {
 
 	return fmt.Sprintf("%s:%s@%s(%s)/%s?parseTime=true", config.User, config.Pass, protocol, config.IP, config.Name)
 }
+
+func IsProduction() bool {
+	env := strings.ToLower(os.Getenv("ENVIRONMENT"))
+	return env == "production" || env == "prod"
+}

@@ -94,15 +94,16 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, token, err := h.authUseCase.Login(req)
+	user, token, refreshToken, err := h.authUseCase.Login(req)
 	if err != nil {
 		log.Printf("SignIn failed: %v", err)
 		_ = response.ReturnErrorResponse(w, http.StatusBadRequest, "An unexpected error occurred. Please try again later.")
 		return
 	}
 
+	// アクセストークンをクッキーに設定
 	cookie := &http.Cookie{
-		Name:     "token",
+		Name:     CookieAccessToken,
 		Value:    token,
 		Path:     "/",
 		HttpOnly: true,
@@ -113,6 +114,17 @@ func (h *AuthHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 		cookie.SameSite = http.SameSiteNoneMode
 	}
 	http.SetCookie(w, cookie)
+
+	// リフレッシュトークンを別のクッキーに設定
+	refreshCookie := &http.Cookie{
+		Name:     CookieRefreshToken,
+		Value:    refreshToken,
+		Path:     "/",
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
+		//Secure: true, // HTTPS環境で有効化
+	}
+	http.SetCookie(w, refreshCookie)
 
 	res := response.UserID{
 		UserID: user.UserID,
@@ -207,7 +219,7 @@ func (h *AuthHandler) AuthCode(w http.ResponseWriter, r *http.Request) {
 	}
 
 	cookie := &http.Cookie{
-		Name:     "token",
+		Name:     CookieAccessToken,
 		Value:    jwt,
 		Path:     "/",
 		HttpOnly: true,

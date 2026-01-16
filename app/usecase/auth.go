@@ -75,17 +75,17 @@ func (a *AuthUseCase) CreateAccount(r request.SignUpRequest) (string, error) {
 	return userID.String(), nil
 }
 
-func (a *AuthUseCase) Login(r request.SignInRequest) (*entity.User, string, error) {
+func (a *AuthUseCase) Login(r request.SignInRequest) (*entity.User, string, string, error) {
 	user, err := a.authRepository.GetPassword(r.Mail)
 	if err != nil {
-		return nil, "", fmt.Errorf("not match email: %w", err)
+		return nil, "", "", fmt.Errorf("not match email: %w", err)
 	}
 	if user.Password == nil {
 		return nil, "", fmt.Errorf("password not set")
 	}
 	err = utils.CompareHashAndPassword(*user.Password, r.Password)
 	if err != nil {
-		return nil, "", fmt.Errorf("not match password: %w", err)
+		return nil, "", "", fmt.Errorf("not match password: %w", err)
 	}
 
 	jwt, err := auth.IssueUserToken(user.UserID)
